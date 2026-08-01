@@ -1,0 +1,79 @@
+name: Windows Build and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -S . -B build -A x64
+
+      - name: Build TransiSafe
+        run: cmake --build build --config Release
+
+      - name: Run 500-point smoke test
+        shell: pwsh
+        run: |
+          Remove-Item results.csv, summary.csv, transisafe.log `
+            -ErrorAction SilentlyContinue
+
+          "2`noperating_points_large.csv`n" |
+            & ".\build\Release\transisafe.exe"
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "TransiSafe exited with code $LASTEXITCODE."
+          }
+
+          if (-not (Test-Path "summary.csv")) {
+            throw "summary.csv was not generated."
+          }
+
+          $summary = Import-Csv "summary.csv"
+
+          function Get-KpiValue($name) {
+            $row = $summary |
+              Where-Object {
+                $_.scope -eq "overall" -and
+                $_.kpi -eq $name
+              } |
+              Select-Object -First 1
+
+            if ($null -eq $row) {
+              throw "KPI '$name' is missing."
+            }
+
+            return [int][double]$row.numeric_value
+          }
+
+          $total = Get-KpiValue "total_points"
+          $safe = Get-KpiValue "safe_count"
+          $critical = Get-KpiValue "critical_count"
+          $notSafe = Get-KpiValue "not_safe_count"
+
+          if ($total -ne 500) {
+            throw "Expected 500 points, received $total."
+          }
+
+          if ($safe -ne 231) {
+            throw "Expected 231 SAFE points, received $safe."
+          }
+
+          if ($critical -ne 69) {
+            throw "Expected 69 CRITICAL points, received $critical."
+          }
+
+          if ($notSafe -ne 200) {
+            throw "Expected 200 NOT SAFE points, received $notSafe."
+          }
+
+          Write-Host "Smoke test passed successfully."

@@ -1,0 +1,4 @@
+﻿transistor_id;type;pmax;rthja;tjmax
+DEMO_BJT_01;BJT;10;50;150
+DEMO_MOSFET_01;MOSFET;10;40;150
+DEMO_MOSFET_02;MOSFET;20;25;175

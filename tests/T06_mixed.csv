@@ -1,0 +1,5 @@
+﻿transistor_id;voltage;current;tamb
+DEMO_MOSFET_01;5;0.1;25
+UNKNOWN_01;10;0.2;25
+DEMO_BJT_01;10;0.15;25
+DEMO_MOSFET_02;15;abc;30

@@ -1,0 +1,25 @@
+# Visual Studio
+.vs/
+Debug/
+Release/
+x64/
+x86/
+*.obj
+*.pdb
+*.ilk
+*.user
+*.suo
+
+# Build artifacts
+*.exe
+*.out
+
+# Runtime files
+*.log
+
+# Power BI temporary files
+~$*.pbix
+
+# Operating system files
+.DS_Store
+Thumbs.db

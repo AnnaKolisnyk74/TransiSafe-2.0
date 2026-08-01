@@ -144,7 +144,7 @@ The `docs` directory contains ten development reports covering the progressive e
 
 **Anna Kolisnyk**
 
-Business Administration student with a technical background and an interest in energy, data analytics, and the connection between engineering and business decision-making.
+Combining experience in electrical engineering and C programming with business administration, data analytics, and Power BI. Focused on transforming technical data into structured analyses, visualizations, and decision-support solutions for the energy sector.
 
 ## License
 

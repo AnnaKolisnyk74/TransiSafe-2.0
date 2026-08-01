@@ -1,5 +1,5 @@
 # TransiSafe 2.0
-
+[![Windows Build and Test](https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml)
 **C-based engineering safety analysis and decision-support tool with Power BI visualization**
 
 TransiSafe 2.0 is an independently developed portfolio project that combines electronics, C programming, data analysis, software testing, and management-oriented visualization.

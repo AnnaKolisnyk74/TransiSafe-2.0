@@ -18,8 +18,11 @@ jobs:
       - name: Configure CMake
         run: cmake -S . -B build -A x64
 
-      - name: Build TransiSafe
+      - name: Build TransiSafe and unit tests
         run: cmake --build build --config Release
+
+      - name: Run unit tests
+        run: ctest --test-dir build -C Release --output-on-failure
 
       - name: Run 500-point smoke test
         shell: pwsh
@@ -60,20 +63,9 @@ jobs:
           $critical = Get-KpiValue "critical_count"
           $notSafe = Get-KpiValue "not_safe_count"
 
-          if ($total -ne 500) {
-            throw "Expected 500 points, received $total."
-          }
-
-          if ($safe -ne 231) {
-            throw "Expected 231 SAFE points, received $safe."
-          }
-
-          if ($critical -ne 69) {
-            throw "Expected 69 CRITICAL points, received $critical."
-          }
-
-          if ($notSafe -ne 200) {
-            throw "Expected 200 NOT SAFE points, received $notSafe."
-          }
+          if ($total -ne 500) { throw "Expected 500 points, received $total." }
+          if ($safe -ne 231) { throw "Expected 231 SAFE points, received $safe." }
+          if ($critical -ne 69) { throw "Expected 69 CRITICAL points, received $critical." }
+          if ($notSafe -ne 200) { throw "Expected 200 NOT SAFE points, received $notSafe." }
 
           Write-Host "Smoke test passed successfully."

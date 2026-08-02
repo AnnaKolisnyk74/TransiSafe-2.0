@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">TransiSafe 2.1 software architecture</title>
+  <desc id="description">Modular C11 architecture showing inputs, application modules, and decision-support outputs.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0f766e"/>
+    </marker>
+    <marker id="arrow-muted" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 700 48px 'DejaVu Sans', Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 22px 'DejaVu Sans', Arial, sans-serif; fill: #475569; }
+      .section { font: 700 17px 'DejaVu Sans', Arial, sans-serif; letter-spacing: 2px; fill: #0f766e; }
+      .node-title { font: 700 22px 'DejaVu Sans', Arial, sans-serif; fill: #0f172a; }
+      .node-copy { font: 400 17px 'DejaVu Sans', Arial, sans-serif; fill: #475569; }
+      .core-title { font: 700 24px 'DejaVu Sans', Arial, sans-serif; fill: #ffffff; }
+      .core-copy { font: 400 17px 'DejaVu Sans', Arial, sans-serif; fill: #ccfbf1; }
+      .footer { font: 400 16px 'DejaVu Sans', Arial, sans-serif; fill: #64748b; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .module { fill: #ffffff; stroke: #94a3b8; stroke-width: 2; }
+      .core { fill: #115e59; stroke: #0f766e; stroke-width: 2; }
+      .flow { fill: none; stroke: #0f766e; stroke-width: 4; marker-end: url(#arrow); }
+      .dependency { fill: none; stroke: #64748b; stroke-width: 2.5; stroke-dasharray: 8 7; marker-end: url(#arrow-muted); }
+      .divider { stroke: #e2e8f0; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f8fafc"/>
+  <rect x="0" y="0" width="18" height="900" fill="#0f766e"/>
+
+  <text x="80" y="82" class="title">TransiSafe 2.1 — Software Architecture</text>
+  <text x="80" y="120" class="subtitle">Modular C11 analysis pipeline · engineering assessment to decision-support output</text>
+
+  <text x="80" y="180" class="section">INPUTS</text>
+  <rect x="80" y="205" width="310" height="510" rx="12" class="panel"/>
+  <text x="115" y="258" class="node-title">Operating data</text>
+  <text x="115" y="291" class="node-copy">CSV operating points</text>
+  <line x1="115" y1="320" x2="355" y2="320" class="divider"/>
+  <text x="115" y="370" class="node-title">Configuration</text>
+  <text x="115" y="403" class="node-copy">INI thresholds and paths</text>
+  <line x1="115" y1="432" x2="355" y2="432" class="divider"/>
+  <text x="115" y="482" class="node-title">Model database</text>
+  <text x="115" y="515" class="node-copy">Synthetic BJT and MOSFET</text>
+  <text x="115" y="542" class="node-copy">transistor parameters</text>
+  <line x1="115" y1="571" x2="355" y2="571" class="divider"/>
+  <text x="115" y="621" class="node-title">Build &amp; test</text>
+  <text x="115" y="654" class="node-copy">CMake · unit tests · CI</text>
+
+  <text x="470" y="180" class="section">APPLICATION CORE</text>
+  <rect x="470" y="205" width="700" height="105" rx="12" class="core"/>
+  <text x="510" y="253" class="core-title">main.c</text>
+  <text x="510" y="283" class="core-copy">Application flow · interactive mode · batch orchestration</text>
+
+  <rect x="470" y="355" width="215" height="105" rx="10" class="module"/>
+  <text x="495" y="398" class="node-title">config</text>
+  <text x="495" y="429" class="node-copy">INI settings</text>
+
+  <rect x="712" y="355" width="215" height="105" rx="10" class="module"/>
+  <text x="737" y="398" class="node-title">database</text>
+  <text x="737" y="429" class="node-copy">Transistor models</text>
+
+  <rect x="955" y="355" width="215" height="105" rx="10" class="module"/>
+  <text x="980" y="398" class="node-title">csv_io</text>
+  <text x="980" y="429" class="node-copy">Import &amp; batch I/O</text>
+
+  <rect x="470" y="505" width="215" height="105" rx="10" class="module"/>
+  <text x="495" y="548" class="node-title">analysis</text>
+  <text x="495" y="579" class="node-copy">Power &amp; thermal model</text>
+
+  <rect x="712" y="505" width="215" height="105" rx="10" class="module"/>
+  <text x="737" y="548" class="node-title">statistics</text>
+  <text x="737" y="579" class="node-copy">KPIs &amp; summaries</text>
+
+  <rect x="955" y="505" width="215" height="105" rx="10" class="module"/>
+  <text x="980" y="548" class="node-title">logging</text>
+  <text x="980" y="579" class="node-copy">Timestamped events</text>
+
+  <rect x="590" y="655" width="460" height="80" rx="10" class="module"/>
+  <text x="620" y="691" class="node-title">common</text>
+  <text x="620" y="718" class="node-copy">Shared parsing and text utilities</text>
+
+  <text x="1250" y="180" class="section">OUTPUTS</text>
+  <rect x="1250" y="205" width="270" height="510" rx="12" class="panel"/>
+  <text x="1285" y="258" class="node-title">Detailed results</text>
+  <text x="1285" y="291" class="node-copy">results.csv</text>
+  <line x1="1285" y1="320" x2="1485" y2="320" class="divider"/>
+  <text x="1285" y="370" class="node-title">Aggregated KPIs</text>
+  <text x="1285" y="403" class="node-copy">summary.csv</text>
+  <line x1="1285" y1="432" x2="1485" y2="432" class="divider"/>
+  <text x="1285" y="482" class="node-title">Application log</text>
+  <text x="1285" y="515" class="node-copy">transisafe.log</text>
+  <line x1="1285" y1="544" x2="1485" y2="544" class="divider"/>
+  <text x="1285" y="594" class="node-title">Decision support</text>
+  <text x="1285" y="627" class="node-copy">Power BI dashboard</text>
+  <text x="1285" y="654" class="node-copy">SAFE · CRITICAL · NOT SAFE</text>
+
+  <path d="M390 460 H430 V258 H470" class="flow"/>
+  <path d="M1170 558 H1210 V460 H1250" class="flow"/>
+  <path d="M1062 460 V482 H577 V505" class="flow"/>
+  <path d="M685 558 H712" class="flow"/>
+  <path d="M820 610 V655" class="dependency"/>
+  <path d="M820 655 V632 H577 V610" class="dependency"/>
+  <path d="M820 655 V632 H1062 V610" class="dependency"/>
+
+  <line x1="80" y1="805" x2="1520" y2="805" class="divider"/>
+  <text x="80" y="845" class="footer">Portfolio project by Anna Kolisnyk · simplified thermal and power-based operating-point assessment</text>
+  <text x="1520" y="845" class="footer" text-anchor="end">C11 · CMake · GitHub Actions · Power BI</text>
+</svg>

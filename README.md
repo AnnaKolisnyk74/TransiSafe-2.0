@@ -1,6 +1,12 @@
 # TransiSafe 2.0
 
-[![Windows Build and Test](https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml)
+<p align="center">
+  <a href="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml"><img src="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml/badge.svg" alt="Windows Build and Test"></a>
+  <img src="https://img.shields.io/badge/C-C11-A8B9CC?logo=c&logoColor=white" alt="C11">
+  <img src="https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?logo=powerbi&logoColor=black" alt="Power BI dashboard">
+  <a href="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/release-v2.0.0-00AD73" alt="Release v2.0.0"></a>
+  <img src="https://img.shields.io/badge/type-portfolio%20project-495057" alt="Portfolio project">
+</p>
 
 **C-based engineering safety analysis and decision-support tool with Power BI visualization**
 
@@ -67,7 +73,10 @@ The documented scalability test processed 500 synthetic operating points.
 
 Runtime measurements are environment-dependent and should be interpreted only as the result of the documented test run.
 
-## Repository structure
+<details>
+<summary><strong>Repository structure</strong></summary>
+
+<br>
 
 ```text
 TransiSafe-2.0/
@@ -84,7 +93,14 @@ TransiSafe-2.0/
 └── summary.csv          Aggregated KPIs
 ```
 
-## Requirements
+</details>
+
+<details>
+<summary><strong>Build requirements and instructions</strong></summary>
+
+<br>
+
+### Requirements
 
 - Windows
 - Microsoft Visual Studio with the C/C++ build tools
@@ -92,7 +108,7 @@ TransiSafe-2.0/
 
 The source uses Microsoft secure CRT functions and is therefore currently intended for compilation with MSVC.
 
-## Build and run
+### Build and run
 
 Open a **Developer Command Prompt for Visual Studio** in the repository root and run:
 
@@ -112,7 +128,12 @@ The generated files are configured in `transisafe.ini`. By default, the applicat
 
 When opening the Power BI file on another computer, the local CSV data-source paths may need to be updated.
 
-## Test coverage
+</details>
+
+<details>
+<summary><strong>Test coverage</strong></summary>
+
+<br>
 
 | Test | Scenario |
 |---|---|
@@ -127,7 +148,12 @@ When opening the Power BI file on another computer, the local CSV data-source pa
 
 All documented tests were completed successfully in the original Microsoft Visual Studio environment.
 
-## Documentation
+</details>
+
+<details>
+<summary><strong>Development documentation</strong></summary>
+
+<br>
 
 The `docs` directory contains ten development reports covering the progressive extension of the application:
 
@@ -141,6 +167,8 @@ The `docs` directory contains ten development reports covering the progressive e
 8. scalability test
 9. Power BI dashboard
 10. quality assurance and runtime measurement
+
+</details>
 
 ## Author
 

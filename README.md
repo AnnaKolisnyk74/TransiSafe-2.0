@@ -33,6 +33,24 @@ flowchart TD
     E --> F[Power BI dashboard]
 ```
 
+## Software architecture
+
+The application is divided into focused C11 modules so that engineering calculations, data handling, and presentation concerns can be developed and tested independently.
+
+```mermaid
+flowchart LR
+    INPUTS["CSV · INI · transistor database"] --> MAIN["main.c<br/>Application flow and UI"]
+    CONFIG["config<br/>Settings"] --> MAIN
+    DATABASE["database<br/>Transistor models"] --> MAIN
+    MAIN --> CSV["csv_io<br/>Import and batch processing"]
+    CSV --> ANALYSIS["analysis<br/>Power and thermal assessment"]
+    ANALYSIS --> STATS["statistics<br/>KPIs and summaries"]
+    MAIN --> LOG["logging<br/>Application events"]
+    STATS --> OUTPUTS["results.csv · summary.csv · Power BI"]
+    COMMON["common<br/>Parsing and text utilities"] -. shared utilities .-> CONFIG
+    COMMON -. shared utilities .-> CSV
+```
+
 ## Key features
 
 - interactive analysis of individual operating points
@@ -199,6 +217,14 @@ The `docs` directory contains ten development reports covering the progressive e
 10. quality assurance and runtime measurement
 
 </details>
+
+## What I learned
+
+- how to translate simplified electrical and thermal equations into a reproducible C11 analysis pipeline
+- why separating application flow, configuration, data access, I/O, calculations, logging, and statistics makes a technical system easier to maintain
+- how unit tests and continuous integration protect expected behavior during refactoring
+- how to communicate engineering assumptions, validation results, and model limitations transparently
+- how to transform detailed technical output into decision-oriented KPIs and a Power BI dashboard
 
 ## Author
 

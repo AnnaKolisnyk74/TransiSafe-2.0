@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Representative TransiSafe 2.0 batch-analysis output</title>
+  <desc id="desc">A terminal-style summary of the documented 500-point validation run.</desc>
+  <rect width="1600" height="900" fill="#06100c"/>
+  <rect x="58" y="52" width="1484" height="796" rx="22" fill="#09150f" stroke="#20362d" stroke-width="3"/>
+  <path d="M80 52h1440a22 22 0 0 1 22 22v53H58V74a22 22 0 0 1 22-22Z" fill="#102118"/>
+  <circle cx="95" cy="79" r="11" fill="#ff5f57"/>
+  <circle cx="132" cy="79" r="11" fill="#ffbd2e"/>
+  <circle cx="169" cy="79" r="11" fill="#00c48c"/>
+  <g font-family="Consolas, 'Courier New', monospace">
+    <text x="218" y="94" fill="#ecf5f1" font-size="24" font-weight="700">TransiSafe 2.0  /  Batch analysis</text>
+    <text x="1445" y="91" fill="#8fa39a" font-size="18" font-weight="700" text-anchor="end">REPRESENTATIVE OUTPUT</text>
+
+    <rect x="92" y="162" width="8" height="643" fill="#00c48c"/>
+    <text x="130" y="178" fill="#8fa39a" font-size="22">&gt; transisafe.exe</text>
+    <text x="130" y="239" fill="#ecf5f1" font-size="38" font-weight="700">TRANSISAFE 2.0</text>
+    <text x="130" y="272" fill="#00c48c" font-size="21" font-weight="700">ENGINEERING SAFETY ANALYSIS</text>
+
+    <g font-size="18" font-weight="700" fill="#8fa39a">
+      <text x="130" y="339">[MODE]</text>
+      <text x="130" y="384">[INPUT]</text>
+      <text x="130" y="429">[TRANSISTOR MODELS]</text>
+      <text x="130" y="474">[VALIDATION]</text>
+      <text x="130" y="519">[STATUS]</text>
+      <text x="130" y="654">[TEMPERATURE]</text>
+      <text x="130" y="699">[OUTPUT]</text>
+      <text x="130" y="744">[RUNTIME]</text>
+    </g>
+
+    <g x="430" font-size="23">
+      <text x="430" y="341" fill="#4aa8ff">CSV BATCH ANALYSIS</text>
+      <text x="430" y="386" fill="#ecf5f1">operating_points_large.csv</text>
+      <text x="430" y="431" fill="#ecf5f1">3 loaded</text>
+      <text x="430" y="476" fill="#00c48c">500 records processed  /  0 skipped</text>
+      <text x="430" y="521" fill="#00c48c">SAFE 231</text>
+      <text x="430" y="566" fill="#ffb020">CRITICAL 69</text>
+      <text x="430" y="611" fill="#ff5f57">NOT SAFE 200</text>
+      <text x="430" y="656" fill="#ecf5f1">average 143.44 C  /  maximum 256.92 C</text>
+      <text x="430" y="701" fill="#ecf5f1">results.csv  /  summary.csv  /  transisafe.log</text>
+      <text x="430" y="746" fill="#8fa39a">405 ms  (documented test run)</text>
+    </g>
+
+    <rect x="1110" y="490" width="328" height="120" rx="14" fill="#0d2b20" stroke="#00c48c" stroke-width="3"/>
+    <text x="1274" y="535" fill="#8fa39a" font-size="18" font-weight="700" text-anchor="middle">WINDOWS BUILD</text>
+    <text x="1274" y="586" fill="#00c48c" font-size="34" font-weight="700" text-anchor="middle">PASS</text>
+
+    <text x="130" y="811" fill="#8fa39a" font-size="17">Synthetic demonstration data  |  Portfolio project</text>
+  </g>
+</svg>

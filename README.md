@@ -17,6 +17,9 @@ The application evaluates synthetic operating points of BJT and MOSFET transisto
 > [!IMPORTANT]
 > The included transistor models and operating points are synthetic demonstration data. This project is intended for learning and portfolio purposes and must not be used to validate or certify real safety-critical electronic systems.
 
+> [!NOTE]
+> **Model scope:** TransiSafe 2.0 implements a simplified thermal and power-based operating-point assessment. It does not reproduce the complete manufacturer-defined Safe Operating Area (SOA) curve of a real semiconductor device. A full SOA assessment can additionally include voltage and current limits, pulse duration, transient thermal impedance, secondary breakdown, package limits, and other manufacturer-specific constraints.
+
 ![TransiSafe 2.0 Power BI dashboard](assets/dashboard-preview-clean.png)
 
 ## Project workflow
@@ -44,6 +47,8 @@ flowchart TD
 - timestamped application logging
 - model-specific statistics and runtime measurement
 - interactive Power BI dashboard
+- modular C11 architecture with separated analysis, I/O, configuration, database, logging, and statistics components
+- automated unit tests for core calculations and boundary conditions
 - documented test catalog covering valid, invalid, mixed, and extreme inputs
 
 ## Calculation model
@@ -80,8 +85,18 @@ Runtime measurements are environment-dependent and should be interpreted only as
 
 ```text
 TransiSafe-2.0/
-├── src/                 C source code
-├── tests/               CSV test cases T01 to T07
+├── src/
+│   ├── main.c           Application entry point and interactive UI
+│   ├── analysis.c/.h    Electrical and thermal assessment
+│   ├── csv_io.c/.h      CSV parsing and batch processing
+│   ├── config.c/.h      INI configuration
+│   ├── database.c/.h    Transistor database
+│   ├── logging.c/.h     Timestamped application logging
+│   ├── statistics.c/.h KPI aggregation and summary export
+│   └── common.c/.h      Shared parsing and text utilities
+├── tests/
+│   ├── unit_tests.c     Automated core-function tests
+│   └── T01–T07          CSV integration scenarios
 ├── dashboard/           Power BI project file
 ├── assets/              Dashboard preview
 ├── docs/                Documentation of development steps 1 to 10
@@ -102,20 +117,20 @@ TransiSafe-2.0/
 
 ### Requirements
 
-- Windows
-- Microsoft Visual Studio with the C/C++ build tools
-- Microsoft Power BI Desktop to open the dashboard
-
-The source uses Microsoft secure CRT functions and is therefore currently intended for compilation with MSVC.
+- CMake 3.20 or newer
+- a C11 compiler, such as Microsoft Visual C++ or GCC
+- Microsoft Power BI Desktop only when opening the dashboard project
 
 ### Build and run
 
-Open a **Developer Command Prompt for Visual Studio** in the repository root and run:
+Configure and build from the repository root:
 
-```bat
-cl /W4 /O2 src\transisafe.c /Fe:transisafe.exe
-transisafe.exe
+```sh
+cmake -S . -B build
+cmake --build build --config Release
 ```
+
+On Windows, run `build\Release\transisafe.exe`. With a single-configuration generator, run `build/transisafe`.
 
 The program must be started from the repository root so that it can locate `transisafe.ini` and `transistors.csv`.
 
@@ -146,7 +161,22 @@ When opening the Power BI file on another computer, the local CSV data-source pa
 | T07 | Extreme ambient temperature |
 | T08 | Scalability test with 500 operating points |
 
-All documented tests were completed successfully in the original Microsoft Visual Studio environment.
+The automated unit-test executable additionally verifies:
+
+- calculation of `P_loss`
+- calculation of `T_j`
+- classification at an exact boundary
+- maximum allowable current under the limiting power constraint
+- rejection of invalid numeric values
+- selection of the most critical operating point
+
+Run all registered unit tests with:
+
+```sh
+ctest --test-dir build -C Release --output-on-failure
+```
+
+GitHub Actions runs both the unit-test suite and the full 500-point smoke test on Windows.
 
 </details>
 

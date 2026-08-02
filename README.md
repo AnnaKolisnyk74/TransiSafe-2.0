@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/social-preview.png" alt="TransiSafe 2.0 — Engineering Safety Analysis" width="100%">
-</p>
-
 # TransiSafe 2.0
 
 <p align="center">

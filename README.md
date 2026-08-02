@@ -4,7 +4,7 @@
   <a href="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml"><img src="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml/badge.svg" alt="Windows Build and Test"></a>
   <img src="https://img.shields.io/badge/C-C11-A8B9CC?logo=c&logoColor=white" alt="C11">
   <img src="https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?logo=powerbi&logoColor=black" alt="Power BI dashboard">
-  <a href="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/release-v2.0.0-00AD73" alt="Release v2.0.0"></a>
+  <a href="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/releases/tag/v2.1.0"><img src="https://img.shields.io/badge/release-v2.1.0-00AD73" alt="Release v2.1.0"></a>
   <img src="https://img.shields.io/badge/type-portfolio%20project-495057" alt="Portfolio project">
 </p>
 

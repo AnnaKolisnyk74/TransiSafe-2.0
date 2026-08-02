@@ -1,9 +1,158 @@
+TRANSISAFE NON-COMMERCIAL LICENSE
+NICHT-KOMMERZIELLE TRANSISAFE-LIZENZ
+
+Version 1.0 – 2026
+
 Copyright (c) 2026 Anna Kolisnyk
+All rights reserved except as expressly granted below.
 
-Dieses Projekt wurde zu Lern-, Demonstrations- und Portfoliozwecken erstellt.
 
-Die Nutzung, Aenderung und Weitergabe des Quellcodes ist fuer nicht-kommerzielle
-Zwecke erlaubt, sofern dieser Urheberhinweis erhalten bleibt.
+============================================================
+DEUTSCHE FASSUNG
+============================================================
 
-Das Projekt wird ohne Garantie oder Haftung bereitgestellt. Es ist nicht fuer
-die sicherheitskritische Auslegung realer elektronischer Systeme vorgesehen.
+1. Zweck
+
+TransiSafe wurde zu Lern-, Demonstrations- und Portfoliozwecken
+entwickelt. Die enthaltenen Transistormodelle, Betriebspunkte und
+Ergebnisse sind synthetische Demonstrationsdaten.
+
+
+2. Erlaubte Nutzung
+
+Die Nutzung, Vervielfältigung, Änderung und Weitergabe des Quellcodes
+und daraus erstellter Programmversionen ist ausschließlich für
+nicht-kommerzielle Lern-, Forschungs-, Demonstrations- und
+Portfoliozwecke gestattet.
+
+Diese Erlaubnis gilt nur, wenn:
+
+- dieser Urheberrechts- und Lizenzhinweis vollständig erhalten bleibt,
+- Änderungen deutlich als solche gekennzeichnet werden und
+- bei einer Weitergabe auch diese Lizenz beigefügt wird.
+
+
+3. Kommerzielle Nutzung
+
+Eine kommerzielle Nutzung ist ohne vorherige schriftliche Genehmigung
+der Urheberin nicht gestattet.
+
+Als kommerzielle Nutzung gelten insbesondere:
+
+- der Verkauf oder die kostenpflichtige Weitergabe,
+- die Integration in kostenpflichtige Produkte oder Dienstleistungen,
+- die Nutzung zur unmittelbaren Erzielung geschäftlicher Einnahmen und
+- die kommerzielle Verwertung wesentlicher Teile des Projekts.
+
+Für eine kommerzielle Nutzung ist eine gesonderte Vereinbarung mit der
+Urheberin erforderlich.
+
+
+4. Sicherheits- und Eignungshinweis
+
+Dieses Projekt ist nicht für die Entwicklung, Auslegung, Validierung,
+Zertifizierung oder Überwachung realer sicherheitskritischer
+elektronischer Systeme bestimmt.
+
+Die bereitgestellten Berechnungen und Ergebnisse ersetzen keine
+fachtechnische Prüfung, Bauteilspezifikation, Simulation, Messung oder
+Sicherheitsbewertung.
+
+
+5. Gewährleistung und Haftung
+
+Das Projekt wird in der vorliegenden Form („wie es ist“) und ohne
+ausdrückliche oder stillschweigende Gewährleistung bereitgestellt.
+
+Soweit gesetzlich zulässig, haftet die Urheberin nicht für unmittelbare
+oder mittelbare Schäden, Datenverluste, entgangene Gewinne oder sonstige
+Folgen, die aus der Nutzung oder Nichtverwendbarkeit des Projekts
+entstehen.
+
+Zwingende gesetzliche Haftung bleibt unberührt.
+
+
+6. Rechtevorbehalt
+
+Alle Rechte, die durch diese Lizenz nicht ausdrücklich eingeräumt
+werden, bleiben der Urheberin vorbehalten.
+
+
+============================================================
+ENGLISH VERSION
+============================================================
+
+1. Purpose
+
+TransiSafe was developed for educational, demonstration, and portfolio
+purposes. The included transistor models, operating points, and results
+are synthetic demonstration data.
+
+
+2. Permitted Use
+
+The source code and compiled or modified versions may be used, copied,
+modified, and redistributed solely for non-commercial educational,
+research, demonstration, and portfolio purposes.
+
+This permission applies only if:
+
+- this copyright and license notice remains included in full,
+- modifications are clearly identified, and
+- redistributed copies include this license.
+
+
+3. Commercial Use
+
+Commercial use is not permitted without the copyright holder’s prior
+written authorization.
+
+Commercial use includes, in particular:
+
+- selling or distributing the project for a fee,
+- incorporating it into paid products or services,
+- using it directly for revenue-generating business activities, and
+- commercially exploiting substantial parts of the project.
+
+Commercial use requires a separate agreement with the copyright holder.
+
+
+4. Safety and Suitability Notice
+
+This project is not intended for the development, design, validation,
+certification, or monitoring of real safety-critical electronic
+systems.
+
+The provided calculations and results do not replace professional
+engineering review, component specifications, simulations,
+measurements, or safety assessments.
+
+
+5. Warranty and Liability
+
+The project is provided “as is,” without any express or implied
+warranty.
+
+To the extent permitted by applicable law, the copyright holder shall
+not be liable for direct or indirect damages, loss of data, loss of
+profits, or other consequences arising from the use of, or inability
+to use, the project.
+
+Mandatory statutory liability remains unaffected.
+
+
+6. Reservation of Rights
+
+All rights not expressly granted under this license are reserved by
+the copyright holder.
+
+
+============================================================
+LANGUAGE / SPRACHE
+============================================================
+
+Both language versions are intended to describe the same terms.
+In the event of inconsistencies, the German version shall prevail.
+
+Beide Sprachfassungen sollen dieselben Bedingungen wiedergeben.
+Bei Abweichungen ist die deutsche Fassung maßgeblich.

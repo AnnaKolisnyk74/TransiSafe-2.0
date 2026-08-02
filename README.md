@@ -51,8 +51,6 @@ flowchart LR
     COMMON -. shared utilities .-> CSV
 ```
 
-[Download the architecture graphic as SVG](assets/architecture-v2.1.svg)
-
 ## Key features
 
 - interactive analysis of individual operating points

@@ -23,12 +23,6 @@ The application evaluates synthetic operating points of BJT and MOSFET transisto
 
 ![TransiSafe 2.0 Power BI dashboard](assets/dashboard-preview-clean.png)
 
-## Representative console output
-
-![Representative TransiSafe 2.0 batch-analysis output](assets/console-preview.svg)
-
-_Representative batch-output view based on the documented 500-point validation run._
-
 ## Project workflow
 
 ```mermaid

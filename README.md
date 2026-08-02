@@ -11,7 +11,7 @@ The application evaluates synthetic operating points of BJT and MOSFET transisto
 > [!IMPORTANT]
 > The included transistor models and operating points are synthetic demonstration data. This project is intended for learning and portfolio purposes and must not be used to validate or certify real safety-critical electronic systems.
 
-![TransiSafe 2.0 Power BI dashboard](assets/dashboard-preview.png)
+![TransiSafe 2.0 Power BI dashboard](assets/dashboard-preview-clean.png)
 
 ## Project workflow
 

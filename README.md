@@ -20,7 +20,7 @@ The application evaluates synthetic operating points of BJT and MOSFET transisto
 > [!NOTE]
 > **Model scope:** TransiSafe 2.0 implements a simplified thermal and power-based operating-point assessment. It does not reproduce the complete manufacturer-defined Safe Operating Area (SOA) curve of a real semiconductor device. A full SOA assessment can additionally include voltage and current limits, pulse duration, transient thermal impedance, secondary breakdown, package limits, and other manufacturer-specific constraints.
 
-![TransiSafe 2.0 Power BI dashboard](assets/dashboard-preview-clean.png)
+![TransiSafe 2.0 Power BI dashboard](https://raw.githubusercontent.com/AnnaKolisnyk74/TransiSafe-2.0/main/assets/dashboard-preview-clean.png?v=f52b3325)
 
 ## Project workflow
 

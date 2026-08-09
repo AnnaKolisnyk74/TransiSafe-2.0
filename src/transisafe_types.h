@@ -41,6 +41,7 @@ typedef struct
     double critical_temperature_margin_c;
     char output_file_path[PATH_SIZE];
     char summary_file_path[PATH_SIZE];
+    char management_summary_file_path[PATH_SIZE];
     char log_file_path[PATH_SIZE];
     char transistor_database_path[PATH_SIZE];
 } AppConfig;
@@ -124,6 +125,22 @@ typedef struct
     int most_critical_index;
     char most_critical_transistor_id[ID_SIZE];
     SafetyStatus most_critical_status;
+
+    int priority_1_count;
+    int priority_2_count;
+    int priority_3_count;
+    int priority_4_count;
+    int highest_priority_value;
+    double highest_priority_criticality_score;
+    int highest_priority_case_index;
+    char highest_priority_transistor_id[ID_SIZE];
+    SafetyStatus highest_priority_status;
+
+    double lowest_safety_margin_score;
+    double highest_safety_margin_score;
+    char lowest_safety_margin_transistor_id[ID_SIZE];
+    char highest_safety_margin_transistor_id[ID_SIZE];
+
     ModelStatistics model_statistics[MAX_TRANSISTORS];
     int model_statistics_count;
 } StatisticsResult;

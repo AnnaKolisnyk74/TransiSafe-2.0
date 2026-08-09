@@ -20,7 +20,15 @@ The application evaluates synthetic operating points of BJT and MOSFET transisto
 > [!NOTE]
 > **Model scope:** TransiSafe 2.0 implements a simplified thermal and power-based operating-point assessment. It does not reproduce the complete manufacturer-defined Safe Operating Area (SOA) curve of a real semiconductor device. A full SOA assessment can additionally include voltage and current limits, pulse duration, transient thermal impedance, secondary breakdown, package limits, and other manufacturer-specific constraints.
 
-![TransiSafe 2.0 Power BI dashboard](assets/dashboard-preview-clean.png?v=management-step14)
+## Power BI views
+
+### Technical Analysis
+
+![TransiSafe 2.0 technical Power BI dashboard](assets/technical-dashboard.jpg?v=step14)
+
+### Management Overview
+
+![TransiSafe 2.0 management Power BI dashboard](assets/management-dashboard.jpg?v=step14)
 
 ## Management extension
 
@@ -76,6 +84,10 @@ flowchart LR
 - timestamped application logging
 - model-specific statistics and runtime measurement
 - interactive Power BI dashboard
+- management priority ranking and criticality scoring
+- recommended actions for critical and unsafe operating points
+- management KPI export in `management_summary.csv`
+- separate technical and management Power BI views
 - modular C11 architecture with separated analysis, I/O, configuration, database, logging, and statistics components
 - automated unit tests for core calculations and boundary conditions
 - documented test catalog covering valid, invalid, mixed, and extreme inputs
@@ -101,9 +113,11 @@ The documented scalability test processed 500 synthetic operating points.
 | SAFE | 231 (46.2%) |
 | CRITICAL | 69 (13.8%) |
 | NOT SAFE | 200 (40.0%) |
+| Attention Required | 269 (53.8%) |
+| Highest Priority Case | 399 |
+| Highest Risk Model | DEMO_MOSFET_02 |
 | Average estimated junction temperature | 143.44 °C |
 | Maximum estimated junction temperature | 256.92 °C |
-| Processing time in the documented test run | 405 ms |
 
 Runtime measurements are environment-dependent and should be interpreted only as the result of the documented test run.
 
@@ -121,20 +135,22 @@ TransiSafe-2.0/
 │   ├── config.c/.h      INI configuration
 │   ├── database.c/.h    Transistor database
 │   ├── logging.c/.h     Timestamped application logging
-│   ├── statistics.c/.h KPI aggregation and summary export
+│   ├── statistics.c/.h  KPI aggregation and summary export
 │   └── common.c/.h      Shared parsing and text utilities
 ├── tests/
 │   ├── unit_tests.c     Automated core-function tests
 │   └── T01–T07          CSV integration scenarios
 ├── dashboard/           Power BI project file
-├── assets/              Dashboard preview
-├── docs/                Documentation of development steps 1 to 10
+├── assets/              Technical and management dashboard previews
+├── docs/                Development reports for steps 1 to 14
 ├── transisafe.ini       Application configuration
 ├── transistors.csv      Synthetic transistor database
 ├── operating_points_large.csv
 │                        Scalability dataset and test T08
 ├── results.csv          Detailed demonstration output
-└── summary.csv          Aggregated KPIs
+├── summary.csv          Aggregated technical KPIs
+└── management_summary.csv
+                         Aggregated management KPIs
 ```
 
 </details>

@@ -1,0 +1,2 @@
+attention_required_percent,highest_risk_model,lowest_safety_margin_model,highest_safety_margin_model,high_priority_cases,medium_priority_cases,low_priority_cases,highest_priority_case,recommended_action
+53.800000,DEMO_MOSFET_02,DEMO_MOSFET_02,DEMO_BJT_01,0,200,69,399,Correct thermal operating condition

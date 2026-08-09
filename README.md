@@ -20,7 +20,26 @@ The application evaluates synthetic operating points of BJT and MOSFET transisto
 > [!NOTE]
 > **Model scope:** TransiSafe 2.0 implements a simplified thermal and power-based operating-point assessment. It does not reproduce the complete manufacturer-defined Safe Operating Area (SOA) curve of a real semiconductor device. A full SOA assessment can additionally include voltage and current limits, pulse duration, transient thermal impedance, secondary breakdown, package limits, and other manufacturer-specific constraints.
 
-![TransiSafe 2.0 Power BI dashboard](https://raw.githubusercontent.com/AnnaKolisnyk74/TransiSafe-2.0/main/assets/dashboard-preview-clean.png?v=f52b3325)
+## Power BI views
+
+### Technical Analysis
+
+![TransiSafe 2.0 technical Power BI dashboard](assets/technical-dashboard.jpg?v=step14-hq)
+
+### Management Overview
+
+![TransiSafe 2.0 management Power BI dashboard](assets/management-dashboard.jpg?v=step14-hq)
+
+## Management extension
+
+Development steps 11–14 add a management-oriented perspective to the technical analysis:
+
+- priority ranking and criticality scoring for individual operating points
+- recommended technical actions for critical and unsafe cases
+- portfolio-level management KPIs in `management_summary.csv`
+- a dedicated **Management Overview** page in Power BI
+
+The progressive implementation snapshots for these steps are available in `docs/source_snapshots/`.
 
 ## Project workflow
 
@@ -65,6 +84,10 @@ flowchart LR
 - timestamped application logging
 - model-specific statistics and runtime measurement
 - interactive Power BI dashboard
+- management priority ranking and criticality scoring
+- recommended actions for critical and unsafe operating points
+- management KPI export in `management_summary.csv`
+- separate technical and management Power BI views
 - modular C11 architecture with separated analysis, I/O, configuration, database, logging, and statistics components
 - automated unit tests for core calculations and boundary conditions
 - documented test catalog covering valid, invalid, mixed, and extreme inputs
@@ -90,9 +113,11 @@ The documented scalability test processed 500 synthetic operating points.
 | SAFE | 231 (46.2%) |
 | CRITICAL | 69 (13.8%) |
 | NOT SAFE | 200 (40.0%) |
+| Attention Required | 269 (53.8%) |
+| Highest Priority Case | 399 |
+| Highest Risk Model | DEMO_MOSFET_02 |
 | Average estimated junction temperature | 143.44 °C |
 | Maximum estimated junction temperature | 256.92 °C |
-| Processing time in the documented test run | 405 ms |
 
 Runtime measurements are environment-dependent and should be interpreted only as the result of the documented test run.
 
@@ -110,20 +135,22 @@ TransiSafe-2.0/
 │   ├── config.c/.h      INI configuration
 │   ├── database.c/.h    Transistor database
 │   ├── logging.c/.h     Timestamped application logging
-│   ├── statistics.c/.h KPI aggregation and summary export
+│   ├── statistics.c/.h  KPI aggregation and summary export
 │   └── common.c/.h      Shared parsing and text utilities
 ├── tests/
 │   ├── unit_tests.c     Automated core-function tests
 │   └── T01–T07          CSV integration scenarios
 ├── dashboard/           Power BI project file
-├── assets/              Dashboard preview
-├── docs/                Documentation of development steps 1 to 10
+├── assets/              Technical and management dashboard previews
+├── docs/                Development reports for steps 1 to 14
 ├── transisafe.ini       Application configuration
 ├── transistors.csv      Synthetic transistor database
 ├── operating_points_large.csv
 │                        Scalability dataset and test T08
 ├── results.csv          Detailed demonstration output
-└── summary.csv          Aggregated KPIs
+├── summary.csv          Aggregated technical KPIs
+└── management_summary.csv
+                         Aggregated management KPIs
 ```
 
 </details>
@@ -203,7 +230,7 @@ GitHub Actions runs both the unit-test suite and the full 500-point smoke test o
 
 <br>
 
-The `docs` directory contains ten development reports covering the progressive extension of the application:
+The `docs` directory contains fourteen development reports covering the progressive extension of the application:
 
 1. safety margins and status classification
 2. logging
@@ -215,6 +242,10 @@ The `docs` directory contains ten development reports covering the progressive e
 8. scalability test
 9. Power BI dashboard
 10. quality assurance and runtime measurement
+11. priority logic and management ranking
+12. recommended actions
+13. management summary KPIs
+14. Management Overview in Power BI
 
 </details>
 

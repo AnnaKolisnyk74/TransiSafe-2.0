@@ -1,7 +1,7 @@
 scope,transistor_id,kpi,numeric_value,text_value
 overall,ALL,total_points,500.000000,
 overall,ALL,skipped_points,0.000000,
-overall,ALL,processing_time_ms,405.000000,
+overall,ALL,processing_time_ms,386.000000,
 overall,ALL,safe_count,231.000000,
 overall,ALL,safe_percent,46.200000,
 overall,ALL,critical_count,69.000000,

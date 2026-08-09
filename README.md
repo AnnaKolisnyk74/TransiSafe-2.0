@@ -37,9 +37,13 @@ Development steps 11–14 add a management-oriented perspective to the technical
 - priority ranking and criticality scoring for individual operating points
 - recommended technical actions for critical and unsafe cases
 - portfolio-level management KPIs in `management_summary.csv`
+- `Attention Required` = `CRITICAL + NOT SAFE`: 269 of 500 operating points (53.8%)
 - a dedicated **Management Overview** page in Power BI
 
 The progressive implementation snapshots for these steps are available in `docs/source_snapshots/`.
+
+> [!NOTE]
+> **Implementation status:** The Management Overview uses the included demonstration exports (`results.csv`, `summary.csv`, and `management_summary.csv`). The incremental C files for steps 11–13 in `docs/source_snapshots/` document the implementation history and are not compiled by the current modular CMake target.
 
 ## Project workflow
 

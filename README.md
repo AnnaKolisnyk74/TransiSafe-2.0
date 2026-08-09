@@ -20,7 +20,18 @@ The application evaluates synthetic operating points of BJT and MOSFET transisto
 > [!NOTE]
 > **Model scope:** TransiSafe 2.0 implements a simplified thermal and power-based operating-point assessment. It does not reproduce the complete manufacturer-defined Safe Operating Area (SOA) curve of a real semiconductor device. A full SOA assessment can additionally include voltage and current limits, pulse duration, transient thermal impedance, secondary breakdown, package limits, and other manufacturer-specific constraints.
 
-![TransiSafe 2.0 Power BI dashboard](https://raw.githubusercontent.com/AnnaKolisnyk74/TransiSafe-2.0/main/assets/dashboard-preview-clean.png?v=f52b3325)
+![TransiSafe 2.0 Power BI dashboard](assets/dashboard-preview-clean.png?v=management-step14)
+
+## Management extension
+
+Development steps 11–14 add a management-oriented perspective to the technical analysis:
+
+- priority ranking and criticality scoring for individual operating points
+- recommended technical actions for critical and unsafe cases
+- portfolio-level management KPIs in `management_summary.csv`
+- a dedicated **Management Overview** page in Power BI
+
+The progressive implementation snapshots for these steps are available in `docs/source_snapshots/`.
 
 ## Project workflow
 
@@ -203,7 +214,7 @@ GitHub Actions runs both the unit-test suite and the full 500-point smoke test o
 
 <br>
 
-The `docs` directory contains ten development reports covering the progressive extension of the application:
+The `docs` directory contains fourteen development reports covering the progressive extension of the application:
 
 1. safety margins and status classification
 2. logging
@@ -215,6 +226,10 @@ The `docs` directory contains ten development reports covering the progressive e
 8. scalability test
 9. Power BI dashboard
 10. quality assurance and runtime measurement
+11. priority logic and management ranking
+12. recommended actions
+13. management summary KPIs
+14. Management Overview in Power BI
 
 </details>
 

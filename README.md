@@ -24,11 +24,11 @@ The application evaluates synthetic operating points of BJT and MOSFET transisto
 
 ### Technical Analysis
 
-![TransiSafe 2.0 technical Power BI dashboard](assets/technical-dashboard.jpg?v=step14)
+![TransiSafe 2.0 technical Power BI dashboard](assets/technical-dashboard.jpg?v=step14-hq)
 
 ### Management Overview
 
-![TransiSafe 2.0 management Power BI dashboard](assets/management-dashboard.jpg?v=step14)
+![TransiSafe 2.0 management Power BI dashboard](assets/management-dashboard.jpg?v=step14-hq)
 
 ## Management extension
 

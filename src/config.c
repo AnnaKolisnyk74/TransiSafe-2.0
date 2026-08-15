@@ -12,6 +12,7 @@
 #define DEFAULT_SUMMARY_FILE_PATH "summary.csv"
 #define DEFAULT_LOG_FILE_PATH "transisafe.log"
 #define DEFAULT_TRANSISTOR_DATABASE_PATH "transistors.csv"
+#define DEFAULT_CURVE_DATABASE_PATH "mosfet_curves.csv"
 
 void set_default_config(AppConfig* config)
 {
@@ -32,6 +33,8 @@ void set_default_config(AppConfig* config)
     copy_text(config->transistor_database_path,
         sizeof(config->transistor_database_path),
         DEFAULT_TRANSISTOR_DATABASE_PATH);
+    copy_text(config->curve_database_path,
+        sizeof(config->curve_database_path), DEFAULT_CURVE_DATABASE_PATH);
 }
 
 static int apply_config_value(
@@ -79,6 +82,10 @@ static int apply_config_value(
     if (strcmp(key, "transistor_database") == 0) {
         return copy_text(config->transistor_database_path,
             sizeof(config->transistor_database_path), value);
+    }
+    if (strcmp(key, "curve_database") == 0) {
+        return copy_text(config->curve_database_path,
+            sizeof(config->curve_database_path), value);
     }
 
     snprintf(error_message, error_message_size,

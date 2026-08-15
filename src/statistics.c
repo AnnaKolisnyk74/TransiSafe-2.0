@@ -50,7 +50,7 @@ static double calculate_criticality_score(
     const OperatingPoint* point,
     const AnalysisResult* result)
 {
-    double power_utilization = result->p_loss / point->model->p_max;
+    double power_utilization = result->electrical_utilization;
     double temperature_utilization = result->t_j / point->model->t_j_max;
     return power_utilization > temperature_utilization
         ? power_utilization
@@ -98,6 +98,12 @@ void update_statistics(
         statistics->not_safe_temperature_count++;
         break;
     case STATUS_NOT_SAFE_BOTH: statistics->not_safe_both_count++; break;
+    case STATUS_NOT_SAFE_VOLTAGE:
+    case STATUS_NOT_SAFE_CURRENT:
+    case STATUS_NOT_SAFE_SOA:
+    case STATUS_INSUFFICIENT_DATA:
+        statistics->not_safe_both_count++;
+        break;
     default: break;
     }
 

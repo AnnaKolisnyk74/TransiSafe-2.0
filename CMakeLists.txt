@@ -20,6 +20,9 @@ set(TRANSISAFE_CORE_SOURCES
 add_library(transisafe_core STATIC ${TRANSISAFE_CORE_SOURCES})
 target_include_directories(transisafe_core PUBLIC src)
 target_compile_features(transisafe_core PUBLIC c_std_11)
+if(NOT MSVC)
+    target_link_libraries(transisafe_core PUBLIC m)
+endif()
 
 add_executable(transisafe src/main.c)
 target_link_libraries(transisafe PRIVATE transisafe_core)
@@ -44,4 +47,6 @@ if(BUILD_TESTING)
         target_compile_options(transisafe_unit_tests PRIVATE -Wall -Wextra -Wpedantic)
     endif()
     add_test(NAME transisafe_unit_tests COMMAND transisafe_unit_tests)
+    set_tests_properties(transisafe_unit_tests PROPERTIES
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 endif()

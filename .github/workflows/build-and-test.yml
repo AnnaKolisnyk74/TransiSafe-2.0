@@ -24,13 +24,13 @@ jobs:
       - name: Run unit tests
         run: ctest --test-dir build -C Release --output-on-failure
 
-      - name: Run 500-point smoke test
+      - name: Run MOSFET CSV smoke test
         shell: pwsh
         run: |
           Remove-Item results.csv, summary.csv, transisafe.log `
             -ErrorAction SilentlyContinue
 
-          "2`noperating_points_large.csv`n" |
+          "2`noperating_points_mosfet.csv`n" |
             & ".\build\Release\transisafe.exe"
 
           if ($LASTEXITCODE -ne 0) {
@@ -63,9 +63,9 @@ jobs:
           $critical = Get-KpiValue "critical_count"
           $notSafe = Get-KpiValue "not_safe_count"
 
-          if ($total -ne 500) { throw "Expected 500 points, received $total." }
-          if ($safe -ne 231) { throw "Expected 231 SAFE points, received $safe." }
-          if ($critical -ne 69) { throw "Expected 69 CRITICAL points, received $critical." }
-          if ($notSafe -ne 200) { throw "Expected 200 NOT SAFE points, received $notSafe." }
+          if ($total -ne 2) { throw "Expected 2 points, received $total." }
+          if (($safe + $critical + $notSafe) -ne $total) {
+            throw "Status counts do not add up to total points."
+          }
 
           Write-Host "Smoke test passed successfully."

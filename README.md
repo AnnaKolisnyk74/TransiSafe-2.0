@@ -1,5 +1,11 @@
 # TransiSafe 2.0
 
+> **Phase 1 MOSFET core is in active development.** The analysis engine now has
+> data structures and calculations for SOA curves, transient thermal impedance,
+> linear and switching losses, thermal paths, safety factors, and datasheet
+> provenance. See [`docs/PHASE_1_MOSFET_CORE.md`](docs/PHASE_1_MOSFET_CORE.md).
+> The bundled `ENGINEERING_FIXTURE` is synthetic test data, not a real device.
+
 <p align="center">
   <a href="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml"><img src="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml/badge.svg" alt="Windows Build and Test"></a>
   <img src="https://img.shields.io/badge/C-C11-A8B9CC?logo=c&logoColor=white" alt="C11">

@@ -1,4 +1,5 @@
-﻿transistor_id;type;pmax;rthja;tjmax
-DEMO_BJT_01;BJT;10;50;150
-DEMO_MOSFET_01;MOSFET;10;40;150
-DEMO_MOSFET_02;MOSFET;20;25;175
+transistor_id;type;vds_max;id_continuous_max;id_pulse_max;id_pulse_duration_max_s;tj_max;rth_jc;rth_ja;gate_charge_c;datasheet_url;datasheet_revision;retrieved_date
+# Synthetic engine-validation fixture; never use for a hardware design.
+ENGINEERING_FIXTURE;MOSFET;60;80;160;0.0001;175;1.2;50;0.00000008;https://example.invalid/engineering-fixture;SYNTHETIC-NOT-FOR-DESIGN;2026-08-15
+PSMN1R4-100ASE;MOSFET;100;340;2186;0.00001;175;0.16;58;0.000000366;https://assets.nexperia.com/documents/data-sheet/PSMN1R4-100ASE.pdf;20-OCT-2025;2026-08-15
+CSD19536KTT;MOSFET;100;200;400;0.0001;175;0.4;62;0.000000153;https://www.ti.com/lit/ds/symlink/csd19536ktt.pdf;SLPS540C-MAY-2025;2026-08-15

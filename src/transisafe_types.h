@@ -47,6 +47,8 @@ typedef struct {
     double id_max;
     double id_pulse_max;
     double id_pulse_duration_max_s;
+    double id_pulse_duty_max;
+    double soa_reference_temperature_c;
     double t_j_max;
     double rth_jc;
     double rth_ja;
@@ -128,6 +130,8 @@ typedef struct {
     double processing_time_ms;
     int safe_count, critical_count, not_safe_power_count;
     int not_safe_temperature_count, not_safe_both_count;
+    int not_safe_voltage_count, not_safe_current_count, not_safe_soa_count;
+    int insufficient_data_count;
     double sum_tj, max_tj;
     int max_tj_index;
     char max_tj_transistor_id[ID_SIZE];

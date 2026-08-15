@@ -98,12 +98,10 @@ void update_statistics(
         statistics->not_safe_temperature_count++;
         break;
     case STATUS_NOT_SAFE_BOTH: statistics->not_safe_both_count++; break;
-    case STATUS_NOT_SAFE_VOLTAGE:
-    case STATUS_NOT_SAFE_CURRENT:
-    case STATUS_NOT_SAFE_SOA:
-    case STATUS_INSUFFICIENT_DATA:
-        statistics->not_safe_both_count++;
-        break;
+    case STATUS_NOT_SAFE_VOLTAGE: statistics->not_safe_voltage_count++; break;
+    case STATUS_NOT_SAFE_CURRENT: statistics->not_safe_current_count++; break;
+    case STATUS_NOT_SAFE_SOA: statistics->not_safe_soa_count++; break;
+    case STATUS_INSUFFICIENT_DATA: statistics->insufficient_data_count++; break;
     default: break;
     }
 
@@ -139,28 +137,39 @@ int total_not_safe_count(const StatisticsResult* statistics)
 {
     return statistics->not_safe_power_count +
         statistics->not_safe_temperature_count +
-        statistics->not_safe_both_count;
+        statistics->not_safe_both_count +
+        statistics->not_safe_voltage_count +
+        statistics->not_safe_current_count +
+        statistics->not_safe_soa_count +
+        statistics->insufficient_data_count;
 }
 
 static const char* most_frequent_failure_reason(
     const StatisticsResult* statistics)
 {
-    int power = statistics->not_safe_power_count;
-    int temperature = statistics->not_safe_temperature_count;
-    int both = statistics->not_safe_both_count;
-    int maximum = power;
-
-    if (temperature > maximum) maximum = temperature;
-    if (both > maximum) maximum = both;
-    if (maximum == 0) return "NONE";
-    if ((power == maximum && temperature == maximum) ||
-        (power == maximum && both == maximum) ||
-        (temperature == maximum && both == maximum)) {
-        return "TIE";
+    const int counts[] = {
+        statistics->not_safe_power_count,
+        statistics->not_safe_temperature_count,
+        statistics->not_safe_both_count,
+        statistics->not_safe_voltage_count,
+        statistics->not_safe_current_count,
+        statistics->not_safe_soa_count,
+        statistics->insufficient_data_count
+    };
+    const char* reasons[] = {
+        "POWER", "TEMPERATURE", "POWER_AND_TEMPERATURE", "VDS_LIMIT",
+        "ID_LIMIT", "SOA_LIMIT", "MISSING_REQUIRED_DATA"
+    };
+    int i, maximum = 0, maximum_index = -1, ties = 0;
+    for (i = 0; i < (int)(sizeof(counts) / sizeof(counts[0])); ++i) {
+        if (counts[i] > maximum) {
+            maximum = counts[i]; maximum_index = i; ties = 1;
+        } else if (counts[i] == maximum && maximum > 0) {
+            ties++;
+        }
     }
-    if (power == maximum) return "POWER";
-    if (temperature == maximum) return "TEMPERATURE";
-    return "POWER_AND_TEMPERATURE";
+    if (maximum_index < 0) return "NONE";
+    return ties > 1 ? "TIE" : reasons[maximum_index];
 }
 
 void print_statistics(const StatisticsResult* statistics)
@@ -185,6 +194,14 @@ void print_statistics(const StatisticsResult* statistics)
         percentage(statistics->critical_count, statistics->total_count));
     printf("NOT-SAFE-Anteil:                %.2f %%\n",
         percentage(not_safe_count, statistics->total_count));
+    printf("  davon VDS-Grenze:             %d\n",
+        statistics->not_safe_voltage_count);
+    printf("  davon ID-Grenze:              %d\n",
+        statistics->not_safe_current_count);
+    printf("  davon SOA-Grenze:             %d\n",
+        statistics->not_safe_soa_count);
+    printf("  davon fehlende Daten:         %d\n",
+        statistics->insufficient_data_count);
     printf("Durchschnittliche Tj:           %.2f gradC\n",
         statistics->sum_tj / statistics->total_count);
     printf("Hoechste Tj:                    %.2f gradC\n", statistics->max_tj);
@@ -271,6 +288,14 @@ int write_summary_csv(
         not_safe_count);
     write_summary_numeric(file, "overall", "ALL", "not_safe_percent",
         percentage(not_safe_count, statistics->total_count));
+    write_summary_numeric(file, "overall", "ALL", "not_safe_voltage_count",
+        statistics->not_safe_voltage_count);
+    write_summary_numeric(file, "overall", "ALL", "not_safe_current_count",
+        statistics->not_safe_current_count);
+    write_summary_numeric(file, "overall", "ALL", "not_safe_soa_count",
+        statistics->not_safe_soa_count);
+    write_summary_numeric(file, "overall", "ALL", "insufficient_data_count",
+        statistics->insufficient_data_count);
 
     if (statistics->total_count > 0) {
         write_summary_numeric(file, "overall", "ALL", "average_tj_c",

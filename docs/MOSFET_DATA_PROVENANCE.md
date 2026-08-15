@@ -19,7 +19,10 @@ certification of the device or of a hardware design.
   intersections and potentially worse at intersections. Values were rounded in
   the conservative direction where the graph was ambiguous.
 - SOA basis: stored curves are the solid black `Tmb = 25 C` curves. Additional
-  engine derating does not replace the manufacturer's `Tmb = 125 C` curves.
+  hot-temperature operation is reported as `INSUFFICIENT_DATA` until the
+  manufacturer's `Tmb = 125 C` curves are stored and independently checked.
+- Pulsed-current duty limit: no independently verified duty condition is stored,
+  so the engine does not use the 2186 A rating above the continuous-current limit.
 
 ## CSD19536KTT
 

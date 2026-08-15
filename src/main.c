@@ -1,4 +1,5 @@
 #include "analysis.h"
+#include "common.h"
 #include "config.h"
 #include "csv_io.h"
 #include "database.h"
@@ -25,7 +26,9 @@ static int run_interactive(const AppConfig* config,
         !find_transistor_by_id(database, id, &p.model)) return 1;
     printf("Modus [LINEAR/SWITCHING]: ");
     if (scanf("%15s", mode) != 1) return 1;
-    p.mode = strcmp(mode, "SWITCHING") == 0 ? MODE_SWITCHING : MODE_LINEAR;
+    if (text_equals_ignore_case(mode, "SWITCHING")) p.mode = MODE_SWITCHING;
+    else if (text_equals_ignore_case(mode, "LINEAR")) p.mode = MODE_LINEAR;
+    else return 1;
     if (!read_value("VDS [V]: ", &p.vds) ||
         !read_value("ID [A]: ", &p.id) ||
         !read_value("Pulsdauer [s]: ", &p.pulse_duration_s) ||
@@ -33,8 +36,11 @@ static int run_interactive(const AppConfig* config,
         !read_value("Tastverhaeltnis [0..1]: ", &p.duty_cycle)) return 1;
     printf("Temperaturbezug [AMBIENT/CASE]: ");
     if (scanf("%15s", temp_ref) != 1) return 1;
-    p.temperature_reference = strcmp(temp_ref, "CASE") == 0 ?
-        TEMPERATURE_CASE : TEMPERATURE_AMBIENT;
+    if (text_equals_ignore_case(temp_ref, "CASE"))
+        p.temperature_reference = TEMPERATURE_CASE;
+    else if (text_equals_ignore_case(temp_ref, "AMBIENT"))
+        p.temperature_reference = TEMPERATURE_AMBIENT;
+    else return 1;
     if (!read_value("Referenztemperatur [C]: ", &p.reference_temperature_c) ||
         !read_value("RthCS [K/W]: ", &p.rth_cs) ||
         !read_value("RthSA [K/W]: ", &p.rth_sa) ||

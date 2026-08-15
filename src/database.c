@@ -49,22 +49,23 @@ int load_transistor_database(const char* file_path,
 {
     FILE* file;
     char line[CSV_LINE_SIZE];
-    int line_number = 0;
+    int line_number = 0, errors = 0;
     if (!database) return 0;
     database->count = 0;
     file = fopen(file_path, "r");
     if (!file) return 0;
 
     while (fgets(line, sizeof(line), file)) {
-        char* fields[14];
+        char* fields[16];
         int count;
         TransistorModel model = {0};
         line_number++;
         trim_text(line);
         if (!line[0] || line[0] == '#' || strstr(line, "transistor_id")) continue;
-        count = split_delimited(line, detect_delimiter(line), fields, 14);
-        if (count != 13 || database->count >= MAX_TRANSISTORS) {
+        count = split_delimited(line, detect_delimiter(line), fields, 16);
+        if (count != 15 || database->count >= MAX_TRANSISTORS) {
             write_log(LOG_ERROR, "Ungueltige MOSFET-Stammzeile %d", line_number);
+            errors++;
             continue;
         }
         trim_text(fields[1]);
@@ -74,22 +75,30 @@ int load_transistor_database(const char* file_path,
             !positive(fields[3], &model.id_max) ||
             !positive(fields[4], &model.id_pulse_max) ||
             !positive(fields[5], &model.id_pulse_duration_max_s) ||
-            !positive(fields[6], &model.t_j_max) ||
-            !positive(fields[7], &model.rth_jc) ||
-            !nonnegative(fields[8], &model.rth_ja) ||
-            !nonnegative(fields[9], &model.gate_charge_c) ||
-            !copy_text(model.datasheet_url, sizeof(model.datasheet_url), fields[10]) ||
-            !copy_text(model.datasheet_revision, sizeof(model.datasheet_revision), fields[11]) ||
-            !copy_text(model.retrieved_date, sizeof(model.retrieved_date), fields[12])) {
+            !nonnegative(fields[6], &model.id_pulse_duty_max) ||
+            model.id_pulse_duty_max > 1.0 ||
+            !parse_double_token(fields[7], &model.soa_reference_temperature_c) ||
+            !positive(fields[8], &model.t_j_max) ||
+            !positive(fields[9], &model.rth_jc) ||
+            !nonnegative(fields[10], &model.rth_ja) ||
+            !nonnegative(fields[11], &model.gate_charge_c) ||
+            !copy_text(model.datasheet_url, sizeof(model.datasheet_url), fields[12]) ||
+            !copy_text(model.datasheet_revision, sizeof(model.datasheet_revision), fields[13]) ||
+            !copy_text(model.retrieved_date, sizeof(model.retrieved_date), fields[14])) {
             write_log(LOG_ERROR, "Ungueltige MOSFET-Stammzeile %d", line_number);
+            errors++;
             continue;
         }
         model.type = TRANS_MOSFET;
-        if (find_mutable(database, model.transistor_id)) continue;
+        if (find_mutable(database, model.transistor_id)) {
+            write_log(LOG_ERROR, "Doppelte MOSFET-ID in Stammzeile %d", line_number);
+            errors++;
+            continue;
+        }
         database->models[database->count++] = model;
     }
     fclose(file);
-    return database->count > 0;
+    return database->count > 0 && errors == 0;
 }
 
 static ParameterizedCurve* find_or_add_curve(ParameterizedCurve* curves,
@@ -134,11 +143,33 @@ static void sort_parameterized_curves(ParameterizedCurve* curves, int count)
         sort_points(curves[i].points, curves[i].count);
 }
 
+static int points_are_strictly_increasing(const CurvePoint* points, int count)
+{
+    int i;
+    if (count <= 0) return 0;
+    for (i = 1; i < count; ++i)
+        if (points[i].x <= points[i - 1].x) return 0;
+    return 1;
+}
+
+static int parameterized_curves_are_valid(const ParameterizedCurve* curves,
+    int count)
+{
+    int i;
+    if (count <= 0) return 0;
+    for (i = 0; i < count; ++i) {
+        if ((i > 0 && curves[i].parameter <= curves[i - 1].parameter) ||
+            !points_are_strictly_increasing(curves[i].points, curves[i].count))
+            return 0;
+    }
+    return 1;
+}
+
 int load_mosfet_curves(const char* file_path, TransistorDatabase* database)
 {
     FILE* file = fopen(file_path, "r");
     char line[CSV_LINE_SIZE];
-    int loaded = 0;
+    int loaded = 0, errors = 0, line_number = 0;
     if (!file || !database) return 0;
     while (fgets(line, sizeof(line), file)) {
         char* f[6];
@@ -146,19 +177,36 @@ int load_mosfet_curves(const char* file_path, TransistorDatabase* database)
         int count;
         TransistorModel* model;
         ParameterizedCurve* curve = NULL;
+        line_number++;
         trim_text(line);
         if (!line[0] || line[0] == '#' || strstr(line, "curve_type")) continue;
         count = split_delimited(line, detect_delimiter(line), f, 6);
         if (count != 5 || !nonnegative(f[2], &parameter) ||
-            !positive(f[3], &x) || !positive(f[4], &y)) continue;
+            !parse_double_token(f[3], &x) || !positive(f[4], &y)) {
+            write_log(LOG_ERROR, "Ungueltige MOSFET-Kurvenzeile %d", line_number);
+            errors++;
+            continue;
+        }
         model = find_mutable(database, f[0]);
-        if (!model) continue;
+        if (!model) {
+            write_log(LOG_ERROR, "Unbekannte MOSFET-ID in Kurvenzeile %d",
+                line_number);
+            errors++;
+            continue;
+        }
         trim_text(f[1]);
         if (text_equals_ignore_case(f[1], "RDS_ON")) {
-            if (model->rds_on_curve_count >= MAX_CURVE_POINTS) continue;
+            if (model->rds_on_curve_count >= MAX_CURVE_POINTS) {
+                errors++;
+                continue;
+            }
             model->rds_on_curve[model->rds_on_curve_count++] =
                 (CurvePoint){x, y};
             loaded++;
+            continue;
+        }
+        if (x <= 0.0) {
+            errors++;
             continue;
         }
         if (text_equals_ignore_case(f[1], "SOA"))
@@ -167,7 +215,10 @@ int load_mosfet_curves(const char* file_path, TransistorDatabase* database)
         else if (text_equals_ignore_case(f[1], "ZTH_JC"))
             curve = find_or_add_curve(model->zth_curves,
                 &model->zth_curve_count, parameter);
-        if (!curve || curve->count >= MAX_CURVE_POINTS) continue;
+        if (!curve || curve->count >= MAX_CURVE_POINTS) {
+            errors++;
+            continue;
+        }
         curve->points[curve->count++] = (CurvePoint){x, y};
         loaded++;
     }
@@ -181,9 +232,19 @@ int load_mosfet_curves(const char* file_path, TransistorDatabase* database)
                 model->soa_curve_count);
             sort_parameterized_curves(model->zth_curves,
                 model->zth_curve_count);
+            if (!points_are_strictly_increasing(model->rds_on_curve,
+                    model->rds_on_curve_count) ||
+                !parameterized_curves_are_valid(model->soa_curves,
+                    model->soa_curve_count) ||
+                !parameterized_curves_are_valid(model->zth_curves,
+                    model->zth_curve_count)) {
+                write_log(LOG_ERROR, "Unvollstaendige oder mehrdeutige Kurvendaten fuer %s",
+                    model->transistor_id);
+                errors++;
+            }
         }
     }
-    return loaded > 0;
+    return loaded > 0 && errors == 0;
 }
 
 void print_transistor_database(const TransistorDatabase* database)

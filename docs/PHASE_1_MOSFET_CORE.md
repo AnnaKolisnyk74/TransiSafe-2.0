@@ -16,8 +16,10 @@ energies and gate-drive voltage may be zero only in linear mode.
 
 ## Device data and provenance
 
-MOSFET master data contains absolute voltage/current limits, `Tjmax`, `RthJC`,
-optional `RthJA`, gate charge, datasheet URL, revision and retrieval date.
+MOSFET master data contains absolute voltage/current limits, the maximum pulse
+duration and duty cycle associated with `IDM`, the temperature at which the
+stored SOA curves apply, `Tjmax`, `RthJC`, optional `RthJA`, gate charge,
+datasheet URL, revision and retrieval date.
 `mosfet_curves.csv` stores:
 
 - `RDS_ON`: temperature [C] to resistance [ohm]
@@ -27,8 +29,10 @@ optional `RthJA`, gate charge, datasheet URL, revision and retrieval date.
 SOA and transient thermal values are interpolated in logarithmic coordinates.
 An SOA curve parameter of `1e9` is the explicit DC sentinel; pulse durations
 longer than the last finite pulse curve use this DC boundary without blending.
-No extrapolated manufacturer claim is made outside the stored curve range; the
-nearest stored boundary is used conservatively and must be visible to a future UI.
+SOA voltage and pulse-duration requests outside the stored range use the nearest
+conservative boundary. Transient thermal duty cycle is not extrapolated: an
+unsupported duty cycle produces `INSUFFICIENT_DATA`. Continuous operation
+(`duty_cycle = 1`) uses steady-state `RthJC`.
 
 The included `ENGINEERING_FIXTURE` is synthetic and exists only for automated
 engine tests. It is not a real component and must never be used for hardware
@@ -54,14 +58,21 @@ Switching mode:
 - conduction loss: `ID^2 * RDS(on,T) * duty_cycle`
 - switching loss: `(Eon + Eoff) * frequency`
 - gate-drive loss: `Qg * Vgate * frequency`
+- peak junction rise combines conduction pulse power with `ZthJC`, average
+  switching/gate loss with `RthJC`, and all average device loss with the external
+  case-to-ambient path
 
 The safety factor scales electrical stress and calculated thermal rise.
 
 ## Decision rules
 
-The engine independently checks absolute `VDS`, absolute `ID`, interpolated and
-temperature-derated SOA, and calculated junction temperature. Missing mandatory
-curve or switching-loss data results in `INSUFFICIENT_DATA`, never `SAFE`.
+The engine independently checks absolute `VDS`, absolute `ID`, the duration and
+duty-cycle conditions of the pulsed-current rating, interpolated SOA, and
+calculated junction temperature. It does not invent a generic SOA temperature
+derating: if the estimated case/SOA reference temperature exceeds the stored SOA
+curve temperature, the result is `INSUFFICIENT_DATA`. A later dataset may add
+manufacturer-provided hot SOA curves. Missing mandatory curve or switching-loss
+data likewise results in `INSUFFICIENT_DATA`, never `SAFE`.
 
 This remains an engineering decision-support calculation. It is not a component
 qualification, certification, lifetime prediction, SPICE replacement, or proof

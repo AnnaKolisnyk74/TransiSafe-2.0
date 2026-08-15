@@ -18,13 +18,21 @@
 
 TransiSafe 2.0 is an independently developed portfolio project that combines electronics, C programming, data analysis, software testing, and management-oriented visualization.
 
-The application evaluates synthetic operating points of BJT and MOSFET transistor models. It calculates power dissipation, estimated junction temperature, power margin, and temperature margin. Each operating point is classified as `SAFE`, `CRITICAL`, or `NOT SAFE`. For critical and unsafe cases, the application also calculates possible current and voltage reductions.
+The current Phase 1 application evaluates MOSFET operating points in linear and
+switching modes. It checks absolute voltage/current limits, SOA data, transient
+thermal impedance, the thermal path, and conduction/switching/gate losses. BJT
+analysis is intentionally outside the active Phase 1 core.
 
 > [!IMPORTANT]
-> The included transistor models and operating points are synthetic demonstration data. This project is intended for learning and portfolio purposes and must not be used to validate or certify real safety-critical electronic systems.
+> The engineering fixture is synthetic. The two reference MOSFET datasets are
+> development data with source provenance, but their digitized curves are not yet
+> independently verified for production use.
 
 > [!NOTE]
-> **Model scope:** TransiSafe 2.0 implements a simplified thermal and power-based operating-point assessment. It does not reproduce the complete manufacturer-defined Safe Operating Area (SOA) curve of a real semiconductor device. A full SOA assessment can additionally include voltage and current limits, pulse duration, transient thermal impedance, secondary breakdown, package limits, and other manufacturer-specific constraints.
+> **Model scope:** The MOSFET core now evaluates stored SOA and transient thermal
+> curves. It remains engineering decision support, not qualification,
+> certification, lifetime prediction, or a replacement for datasheet and lab
+> validation.
 
 ## Power BI views
 
@@ -102,20 +110,20 @@ flowchart LR
 - automated unit tests for core calculations and boundary conditions
 - documented test catalog covering valid, invalid, mixed, and extreme inputs
 
-## Calculation model
+## Current Phase 1 calculation model
 
-The core demonstration model uses the following relationships:
+Linear operation uses `VDS × ID`, duty cycle, interpolated SOA, and `ZthJC`.
+Switching operation combines `ID² × RDS(on,T)`, `(Eon + Eoff) × frequency`,
+and `Qg × Vgate × frequency`. A point is admissible only when its voltage,
+current-rating conditions, SOA data, and junction-temperature calculation all
+pass. Unsupported curve temperature or transient-duty data produces
+`INSUFFICIENT_DATA` rather than `SAFE`.
 
-- power dissipation: `P_loss = voltage × current`
-- estimated junction temperature: `T_j = T_amb + P_loss × R_thJA`
-- power margin: `P_max − P_loss`
-- temperature margin: `T_j,max − T_j`
+## Legacy demonstration results
 
-The application compares both the electrical power limit and the simplified thermal power limit when determining the limiting factor.
-
-## Demonstration results
-
-The documented scalability test processed 500 synthetic operating points.
+Before the Phase 1 MOSFET refactor, the documented scalability test processed
+500 synthetic operating points. These figures are retained as project history
+and must not be interpreted as validation of the current MOSFET engine.
 
 | KPI | Result |
 |---|---:|
@@ -231,7 +239,9 @@ Run all registered unit tests with:
 ctest --test-dir build -C Release --output-on-failure
 ```
 
-GitHub Actions runs both the unit-test suite and the full 500-point smoke test on Windows.
+GitHub Actions runs the MOSFET unit-test suite and a two-device CSV integration
+smoke test on Windows. The 500-point figures above describe the legacy
+demonstration dataset and are not Phase 1 MOSFET validation results.
 
 </details>
 

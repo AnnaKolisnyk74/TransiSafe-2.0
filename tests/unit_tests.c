@@ -1,5 +1,6 @@
 #include "analysis.h"
 #include "database.h"
+#include "statistics.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +17,8 @@ static TransistorModel model(void)
     TransistorModel m = {0};
     m.type = TRANS_MOSFET; m.vds_max = 60; m.id_max = 80;
     m.id_pulse_max = 160; m.id_pulse_duration_max_s = .0001;
+    m.id_pulse_duty_max = .01;
+    m.soa_reference_temperature_c = 25;
     m.t_j_max = 175; m.rth_jc = 1.2; m.rth_ja = 50;
     m.gate_charge_c = 80e-9;
     m.rds_on_curve[0] = (CurvePoint){25, .008};
@@ -51,6 +54,9 @@ int main(void)
     TransistorDatabase* db;
     const TransistorModel* real_model;
 
+    check(analyze_operating_point(NULL, &config).status ==
+        STATUS_INSUFFICIENT_DATA, "null operating point is rejected safely");
+
     db = malloc(sizeof(*db));
     check(db != NULL, "allocate MOSFET database on heap");
     if (db == NULL) return EXIT_FAILURE;
@@ -83,10 +89,24 @@ int main(void)
 
     close_to(interpolate_rds_on(&m, 75), .012, 1e-12,
         "linear RDS(on) interpolation");
+    {
+        TransistorModel cold_model = m;
+        cold_model.rds_on_curve[0] = (CurvePoint){-40, .006};
+        cold_model.rds_on_curve[1] = (CurvePoint){25, .008};
+        close_to(interpolate_rds_on(&cold_model, -7.5), .007, 1e-12,
+            "RDS(on) interpolation supports negative temperatures");
+        cold_model.rds_on_curve[1].x = -40;
+        check(interpolate_rds_on(&cold_model, -40) < 0.0,
+            "duplicate curve coordinates are rejected");
+    }
     close_to(interpolate_soa_current(&m, .001, 10), 20, 1e-12,
         "SOA endpoint");
     close_to(interpolate_zth_jc(&m, .1, .001), .25, 1e-12,
         "Zth endpoint");
+    check(interpolate_zth_jc(&m, .2, .001) < 0.0,
+        "reject unsupported Zth duty cycle");
+    close_to(interpolate_zth_jc(&m, 1.0, .001), m.rth_jc, 1e-12,
+        "continuous operation uses steady-state RthJC");
 
     r = analyze_operating_point(&p, &config);
     close_to(r.conduction_loss_w, 1.0, 1e-12,
@@ -95,9 +115,26 @@ int main(void)
         "linear pulse junction temperature");
     check(r.status == STATUS_SAFE, "safe linear point");
 
-    p.id = 30;
+    p.reference_temperature_c = 50;
+    r = analyze_operating_point(&p, &config);
+    check(r.status == STATUS_INSUFFICIENT_DATA,
+        "do not invent SOA derating above the stored curve temperature");
+
+    p = linear_point(&m); p.id = 100; p.pulse_duration_s = .0001;
+    p.duty_cycle = .02;
+    r = analyze_operating_point(&p, &config);
+    check(!r.safe_current, "pulsed current requires permitted duty cycle");
+
+    p = linear_point(&m); p.id = 30;
     r = analyze_operating_point(&p, &config);
     check(r.status == STATUS_NOT_SAFE_SOA, "SOA violation");
+    {
+        OptimizationResult optimization = calculate_optimization(&p, &r);
+        check(optimization.max_voltage_v < m.vds_max,
+            "voltage recommendation respects SOA, not only VDSmax");
+        check(optimization.max_current_a < m.id_max,
+            "current recommendation respects SOA and temperature");
+    }
 
     p = linear_point(&m); p.vds = 61;
     r = analyze_operating_point(&p, &config);
@@ -115,6 +152,41 @@ int main(void)
     r = analyze_operating_point(&p, &config);
     check(r.status == STATUS_INSUFFICIENT_DATA,
         "missing switching energies are explicit");
+
+    {
+        OperatingPoint pulse_point = {0};
+        AnalysisResult pulse_result;
+        check(find_transistor_by_id(db, "CSD19536KTT", &real_model),
+            "find TI reference MOSFET");
+        pulse_point.model = real_model;
+        pulse_point.vds = 1; pulse_point.id = 390;
+        pulse_point.mode = MODE_LINEAR; pulse_point.pulse_duration_s = 10e-6;
+        pulse_point.duty_cycle = 1;
+        pulse_point.temperature_reference = TEMPERATURE_CASE;
+        pulse_point.reference_temperature_c = 25;
+        pulse_point.safety_factor = 1;
+        pulse_result = analyze_operating_point(&pulse_point, &config);
+        check(pulse_result.status == STATUS_NOT_SAFE_CURRENT,
+            "TI 400 A pulse limit is unavailable above one percent duty");
+        close_to(pulse_result.zth_jc_k_per_w, real_model->rth_jc, 1e-12,
+            "DC thermal boundary does not clamp to 50 percent Zth");
+        close_to(pulse_result.t_j, 181, 1e-9,
+            "DC linear point uses steady-state RthJC");
+    }
+
+    {
+        StatisticsResult statistics;
+        OperatingPoint stats_point = linear_point(&m);
+        AnalysisResult stats_result = analyze_operating_point(&stats_point,
+            &config);
+        initialize_statistics(&statistics);
+        stats_result.status = STATUS_NOT_SAFE_SOA;
+        update_statistics(&statistics, 1, &stats_point, &stats_result);
+        check(statistics.not_safe_soa_count == 1,
+            "SOA failures have a dedicated statistics category");
+        check(statistics.not_safe_both_count == 0,
+            "SOA failures are not reported as power and temperature");
+    }
 
     free(db);
     if (failures) return EXIT_FAILURE;

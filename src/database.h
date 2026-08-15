@@ -12,6 +12,10 @@ int load_transistor_database(
     const char* file_path,
     TransistorDatabase* database);
 
+int load_mosfet_curves(
+    const char* file_path,
+    TransistorDatabase* database);
+
 void print_transistor_database(const TransistorDatabase* database);
 
 #endif

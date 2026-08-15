@@ -48,15 +48,19 @@ int main(void)
     AppConfig config = {10, 10, "", "", "", "", ""};
     OperatingPoint p = linear_point(&m);
     AnalysisResult r;
-    TransistorDatabase db;
+    TransistorDatabase* db;
     const TransistorModel* real_model;
 
-    check(load_transistor_database("transistors.csv", &db),
+    db = malloc(sizeof(*db));
+    check(db != NULL, "allocate MOSFET database on heap");
+    if (db == NULL) return EXIT_FAILURE;
+
+    check(load_transistor_database("transistors.csv", db),
         "load MOSFET master data");
-    check(load_mosfet_curves("mosfet_curves.csv", &db),
+    check(load_mosfet_curves("mosfet_curves.csv", db),
         "load MOSFET curve data");
-    check(db.count == 3, "fixture plus two real MOSFETs loaded");
-    check(find_transistor_by_id(&db, "PSMN1R4-100ASE", &real_model),
+    check(db->count == 3, "fixture plus two real MOSFETs loaded");
+    check(find_transistor_by_id(db, "PSMN1R4-100ASE", &real_model),
         "find Nexperia reference MOSFET");
     check(real_model->id_pulse_max == 2186,
         "preserve separate pulsed current limit");
@@ -112,6 +116,7 @@ int main(void)
     check(r.status == STATUS_INSUFFICIENT_DATA,
         "missing switching energies are explicit");
 
+    free(db);
     if (failures) return EXIT_FAILURE;
     puts("All TransiSafe MOSFET core tests passed.");
     return EXIT_SUCCESS;

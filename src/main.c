@@ -5,6 +5,7 @@
 #include "logging.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static int read_value(const char* prompt, double* value)
@@ -54,19 +55,33 @@ static int run_interactive(const AppConfig* config,
 int main(void)
 {
     AppConfig config;
-    TransistorDatabase database;
+    TransistorDatabase* database;
     int mode;
+    int result;
+
+    database = malloc(sizeof(*database));
+    if (database == NULL) {
+        printf("Nicht genug Speicher fuer die MOSFET-Datenbank.\n");
+        return 1;
+    }
+
     load_config(CONFIG_FILE_PATH, &config);
     logging_set_path(config.log_file_path);
-    if (!load_transistor_database(config.transistor_database_path, &database) ||
-        !load_mosfet_curves(config.curve_database_path, &database)) {
+    if (!load_transistor_database(config.transistor_database_path, database) ||
+        !load_mosfet_curves(config.curve_database_path, database)) {
         printf("MOSFET-Stamm- oder Kurvendaten konnten nicht geladen werden.\n");
+        free(database);
         return 1;
     }
     printf("TransiSafe MOSFET Analysis Core\n");
-    print_transistor_database(&database);
+    print_transistor_database(database);
     printf("1) Einzelanalyse\n2) CSV-Analyse\nModus: ");
-    if (scanf("%d", &mode) != 1) return 1;
-    return mode == 1 ? run_interactive(&config, &database) :
-        (mode == 2 ? run_csv_mode(&config, &database) : 1);
+    if (scanf("%d", &mode) != 1) {
+        free(database);
+        return 1;
+    }
+    result = mode == 1 ? run_interactive(&config, database) :
+        (mode == 2 ? run_csv_mode(&config, database) : 1);
+    free(database);
+    return result;
 }

@@ -13,6 +13,13 @@ x86/
 # Build artifacts
 *.exe
 *.out
+build/
+web/node_modules/
+web/dist/
+*.tsbuildinfo
+api/.venv/
+__pycache__/
+*.pyc
 
 # Runtime files
 *.log

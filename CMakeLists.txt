@@ -27,13 +27,18 @@ endif()
 add_executable(transisafe src/main.c)
 target_link_libraries(transisafe PRIVATE transisafe_core)
 
+add_executable(transisafe_json src/json_main.c)
+target_link_libraries(transisafe_json PRIVATE transisafe_core)
+
 if(MSVC)
     target_compile_definitions(transisafe_core PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_options(transisafe_core PRIVATE /W4)
     target_compile_options(transisafe PRIVATE /W4)
+    target_compile_options(transisafe_json PRIVATE /W4)
 else()
     target_compile_options(transisafe_core PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(transisafe PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(transisafe_json PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 include(CTest)

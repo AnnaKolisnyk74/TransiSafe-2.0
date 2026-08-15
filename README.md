@@ -6,6 +6,12 @@
 > provenance. See [`docs/PHASE_1_MOSFET_CORE.md`](docs/PHASE_1_MOSFET_CORE.md).
 > The bundled `ENGINEERING_FIXTURE` is synthetic test data, not a real device.
 
+> **Phase 2 web foundation:** `transisafe_json` exposes the native C calculation
+> as structured JSON, `api/` provides a validated FastAPI adapter, and `web/`
+> contains the React/TypeScript analysis interface. Engineering calculations are
+> not reimplemented in the browser. See
+> [`docs/PHASE_2_WEB_APP.md`](docs/PHASE_2_WEB_APP.md).
+
 <p align="center">
   <a href="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml"><img src="https://github.com/AnnaKolisnyk74/TransiSafe-2.0/actions/workflows/build-and-test.yml/badge.svg" alt="Windows Build and Test"></a>
   <img src="https://img.shields.io/badge/C-C11-A8B9CC?logo=c&logoColor=white" alt="C11">
@@ -69,6 +75,35 @@ flowchart TD
     B --> E[Results and KPI exports]
     E --> F[Power BI dashboard]
 ```
+
+## Run the Phase 2 web app locally
+
+Build the native engine:
+
+```sh
+cmake -S . -B build -A x64
+cmake --build build --config Release --target transisafe_json
+```
+
+Start the API in a second terminal:
+
+```sh
+python -m venv api/.venv
+source api/.venv/Scripts/activate
+pip install -r api/requirements.txt
+uvicorn api.main:app --reload --port 8000
+```
+
+Start the browser interface in a third terminal:
+
+```sh
+cd web
+npm install
+npm run dev
+```
+
+Open the address printed by Vite. The API documentation is available at
+`http://localhost:8000/docs`.
 
 ## Software architecture
 

@@ -38,7 +38,7 @@ export function AnalysisResult({ result, input, model, soaCurves, savedName, onS
     <div className="result-main-grid engineering-visuals">
       <SOAChart curves={soaCurves} input={input} result={result}/>
       <LossBreakdown result={result}/>
-      <ThermalPathCompact result={result} input={input} model={model}/>
+      <ThermalPathCompact result={result} input={input} model={model} onDetails={() => setDetailsOpen(true)}/>
     </div>
     {meta.tone === "incomplete" && <div className="incomplete-notice"><CircleAlert size={17}/><div><b>Technische Unsicherheit wird nicht als Sicherheit dargestellt.</b><span>Für diesen Betriebspunkt wurde keine SAFE-Klassifikation ausgegeben.</span></div></div>}
     <div className="result-actions-row"><button type="button" onClick={onSave}><Save size={15}/>{savedName ? `Speichern · ${savedName}` : "Analyse speichern"}</button>{savedName&&<button type="button" onClick={onSaveAs}><Save size={15}/>Save As</button>}<ExportMenu input={input} result={result} name={savedName}/><button type="button" onClick={() => setDetailsOpen(true)}>Traceability & Details<ChevronRight size={15}/></button></div>

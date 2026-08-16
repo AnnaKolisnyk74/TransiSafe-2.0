@@ -1,6 +1,9 @@
+import { lazy, Suspense } from "react";
 import { Box, Cpu, Layers3, Shield, Thermometer, Waves } from "lucide-react";
 import type { AnalysisInput, AnalysisResponse, ModelSummary } from "../types";
 import { formatNumber } from "./format";
+
+const Package3DViewer = lazy(() => import("./package3d/Package3DViewer").then((module) => ({ default: module.Package3DViewer })));
 
 export function ThermalPathCompact({ result, input, model }: { result: AnalysisResponse; input: AnalysisInput; model: ModelSummary }) {
   const reserve = result.result.margins.thermal_reserve_percent;
@@ -17,7 +20,7 @@ export function ThermalPathCompact({ result, input, model }: { result: AnalysisR
       <article className="thermal-model-fact"><Layers3 size={19}/><span>Thermal model<small>{model.package_name}</small></span><strong title={`${model.id} · ${input.temperature_reference === "CASE" ? "Junction–Case" : "Junction–Ambient"}`}>{input.temperature_reference === "CASE" ? "Junction–Case" : "Junction–Ambient"}</strong></article>
     </div>
     <div className="thermal-stack" aria-label={`3D thermal model for ${model.id}`}>
-      <div className="thermal-stack-visual" aria-hidden="true"><i className="stack-chip"></i><i className="stack-attach"></i><i className="stack-frame"></i><i className="stack-case"></i><span className="heat-column"></span></div>
+      <Suspense fallback={<div className="package-viewer-loading">3D package loading…</div>}><Package3DViewer packageName={model.package_name} transistorId={model.id}/></Suspense>
       <div className="thermal-stack-copy"><span>3D THERMAL STACK · {model.package_name}</span><strong>{model.id}</strong><div><b>Silicon junction</b><i>Die attach</i><i>Leadframe / package</i><i>{input.temperature_reference === "CASE" ? "Case reference" : "Ambient path"}</i></div><small>RθJC {formatNumber(model.rth_jc_k_per_w, 2)} K/W · ZθJC {formatNumber(result.result.zth_jc_k_per_w, 2)} K/W</small></div>
     </div>
     <div className={`thermal-reserve ${reserve < 0 ? "reserve-critical" : ""}`}><div><span>Thermal reserve</span><b>{formatNumber(result.result.temperature_margin_c, 1)} K</b><strong>{formatNumber(reserve, 0)} %</strong></div><div className="reserve-track"><span style={{ width: `${Math.max(0, Math.min(100, reserve))}%` }}/></div><small>{formatNumber(result.result.tj_c, 1)} °C <em>{formatNumber(result.source.tj_max_c)} °C limit</em></small></div>

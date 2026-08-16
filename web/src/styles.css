@@ -71,7 +71,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
   border-bottom: 1px solid var(--line); background: rgba(255,255,255,.94); backdrop-filter: blur(14px);
 }
 .header-brand { display: flex; align-items: center; color: inherit; text-decoration: none; }
-.header-mark { width: 38px; height: 38px; margin-right: 10px; object-fit: contain; }
 .header-brand > span { display: grid; }
 .header-brand strong { font-size: 27px; letter-spacing: -.045em; }
 .header-brand strong > span { color: #0a6ed1; }
@@ -560,7 +559,6 @@ html[data-theme="dark"] .batch-tools>label, html[data-theme="dark"] .batch-tools
   .nav-toggle { display: none; }
   .application-frame { margin-left: 62px; }
   .header-brand small, .api-state, .header-actions > a { display: none; }
-  .header-mark { width: 30px; height: 30px; margin-right: 7px; }
   .header-brand strong { font-size: 19px; }
   .analyze-workspace { padding: 10px; }
   .workflow-grid, .result-graph-grid, .result-insight-grid, .result-main-grid, .result-bottom-strips, .margin-grid { grid-template-columns: 1fr; }

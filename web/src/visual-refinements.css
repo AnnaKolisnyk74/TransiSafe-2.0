@@ -190,7 +190,7 @@
 
 /* Legible component and thermal engineering values. */
 .component-limits > div { min-height: 25px; font-size: 10px; }
-.component-card { height: 390px; min-height: 390px; }
+.component-card { height: 430px; min-height: 430px; }
 .component-limits dt { font-size: 9px; }
 .component-limits dd { font-size: 10px; letter-spacing: .01em; }
 .component-inspector-layout { min-height: 161px; margin-top: 5px; display: grid; grid-template-columns: minmax(150px,1.18fr) minmax(120px,.82fr); align-items: start; gap: 9px; }
@@ -200,11 +200,13 @@
 .component-specification .component-identity .documented { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .component-specification .component-limits { margin-top: 5px; }
 .component-specification .component-limits > div { min-height: 22px; }
-.component-package-inspector .package-canvas { height: 160px; }
+.component-package-inspector .package-canvas { height: 198px; }
 .component-package-inspector .package-viewer-actions { top: 6px; right: auto; left: 6px; flex-direction: column; }
 .component-package-inspector .package-viewer-actions button.active { color: #fff; border-color: #168bff; background: #168bff; }
-.package-axis { width: 46px; height: 46px; position: absolute; z-index: 2; bottom: 12px; left: 8px; overflow: visible; pointer-events: none; }
+.package-axis { width: 58px; height: 58px; position: absolute; z-index: 2; bottom: 11px; left: 8px; overflow: visible; filter: drop-shadow(0 1px 1px rgba(255,255,255,.9)); pointer-events: none; }
 .package-axis line { stroke-width: 3; stroke-linecap: round; }
+.package-axis circle { fill: #334f68; }
+.package-axis marker path { fill: context-stroke; }
 .package-axis text { font: 700 8px/1 "IBM Plex Mono", monospace; }
 .package-axis .axis-x { fill: #d63b48; stroke: #d63b48; }
 .package-axis .axis-y { fill: #17945c; stroke: #17945c; }

@@ -280,6 +280,14 @@ html[data-theme="dark"] .thermal-stack-copy > span { color: var(--accent-bright)
 html[data-theme="dark"] .thermal-stack-copy > strong, html[data-theme="dark"] .thermal-stack-copy > small { color: var(--text-primary); }
 html[data-theme="dark"] .thermal-stack-copy > div > * { color: var(--text-secondary); border-color: var(--border-default); background: var(--surface-primary); }
 html[data-theme="dark"] .thermal-stack-copy > div > b { color: var(--status-critical); }
+html[data-theme="dark"] .package-inspector-modes button { color: var(--text-secondary); border-color: var(--border-default); background: var(--surface-primary); }
+html[data-theme="dark"] .package-inspector-modes button.active { color: var(--text-primary); border-color: var(--accent-primary); background: var(--accent-primary); }
+html[data-theme="dark"] .package-canvas { border-color: var(--border-default); background: radial-gradient(circle at 48% 35%,#17314d,#07111f); }
+html[data-theme="dark"] .package-viewer-loading { color: var(--text-muted); border-color: var(--border-default); }
+html[data-theme="dark"] .package-viewer-actions button { color: var(--text-secondary); border-color: var(--border-strong); background: rgba(16,32,51,.9); }
+html[data-theme="dark"] .package-viewer-actions button:hover { color: var(--accent-bright); border-color: var(--accent-primary); }
+html[data-theme="dark"] .package-canvas > small { color: var(--text-muted); }
+html[data-theme="dark"] .package-tooltip { color: var(--text-primary); border-color: var(--border-strong); background: rgba(16,32,51,.96); }
 
 html[data-theme="dark"] .analysis-error { color: var(--status-critical); background: rgba(255, 100, 124, .1); }
 html[data-theme="dark"] .incomplete-notice { color: var(--text-normal); border-color: var(--border-default); background: var(--surface-secondary); }

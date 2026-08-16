@@ -89,7 +89,7 @@ static int apply_config_value(
     }
 
     snprintf(error_message, error_message_size,
-        "Unbekannter Konfigurationsschluessel: %s", key);
+        "Unbekannter Konfigurationsschluessel: %.180s", key);
     return 0;
 }
 

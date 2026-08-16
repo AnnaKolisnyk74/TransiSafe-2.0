@@ -1,5 +1,6 @@
 export type Mode = "LINEAR" | "SWITCHING";
 export type TemperatureReference = "CASE" | "AMBIENT";
+export type EngineState = "checking" | "ready" | "offline";
 
 export interface ModelSummary {
   id: string;
@@ -8,10 +9,31 @@ export interface ModelSummary {
   id_continuous_max_a: number;
   id_pulse_max_a: number;
   tj_max_c: number;
+  rth_jc_k_per_w: number;
+  rds_on_25_ohm: number | null;
   datasheet_url: string;
   revision: string;
   retrieved_date: string;
+  manufacturer: string;
+  datasheet_type: string;
+  package_name: string;
+  product_url: string;
+  image_path: string;
   development_fixture: boolean;
+  verification_status: "REVIEW_PENDING" | "VERIFIED";
+  curve_status: string;
+}
+
+export interface SoaCurve {
+  pulse_duration_s: number;
+  points: { vds_v: number; id_a: number }[];
+}
+
+export interface SoaCurveResponse {
+  transistor_id: string;
+  curve_type: "SOA";
+  curves: SoaCurve[];
+  source: string;
 }
 
 export interface AnalysisInput {
@@ -34,7 +56,8 @@ export interface AnalysisInput {
 
 export interface AnalysisResponse {
   ok: true;
-  input: { transistor_id: string; mode: Mode; vds_v: number; id_a: number };
+  schema_version: string;
+  input: AnalysisInput;
   result: {
     status: string;
     reason: string;
@@ -48,8 +71,16 @@ export interface AnalysisResponse {
     power_margin_w: number;
     rds_on_ohm: number;
     soa_limit_a: number;
+    current_limit_a: number;
     zth_jc_k_per_w: number;
     electrical_utilization: number;
+    margins: {
+      voltage_reserve_percent: number;
+      current_reserve_percent: number;
+      soa_reserve_percent: number;
+      thermal_reserve_percent: number;
+    };
+    closest_constraint: { type: "VOLTAGE" | "CURRENT" | "SOA" | "TEMPERATURE"; reserve_percent: number };
     checks: Record<"voltage" | "current" | "soa" | "temperature", boolean>;
   };
   optimization: {
@@ -67,5 +98,31 @@ export interface AnalysisResponse {
     id_continuous_max_a: number;
     id_pulse_max_a: number;
     tj_max_c: number;
+    dataset_version: string;
+    engine_version: string;
+    application_version: string;
+    verification_status: "REVIEW_PENDING" | "VERIFIED";
+    curve_status: string;
+  };
+  analysis_metadata: {
+    timestamp: string;
+    engine_version: string;
+    dataset_version: string;
+    application_version: string;
+    warnings: string[];
+    assumptions: string[];
+    model_limitations: string[];
   };
 }
+
+export interface SavedAnalysis {
+  id: string;
+  name: string;
+  parent_id: string | null;
+  input: AnalysisInput;
+  result: AnalysisResponse;
+  created_at: string;
+  updated_at: string;
+}
+
+export type WorkspacePage = "analyze" | "batch" | "reports";

@@ -1,5 +1,5 @@
 transistor_id;vds;id;mode;pulse_s;frequency_hz;duty_cycle;temperature_reference;temperature_c;rth_cs;rth_sa;safety_factor;e_on_j;e_off_j;gate_drive_voltage_v
 CSD19536KTT;1;390;LINEAR;0.00001;0;1;CASE;25;0;0;1;0;0;0
-PSMN1R4-100ASE;101;1;LINEAR;0.01;0;0.02;CASE;25;0;0;1;0;0;0
-PSMN1R4-100ASE;48;30;LINEAR;0.01;0;0.02;CASE;25;0;0;1;0;0;0
-PSMN1R4-100ASE;10;1;LINEAR;0.01;0;0.02;CASE;50;0;0;1;0;0;0
+PSMN1R4-100ASEJ;101;1;LINEAR;0.01;0;0.02;CASE;25;0;0;1;0;0;0
+PSMN1R4-100ASEJ;48;30;LINEAR;0.01;0;0.02;CASE;25;0;0;1;0;0;0
+PSMN1R4-100ASEJ;10;1;LINEAR;0.01;0;0.02;CASE;50;0;0;1;0;0;0

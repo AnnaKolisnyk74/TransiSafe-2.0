@@ -92,11 +92,21 @@ int main(int argc, char** argv)
     result = analyze_operating_point(&point, &config);
     optimization = calculate_optimization(&point, &result);
 
-    fputs("{\"ok\":true,\"input\":{\"transistor_id\":", stdout);
+    fputs("{\"ok\":true,\"schema_version\":\"1.0\",\"input\":{\"transistor_id\":", stdout);
     print_json_string(point.model->transistor_id);
     fputs(",\"mode\":", stdout);
     print_json_string(point.mode == MODE_LINEAR ? "LINEAR" : "SWITCHING");
-    printf(",\"vds_v\":%.17g,\"id_a\":%.17g},", point.vds, point.id);
+    printf(",\"vds_v\":%.17g,\"id_a\":%.17g,\"pulse_duration_s\":%.17g,"
+           "\"frequency_hz\":%.17g,\"duty_cycle\":%.17g,"
+           "\"temperature_reference\":\"%s\",\"temperature_c\":%.17g,"
+           "\"rth_cs_k_per_w\":%.17g,\"rth_sa_k_per_w\":%.17g,"
+           "\"safety_factor\":%.17g,\"e_on_j\":%.17g,\"e_off_j\":%.17g,"
+           "\"gate_drive_voltage_v\":%.17g},", point.vds, point.id,
+        point.pulse_duration_s, point.frequency_hz, point.duty_cycle,
+        point.temperature_reference == TEMPERATURE_CASE ? "CASE" : "AMBIENT",
+        point.reference_temperature_c, point.rth_cs, point.rth_sa,
+        point.safety_factor, point.e_on_j, point.e_off_j,
+        point.gate_drive_voltage_v);
 
     fputs("\"result\":{\"status\":", stdout);
     print_json_string(status_to_string(result.status));
@@ -107,15 +117,24 @@ int main(int argc, char** argv)
            "\"p_gate_w\":%.17g,\"tj_c\":%.17g,"
            "\"temperature_margin_c\":%.17g,\"power_margin_w\":%.17g,"
            "\"rds_on_ohm\":%.17g,\"soa_limit_a\":%.17g,"
-           "\"zth_jc_k_per_w\":%.17g,\"electrical_utilization\":%.17g,"
-           "\"checks\":{\"voltage\":%s,\"current\":%s,\"soa\":%s,"
-           "\"temperature\":%s}},",
+           "\"current_limit_a\":%.17g,\"zth_jc_k_per_w\":%.17g,"
+           "\"electrical_utilization\":%.17g,"
+           "\"margins\":{\"voltage_reserve_percent\":%.17g,"
+           "\"current_reserve_percent\":%.17g,\"soa_reserve_percent\":%.17g,"
+           "\"thermal_reserve_percent\":%.17g},"
+           "\"closest_constraint\":{\"type\":",
         boolean_json(result.data_complete), result.p_loss,
         result.conduction_loss_w, result.switching_loss_w,
         result.gate_drive_loss_w, result.t_j, result.temperature_margin_c,
         result.power_margin_w, result.rds_on_ohm,
-        result.soa_current_limit_a, result.zth_jc_k_per_w,
-        result.electrical_utilization, boolean_json(result.safe_voltage),
+        result.soa_current_limit_a, result.current_limit_a,
+        result.zth_jc_k_per_w, result.electrical_utilization,
+        result.voltage_reserve_percent, result.current_reserve_percent,
+        result.soa_reserve_percent, result.thermal_reserve_percent);
+    print_json_string(result.closest_constraint);
+    printf(",\"reserve_percent\":%.17g},\"checks\":{\"voltage\":%s,"
+           "\"current\":%s,\"soa\":%s,\"temperature\":%s}},",
+        result.closest_reserve_percent, boolean_json(result.safe_voltage),
         boolean_json(result.safe_current), boolean_json(result.safe_soa),
         boolean_json(result.safe_temperature));
 
@@ -133,7 +152,11 @@ int main(int argc, char** argv)
     print_json_string(point.model->datasheet_revision);
     fputs(",\"retrieved_date\":", stdout);
     print_json_string(point.model->retrieved_date);
-    printf(",\"vds_max_v\":%.17g,\"id_continuous_max_a\":%.17g,"
+    printf(",\"dataset_version\":\"2.1\",\"engine_version\":\"2.1.0\","
+           "\"application_version\":\"2.1.0\","
+           "\"verification_status\":\"REVIEW_PENDING\","
+           "\"curve_status\":\"ENGINEERING_DIGITIZATION\","
+           "\"vds_max_v\":%.17g,\"id_continuous_max_a\":%.17g,"
            "\"id_pulse_max_a\":%.17g,\"tj_max_c\":%.17g}}\n",
         point.model->vds_max, point.model->id_max,
         point.model->id_pulse_max, point.model->t_j_max);

@@ -98,6 +98,13 @@ typedef struct {
     double rds_on_ohm;
     double zth_jc_k_per_w;
     double electrical_utilization;
+    double current_limit_a;
+    double voltage_reserve_percent;
+    double current_reserve_percent;
+    double soa_reserve_percent;
+    double thermal_reserve_percent;
+    double closest_reserve_percent;
+    char closest_constraint[32];
     int safe_power;
     int safe_temperature;
     int safe_voltage;

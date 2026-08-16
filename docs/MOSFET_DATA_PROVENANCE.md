@@ -3,9 +3,12 @@
 This file is part of the analysis input audit trail. A device row is not a
 certification of the device or of a hardware design.
 
-## PSMN1R4-100ASE
+## PSMN1R4-100ASEJ
 
 - Manufacturer: Nexperia
+- Orderable product number: `PSMN1R4-100ASEJ`. The engineering limits and
+  curves use the manufacturer's `PSMN1R4-100ASE` product data sheet; the `J`
+  suffix identifies the commercial ordering variant listed by the distributor.
 - Intended reference use: enhanced-SOA linear operation / hot swap
 - Source: <https://assets.nexperia.com/documents/data-sheet/PSMN1R4-100ASE.pdf>
 - Source revision: product data sheet dated 20 October 2025

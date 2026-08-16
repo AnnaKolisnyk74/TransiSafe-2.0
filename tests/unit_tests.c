@@ -66,7 +66,7 @@ int main(void)
     check(load_mosfet_curves("mosfet_curves.csv", db),
         "load MOSFET curve data");
     check(db->count == 3, "fixture plus two real MOSFETs loaded");
-    check(find_transistor_by_id(db, "PSMN1R4-100ASE", &real_model),
+    check(find_transistor_by_id(db, "PSMN1R4-100ASEJ", &real_model),
         "find Nexperia reference MOSFET");
     check(real_model->id_pulse_max == 2186,
         "preserve separate pulsed current limit");
@@ -114,6 +114,12 @@ int main(void)
     close_to(r.t_j, 27.5, 1e-12,
         "linear pulse junction temperature");
     check(r.status == STATUS_SAFE, "safe linear point");
+    close_to(r.voltage_reserve_percent, 100.0 * (1.0 - 5.0 / 60.0),
+        1e-9, "native voltage reserve is returned");
+    close_to(r.current_reserve_percent, 97.5, 1e-9,
+        "native current reserve is returned");
+    check(r.closest_constraint[0] != '\0',
+        "native closest constraint is returned");
 
     p.reference_temperature_c = 50;
     r = analyze_operating_point(&p, &config);

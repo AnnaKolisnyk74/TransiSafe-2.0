@@ -29,11 +29,31 @@ type PartOptions = {
   metalness?: number;
   roughness?: number;
   opacity?: number;
+  surface?: "molded";
+  outline?: number;
   thermalRole?: "junction" | "attach" | "leadframe" | "case";
 };
 
-function material({ color, metalness = 0, roughness = .55, opacity = 1 }: PartOptions) {
-  return new THREE.MeshStandardMaterial({ color, metalness, roughness, transparent: opacity < 1, opacity, depthWrite: opacity >= 1 });
+function moldedTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 96; canvas.height = 96;
+  const context = canvas.getContext("2d")!;
+  const image = context.createImageData(canvas.width, canvas.height);
+  for (let index = 0; index < image.data.length; index += 4) {
+    const grain = 196 + Math.floor(Math.random() * 34);
+    image.data[index] = grain; image.data[index + 1] = grain; image.data[index + 2] = grain; image.data[index + 3] = 255;
+  }
+  context.putImageData(image, 0, 0);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(3, 3);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+function material({ color, metalness = 0, roughness = .55, opacity = 1, surface }: PartOptions) {
+  const texture = surface === "molded" ? moldedTexture() : null;
+  return new THREE.MeshStandardMaterial({ color, map: texture, bumpMap: texture, bumpScale: texture ? .018 : 0, metalness, roughness, transparent: opacity < 1, opacity, depthWrite: opacity >= 1 });
 }
 
 function addPart(group: THREE.Group, geometry: THREE.BufferGeometry, position: [number, number, number], options: PartOptions) {
@@ -44,6 +64,11 @@ function addPart(group: THREE.Group, geometry: THREE.BufferGeometry, position: [
   mesh.userData.inspectorLabel = options.label;
   mesh.userData.thermalRole = options.thermalRole;
   group.add(mesh);
+  if (options.outline !== undefined) {
+    const outline = new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 24), new THREE.LineBasicMaterial({ color: options.outline, transparent: true, opacity: options.opacity === undefined ? .72 : Math.min(.42, options.opacity) }));
+    outline.userData.inspectorLabel = options.label;
+    mesh.add(outline);
+  }
   return mesh;
 }
 
@@ -79,9 +104,9 @@ function addThermalCore(group: THREE.Group, spec: PackageSpec, mode: PackageView
   const leadframeY = caseY + (exploded ? 1.15 : .3);
   const attachY = caseY + (exploded ? 2.25 : .48);
   const junctionY = caseY + (exploded ? 3.25 : .65);
-  addPart(group, rounded(spec.body.width * .68, .22, spec.body.depth * .62, .08), [0, leadframeY, 0], { label: "Copper leadframe / thermal pad", color: 0xb86f2d, metalness: .88, roughness: .25, thermalRole: "leadframe" });
-  addPart(group, rounded(spec.body.width * .42, .12, spec.body.depth * .38, .04), [0, attachY, 0], { label: "Solder / silver die attach", color: 0xd6b66b, metalness: .62, roughness: .3, thermalRole: "attach" });
-  addPart(group, rounded(spec.body.width * .36, .22, spec.body.depth * .32, .04), [0, junctionY, 0], { label: "Silicon junction (Tj)", color: 0xd94559, metalness: .08, roughness: .28, thermalRole: "junction" });
+  addPart(group, rounded(spec.body.width * .68, .22, spec.body.depth * .62, .08), [0, leadframeY, 0], { label: "Copper leadframe / thermal pad", color: exploded ? 0x168bff : 0xb86f2d, metalness: .72, roughness: .27, outline: 0x0b5fba, thermalRole: "leadframe" });
+  addPart(group, rounded(spec.body.width * .42, .12, spec.body.depth * .38, .04), [0, attachY, 0], { label: "Solder / silver die attach", color: exploded ? 0xf5a623 : 0xd6b66b, metalness: .38, roughness: .3, outline: 0xb86f00, thermalRole: "attach" });
+  addPart(group, rounded(spec.body.width * .36, .22, spec.body.depth * .32, .04), [0, junctionY, 0], { label: "Silicon junction (Tj)", color: 0xd94559, metalness: .08, roughness: .28, outline: 0x8e1728, thermalRole: "junction" });
   if (exploded) {
     const heatPath = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, junctionY + .2, 0), new THREE.Vector3(0, caseY - .35, 0)]), new THREE.LineBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: .8 }));
     heatPath.userData.inspectorLabel = "Primary junction-to-case heat path";
@@ -92,7 +117,7 @@ function addThermalCore(group: THREE.Group, spec: PackageSpec, mode: PackageView
 function buildCcPak(spec: PackageSpec, mode: PackageViewMode, marking: string) {
   const group = new THREE.Group();
   const bodyY = mode === "thermal" ? 4.8 : 1.55;
-  addPart(group, rounded(spec.body.width, spec.body.height, spec.body.depth, spec.body.radius), [0, bodyY, 0], { label: "CCPAK1212 molded compound", color: 0x20262d, metalness: .03, roughness: .72, opacity: mode === "thermal" ? .18 : 1, thermalRole: "case" });
+  addPart(group, rounded(spec.body.width, spec.body.height, spec.body.depth, spec.body.radius), [0, bodyY, 0], { label: "CCPAK1212 molded compound", color: 0x171c21, metalness: .02, roughness: .64, opacity: mode === "thermal" ? .18 : 1, surface: "molded", outline: 0x46515b, thermalRole: "case" });
   const terminalGeometry = rounded(1.02, .18, 1.35, .06);
   for (let index = 0; index < 6; index += 1) {
     const z = -5 + index * 2;
@@ -109,7 +134,7 @@ function buildCcPak(spec: PackageSpec, mode: PackageViewMode, marking: string) {
 function buildTo263(spec: PackageSpec, mode: PackageViewMode, marking: string) {
   const group = new THREE.Group();
   const bodyY = mode === "thermal" ? 6.1 : 2.65;
-  addPart(group, rounded(spec.body.width, spec.body.height, spec.body.depth, spec.body.radius), [0, bodyY, .7], { label: "D²PAK molded compound", color: 0x20262d, metalness: .03, roughness: .72, opacity: mode === "thermal" ? .18 : 1, thermalRole: "case" });
+  addPart(group, rounded(spec.body.width, spec.body.height, spec.body.depth, spec.body.radius), [0, bodyY, .7], { label: "D²PAK molded compound", color: 0x171c21, metalness: .02, roughness: .64, opacity: mode === "thermal" ? .18 : 1, surface: "molded", outline: 0x46515b, thermalRole: "case" });
   addPart(group, rounded(8.45, .3, 7.25, .08), [0, .27, 2.7], { label: "Drain tab / exposed case reference", color: 0xb9c2ca, metalness: .94, roughness: .16, thermalRole: "case" });
   for (const [x,label] of [[-3.25,"Gate lead (pin 1)"],[3.25,"Source lead (pin 3)"]] as [number,string][]) {
     addPart(group, rounded(1.15,.25,2.5,.07), [x,.8,-4.35], { label, color:0xb9c2ca,metalness:.94,roughness:.16 });

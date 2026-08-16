@@ -129,6 +129,7 @@ AnalysisResult analyze_operating_point(const OperatingPoint* point,
     double sf;
     double peak_power = 0.0, external_rth = 0.0, thermal_rth = -1.0;
     double soa_reference_temperature;
+    double voltage_utilization, current_utilization, soa_utilization;
 
     if (!point || !config || !point->model) {
         r.status = STATUS_INSUFFICIENT_DATA;
@@ -141,8 +142,9 @@ AnalysisResult analyze_operating_point(const OperatingPoint* point,
         point->duty_cycle <= 1.0 && point->reference_temperature_c >= -273.15;
     if (!r.data_complete) { r.status = STATUS_INSUFFICIENT_DATA; return r; }
 
+    r.current_limit_a = applicable_current_limit(point) / sf;
     r.safe_voltage = point->vds * sf <= m->vds_max;
-    r.safe_current = point->id * sf <= applicable_current_limit(point);
+    r.safe_current = point->id <= r.current_limit_a;
     r.rds_on_ohm = interpolate_rds_on(m, point->reference_temperature_c);
     r.soa_current_limit_a = interpolate_soa_current(m,
         point->pulse_duration_s, point->vds);
@@ -233,11 +235,31 @@ AnalysisResult analyze_operating_point(const OperatingPoint* point,
     }
     r.power_margin_percent = r.p_loss + r.power_margin_w > 0.0 ?
         100.0 * r.power_margin_w / (r.p_loss + r.power_margin_w) : -100.0;
-    r.electrical_utilization = fmax(point->vds * sf / m->vds_max,
-        point->id * sf / applicable_current_limit(point));
-    if (r.soa_current_limit_a > 0.0)
-        r.electrical_utilization = fmax(r.electrical_utilization,
-            point->id / r.soa_current_limit_a);
+    voltage_utilization = m->vds_max > 0.0 ? point->vds * sf / m->vds_max : 1e9;
+    current_utilization = r.current_limit_a > 0.0 ? point->id / r.current_limit_a : 1e9;
+    soa_utilization = r.soa_current_limit_a > 0.0 ? point->id / r.soa_current_limit_a : 1e9;
+    r.voltage_reserve_percent = 100.0 * (1.0 - voltage_utilization);
+    r.current_reserve_percent = 100.0 * (1.0 - current_utilization);
+    r.soa_reserve_percent = 100.0 * (1.0 - soa_utilization);
+    r.thermal_reserve_percent = m->t_j_max > point->reference_temperature_c ?
+        100.0 * r.temperature_margin_c /
+            (m->t_j_max - point->reference_temperature_c) : -1.0;
+    r.electrical_utilization = fmax(voltage_utilization,
+        fmax(current_utilization, soa_utilization));
+    strcpy(r.closest_constraint, "VOLTAGE");
+    r.closest_reserve_percent = r.voltage_reserve_percent;
+    if (r.current_reserve_percent < r.closest_reserve_percent) {
+        strcpy(r.closest_constraint, "CURRENT");
+        r.closest_reserve_percent = r.current_reserve_percent;
+    }
+    if (r.soa_reserve_percent < r.closest_reserve_percent) {
+        strcpy(r.closest_constraint, "SOA");
+        r.closest_reserve_percent = r.soa_reserve_percent;
+    }
+    if (r.thermal_reserve_percent < r.closest_reserve_percent) {
+        strcpy(r.closest_constraint, "TEMPERATURE");
+        r.closest_reserve_percent = r.thermal_reserve_percent;
+    }
     r.status = classify(&r, config);
     return r;
 }

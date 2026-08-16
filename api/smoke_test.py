@@ -1,9 +1,17 @@
-from api.main import AnalysisRequest, analyze, health, models
+from api.main import AnalysisRequest, analyze, health, models, soa_curves
 
 
 def main() -> None:
     assert health()["engine_available"] is True
-    assert len(models()["models"]) >= 2
+    catalog = models()["models"]
+    assert len(catalog) >= 2
+    nexperia = next(model for model in catalog if model["id"] == "PSMN1R4-100ASEJ")
+    assert nexperia["manufacturer"] == "Nexperia"
+    assert nexperia["datasheet_type"] == "PSMN1R4-100ASE"
+    assert nexperia["package_name"] == "CCPAK1212 (SOT8000A)"
+    assert nexperia["rth_jc_k_per_w"] == 0.16
+    assert nexperia["rds_on_25_ohm"] == 0.00136
+    assert len(soa_curves("PSMN1R4-100ASEJ")["curves"]) == 6
     request = AnalysisRequest(
         transistor_id="CSD19536KTT",
         vds_v=48,
@@ -30,6 +38,11 @@ def main() -> None:
         "soa": True,
         "temperature": True,
     }
+    assert response["schema_version"] == "1.0"
+    assert response["result"]["closest_constraint"]["type"] == "VOLTAGE"
+    assert response["result"]["margins"]["voltage_reserve_percent"] > 0
+    assert response["source"]["verification_status"] == "REVIEW_PENDING"
+    assert response["analysis_metadata"]["engine_version"] == "2.1.0"
     print("TransiSafe API smoke test passed.")
 
 

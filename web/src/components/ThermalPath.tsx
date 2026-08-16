@@ -1,0 +1,11 @@
+import { Box, Cpu, Thermometer } from "lucide-react";
+import type { AnalysisInput, AnalysisResponse } from "../types";
+import { formatNumber } from "./format";
+
+export function ThermalPath({ result, input }: { result: AnalysisResponse; input: AnalysisInput }) {
+  const utilization = Math.max(0, Math.min(100, result.result.tj_c / result.source.tj_max_c * 100));
+  const reserve = Math.max(0, Math.min(100, result.result.temperature_margin_c / result.source.tj_max_c * 100));
+  const delta = result.result.tj_c - input.temperature_c;
+  const referenceLabel = input.temperature_reference === "CASE" ? "Case (Tc)" : "Ambient (Ta)";
+  return <section className="result-card thermal-path"><header><div><span>Thermal path</span><h3>Junction to {input.temperature_reference === "CASE" ? "case" : "ambient"}</h3></div><Thermometer size={22}/></header><div className="thermal-route"><article className="thermal-station junction"><span className="thermal-station-icon"><Cpu size={27}/></span><div><span>Junction (Tj)</span><strong>{formatNumber(result.result.tj_c, 1)} °C</strong><small>Limit {formatNumber(result.source.tj_max_c, 0)} °C</small></div></article><div className="thermal-connection"><div><i/></div><span>ΔT (J–{input.temperature_reference === "CASE" ? "C" : "A"})</span><strong>{formatNumber(delta, 1)} K</strong></div><article className="thermal-station reference"><span className="thermal-station-icon"><Box size={27}/></span><div><span>{referenceLabel}</span><strong>{formatNumber(input.temperature_c, 1)} °C</strong><small>{input.temperature_reference === "CASE" ? "Tc reference" : "Ta reference"}</small></div></article></div><div className="thermal-reserve"><div><span>Thermal reserve</span><strong>{formatNumber(result.result.temperature_margin_c, 1)} K</strong><b>{formatNumber(reserve, 0)} %</b></div><div className="thermal-reserve-track"><i style={{ width: `${reserve}%` }}/><em style={{ left: `${utilization}%` }}/></div><div className="thermal-reserve-labels"><span>{formatNumber(result.result.tj_c, 1)} °C</span><span>{formatNumber(result.source.tj_max_c, 0)} °C<br/><small>Limit</small></span></div></div>{input.temperature_reference === "AMBIENT" && <p>RθCS {formatNumber(input.rth_cs_k_per_w)} K/W · RθSA {formatNumber(input.rth_sa_k_per_w)} K/W. Eine separate Gehäusetemperatur wird nicht geschätzt.</p>}</section>;
+}

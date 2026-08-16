@@ -6,10 +6,11 @@
 > provenance. See [`docs/PHASE_1_MOSFET_CORE.md`](docs/PHASE_1_MOSFET_CORE.md).
 > The bundled `ENGINEERING_FIXTURE` is synthetic test data, not a real device.
 
-> **Phase 2 web foundation:** `transisafe_json` exposes the native C calculation
-> as structured JSON, `api/` provides a validated FastAPI adapter, and `web/`
-> contains the React/TypeScript analysis interface. Engineering calculations are
-> not reimplemented in the browser. See
+> **Engineering workflow:** `transisafe_json` exposes the native C calculation
+> as a versioned engineering result, `api/` provides validated analysis,
+> persistence, batch and export services, and `web/` contains the compact
+> React/TypeScript decision interface. Engineering calculations are not
+> reimplemented in the browser. See
 > [`docs/PHASE_2_WEB_APP.md`](docs/PHASE_2_WEB_APP.md).
 
 <p align="center">
@@ -89,6 +90,7 @@ Start the API in a second terminal:
 
 ```sh
 python -m venv api/.venv
+# Git Bash on Windows:
 source api/.venv/Scripts/activate
 pip install -r api/requirements.txt
 uvicorn api.main:app --reload --port 8000
@@ -104,6 +106,16 @@ npm run dev
 
 Open the address printed by Vite. The API documentation is available at
 `http://localhost:8000/docs`.
+
+The web workflow now includes:
+
+- native single operating-point analysis with engine-provided margins,
+- saved analyses with Save, Save As, duplicate, rename, rerun and delete,
+- Excel, PDF, CSV and JSON exports,
+- CSV/XLSX batch upload with column mapping and validation,
+- batch drill-down and complete or selected-row Excel export,
+- persistent local engineer accounts,
+- compact Engineering Details and traceability views.
 
 ## Software architecture
 

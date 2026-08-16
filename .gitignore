@@ -18,8 +18,15 @@ web/node_modules/
 web/dist/
 *.tsbuildinfo
 api/.venv/
+.venv-audit/
+api/data/
 __pycache__/
 *.pyc
+pip-metadata-*/
+pip-unpack-*/
+tmp*/
+cc*.o
+cc*.s
 
 # Runtime files
 *.log

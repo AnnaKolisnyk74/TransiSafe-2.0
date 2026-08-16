@@ -4,11 +4,9 @@ set -euo pipefail
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$project_root"
 
-if [[ ! -f build/Release/transisafe_json.exe && ! -f build/transisafe_json.exe && ! -f build/transisafe_json ]]; then
-  echo "Building native TransiSafe C engine..."
-  cmake -S . -B build -A x64
-  cmake --build build --config Release --target transisafe_json
-fi
+echo "Updating native TransiSafe C engine..."
+cmake -S . -B build -A x64
+cmake --build build --config Release --target transisafe_json
 
 if [[ ! -d api/.venv ]]; then
   python -m venv api/.venv

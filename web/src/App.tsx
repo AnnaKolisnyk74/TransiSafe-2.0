@@ -19,6 +19,18 @@ const initialInput: AnalysisInput = {
   e_off_j: 0.000015, gate_drive_voltage_v: 10,
 };
 
+function isAnalysisResponse(payload: unknown): payload is AnalysisResponse {
+  if (!payload || typeof payload !== "object") return false;
+  const candidate = payload as Partial<AnalysisResponse>;
+  return candidate.ok === true
+    && Boolean(candidate.input)
+    && Boolean(candidate.optimization)
+    && Boolean(candidate.source)
+    && Boolean(candidate.result?.margins)
+    && Boolean(candidate.result?.closest_constraint)
+    && Boolean(candidate.result?.checks);
+}
+
 export default function App() {
   const [input, setInput] = useState<AnalysisInput>(initialInput);
   const [models, setModels] = useState<ModelSummary[]>([]);
@@ -71,8 +83,12 @@ export default function App() {
     setLoading(true); setError(null);
     try {
       const response = await fetch(`${API}/api/analyze`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.detail ?? "Analyse fehlgeschlagen");
+      const payload: unknown = await response.json();
+      if (!response.ok) {
+        const detail = payload && typeof payload === "object" && "detail" in payload ? String(payload.detail) : "Analyse fehlgeschlagen";
+        throw new Error(detail);
+      }
+      if (!isAnalysisResponse(payload)) throw new Error("API und C-Engine haben unterschiedliche Versionen. Bitte die API neu bauen und starten.");
       setResult(payload); setEngineState("ready");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Die Analyse-API ist nicht erreichbar."); setEngineState("offline");

@@ -5,7 +5,7 @@ project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$project_root"
 
 echo "Updating native TransiSafe C engine..."
-cmake -S . -B build -A x64
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release --target transisafe_json
 
 if [[ ! -d api/.venv ]]; then

@@ -5,6 +5,7 @@ import { ComponentSelector } from "./components/ComponentSelector";
 import { OperatingPointForm } from "./components/OperatingPointForm";
 import { AnalysisResult } from "./components/AnalysisResult";
 import { AnalysisActions } from "./components/AnalysisActions";
+import { ReportWizard } from "./components/ReportWizard";
 import { ThermalSettings } from "./components/ThermalSettings";
 import { BatchWorkspace } from "./components/BatchWorkspace";
 import { SavedAnalyses } from "./components/SavedAnalyses";
@@ -44,6 +45,7 @@ export default function App() {
   const [page, setPage] = useState<WorkspacePage>("analyze");
   const [savedRefresh, setSavedRefresh] = useState(0);
   const [currentSaved, setCurrentSaved] = useState<{id:string;name:string}|null>(null);
+  const [reportOpen, setReportOpen] = useState(false);
   const [recentAnalyses, setRecentAnalyses] = useState<RecentAnalysis[]>(() => {
     try {
       const stored = JSON.parse(localStorage.getItem(RECENT_ANALYSES_KEY) ?? "[]");
@@ -112,6 +114,26 @@ export default function App() {
     } finally { setLoading(false); }
   }
 
+  async function runWhatIf(analysisInput: AnalysisInput) {
+    setLoading(true); setError(null);
+    try {
+      const response = await fetch(`${API}/api/analyze`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(analysisInput) });
+      const payload: unknown = await response.json();
+      if (!response.ok) {
+        const detail = payload && typeof payload === "object" && "detail" in payload ? String(payload.detail) : "Szenarioanalyse fehlgeschlagen";
+        throw new Error(detail);
+      }
+      if (!isAnalysisResponse(payload)) throw new Error("API und C-Engine haben unterschiedliche Versionen. Bitte die API neu bauen und starten.");
+      setEngineState("ready"); return payload;
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Die Analyse-API ist nicht erreichbar."); setEngineState("offline"); return null;
+    } finally { setLoading(false); }
+  }
+
+  function applyWhatIf(nextResult: AnalysisResponse) {
+    setInput(nextResult.input); setResult(nextResult); rememberAnalysis(nextResult.input, nextResult); setCurrentSaved(null); setError(null);
+  }
+
   async function saveCurrentAnalysis(saveAs = false) {
     if (!result) return;
     const suggested = `${input.transistor_id} – ${input.vds_v} V / ${input.id_a} A`;
@@ -136,7 +158,7 @@ export default function App() {
         <section className="workflow-grid" aria-label="Analysekonfiguration">
           <ComponentSelector models={models} selectedModel={selectedModel} onSelect={(transistorId) => { update("transistor_id", transistorId); setResult(null); }} loading={engineState === "checking"}/>
           <OperatingPointForm input={input} update={update} error={error} onSubmit={runAnalysis}/>
-          <AnalysisActions input={input} mode={input.mode} onModeChange={selectMode} disabled={!selectedModel || engineState !== "ready"} loading={loading} hasResult={Boolean(result)} recentAnalyses={recentAnalyses} onOpenRecent={openRecent} onRunWhatIf={runAnalysis}/>
+          <AnalysisActions input={input} mode={input.mode} onModeChange={selectMode} disabled={!selectedModel || engineState !== "ready"} loading={loading} result={result} recentAnalyses={recentAnalyses} onOpenRecent={openRecent} onRunWhatIf={runWhatIf} onApplyWhatIf={applyWhatIf} onCreateReport={() => setReportOpen(true)}/>
           <ThermalSettings input={input} model={selectedModel} update={update}/>
         </section>
         <AnalysisResult result={result} input={input} model={selectedModel} soaCurves={soaCurves} savedName={currentSaved?.name} onSave={() => void saveCurrentAnalysis()} onSaveAs={() => void saveCurrentAnalysis(true)}/>
@@ -145,5 +167,6 @@ export default function App() {
       {page === "reports" && <SavedAnalyses refreshToken={savedRefresh} onOpen={openSaved}/>}
       <footer className="app-footer"><span>TransiSafe 2.1.0 · Engineering Decision Support</span><span>Not certification software · Validate against datasheet and laboratory measurements</span></footer>
     </div>
+    {result && selectedModel && <ReportWizard open={reportOpen} input={input} result={result} model={selectedModel} soaCurves={soaCurves} name={currentSaved?.name ?? `${input.transistor_id} Analysebericht`} onClose={() => setReportOpen(false)}/>}
   </div>;
 }

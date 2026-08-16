@@ -26,6 +26,9 @@ from reportlab.lib.units import mm
 from reportlab.graphics.shapes import Circle, Drawing, Line, Rect, String
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt, RGBColor
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
@@ -87,12 +90,24 @@ class AnalysisRequest(BaseModel):
         return ";".join(str(value) for value in values) + "\n"
 
 
+class ReportConfiguration(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    report_type: Literal["analysis", "management"] = "analysis"
+    sections: list[Literal["overview", "operating", "soa", "losses", "thermal", "margins", "traceability"]] = Field(
+        default_factory=lambda: ["overview", "operating", "soa", "losses", "thermal", "margins", "traceability"], min_length=1
+    )
+    embed_charts: bool = True
+    embed_3d: bool = True
+    show_limits: bool = True
+
+
 class SaveAnalysisRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     name: str = Field(min_length=1, max_length=160)
     input: AnalysisRequest
     result: dict[str, Any]
     parent_id: str | None = None
+    report_config: ReportConfiguration | None = None
 
 
 class BatchRow(BaseModel):
@@ -365,6 +380,13 @@ def workbook_for_analysis(record: dict[str, Any]) -> bytes:
         ["Engine Version", meta.get("engine_version", "")], ["Dataset Revision", meta.get("dataset_version", "")], ["Analysis Mode", inp["mode"]],
         ["Safety Factor", inp["safety_factor"]], ["Warnings", " | ".join(meta.get("warnings", []))],
         ["Assumptions", " | ".join(meta.get("assumptions", []))], ["Model Limitations", " | ".join(meta.get("model_limitations", []))]])
+    config = record.get("report_config") or {}
+    selected = set(config.get("sections") or ["overview", "operating", "soa", "losses", "thermal", "margins", "traceability"])
+    sheet_sections = {"SUMMARY": "overview", "INPUTS": "operating", "ENGINEERING CHECKS": "margins", "LIMITS": "margins",
+                      "LOSSES": "losses", "THERMAL": "thermal", "SOA": "soa", "TRACEABILITY": "traceability", "METADATA": "traceability"}
+    for sheet_name, section_name in sheet_sections.items():
+        if section_name not in selected and sheet_name in workbook.sheetnames:
+            workbook.remove(workbook[sheet_name])
     stream = io.BytesIO(); workbook.save(stream); return stream.getvalue()
 
 
@@ -587,10 +609,106 @@ def rerun_analysis(analysis_id: str) -> dict[str, Any]:
     return update_analysis(analysis_id, request)
 
 
+def docx_for_analysis(record: dict[str, Any]) -> bytes:
+    payload = record["result"]
+    result = payload["result"]
+    analysis_input = record["input"]
+    document = Document()
+    section = document.sections[0]
+    section.top_margin = section.bottom_margin = Pt(42)
+    section.left_margin = section.right_margin = Pt(48)
+
+    title = document.add_heading("TransiSafe", 0)
+    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    title.runs[0].font.color.rgb = RGBColor(10, 110, 209)
+    subtitle = document.add_paragraph("ENGINEERING DECISION SUPPORT")
+    subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    subtitle.runs[0].bold = True
+    subtitle.runs[0].font.size = Pt(9)
+    document.add_heading(record.get("name", "Analysebericht"), level=1)
+    document.add_paragraph(f"Generiert: {datetime.now(timezone.utc).astimezone().strftime('%d.%m.%Y %H:%M %Z')}")
+
+    status = document.add_paragraph()
+    run = status.add_run(f"Ergebnis: {result['status']}")
+    run.bold = True
+    run.font.size = Pt(16)
+    run.font.color.rgb = RGBColor(15, 145, 85) if result["status"] == "SAFE" else RGBColor(197, 53, 53)
+    status.add_run(f"\n{result.get('reason', '')}")
+
+    document.add_heading("Ergebnisübersicht", level=2)
+    summary = document.add_table(rows=1, cols=2)
+    summary.style = "Light Shading Accent 1"
+    summary.rows[0].cells[0].text = "Kennzahl"
+    summary.rows[0].cells[1].text = "Wert"
+    summary_rows = [
+        ("Komponente", analysis_input["transistor_id"]),
+        ("Betriebsart", analysis_input["mode"]),
+        ("Betriebspunkt", f"{analysis_input['vds_v']:.3g} V / {analysis_input['id_a']:.3g} A"),
+        ("Tj", f"{result['tj_c']:.1f} °C"),
+        ("Gesamtverlust", f"{result['p_total_w']:.3f} W"),
+        ("SOA-Reserve", f"{result['margins']['soa_reserve_percent']:.1f} %"),
+        ("Thermische Reserve", f"{result['temperature_margin_c']:.1f} K"),
+        ("Nächste Grenze", f"{result['closest_constraint']['type']} ({result['closest_constraint']['reserve_percent']:.1f} %)"),
+    ]
+    for label, value in summary_rows:
+        cells = summary.add_row().cells
+        cells[0].text, cells[1].text = label, str(value)
+
+    document.add_heading("Betriebspunkt", level=2)
+    operating_rows = [
+        ("VDS", analysis_input["vds_v"], "V"), ("ID", analysis_input["id_a"], "A"),
+        ("Pulsdauer", analysis_input["pulse_duration_s"] * 1e6, "µs"),
+        ("Duty Cycle", analysis_input["duty_cycle"] * 100, "%"),
+        ("Frequenz", analysis_input["frequency_hz"] / 1000, "kHz"),
+        ("Gate-Spannung", analysis_input["gate_drive_voltage_v"], "V"),
+        ("Eon", analysis_input["e_on_j"] * 1e6, "µJ"), ("Eoff", analysis_input["e_off_j"] * 1e6, "µJ"),
+    ]
+    operating = document.add_table(rows=1, cols=3)
+    operating.style = "Light Grid Accent 1"
+    operating.rows[0].cells[0].text, operating.rows[0].cells[1].text, operating.rows[0].cells[2].text = "Parameter", "Wert", "Einheit"
+    for label, value, unit in operating_rows:
+        cells = operating.add_row().cells
+        cells[0].text, cells[1].text, cells[2].text = label, f"{value:.4g}", unit
+
+    document.add_heading("Verlustaufteilung", level=2)
+    for label, value in [("Leitverluste", result["p_conduction_w"]), ("Schaltverluste", result["p_switching_w"]), ("Gate-Drive-Verluste", result["p_gate_w"]), ("Gesamt", result["p_total_w"])]:
+        document.add_paragraph(f"{label}: {value:.4g} W", style="List Bullet")
+
+    document.add_heading("Thermischer Pfad und Grenzen", level=2)
+    document.add_paragraph(
+        f"Referenz: {analysis_input['temperature_reference']} bei {analysis_input['temperature_c']:.1f} °C; "
+        f"Junction-Temperatur: {result['tj_c']:.1f} °C; Reserve: {result['temperature_margin_c']:.1f} K."
+    )
+    checks = document.add_table(rows=1, cols=2)
+    checks.style = "Light Grid Accent 1"
+    checks.rows[0].cells[0].text, checks.rows[0].cells[1].text = "Engineering Check", "Status"
+    for label, passed in result.get("checks", {}).items():
+        cells = checks.add_row().cells
+        cells[0].text, cells[1].text = label.upper(), "PASS" if passed else "FAIL"
+
+    source = payload.get("source", {})
+    document.add_heading("Datenherkunft & Traceability", level=2)
+    for label, value in [("Dataset", source.get("dataset_version")), ("C-Engine", source.get("engine_version")), ("Verifikation", source.get("verification_status")), ("Revision", source.get("revision"))]:
+        document.add_paragraph(f"{label}: {value or '—'}", style="List Bullet")
+
+    metadata = payload.get("analysis_metadata", {})
+    for heading, key in [("Warnungen", "warnings"), ("Annahmen", "assumptions"), ("Modellgrenzen", "model_limitations")]:
+        document.add_heading(heading, level=2)
+        items = metadata.get(key, []) or (["Keine zusätzlichen Warnungen."] if key == "warnings" else ["Keine Angaben."])
+        for item in items:
+            document.add_paragraph(str(item), style="List Bullet")
+
+    document.add_paragraph("Not certification software · Validate against datasheet and laboratory measurements")
+    stream = io.BytesIO()
+    document.save(stream)
+    return stream.getvalue()
+
+
 def export_record(record: dict[str, Any], format_name: str) -> Response:
     safe_name = "".join(character if character.isalnum() or character in "-_" else "_" for character in record.get("name", "analysis"))[:80]
     if format_name == "xlsx": data, media = workbook_for_analysis(record), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     elif format_name == "pdf": data, media = pdf_for_analysis(record), "application/pdf"
+    elif format_name == "docx": data, media = docx_for_analysis(record), "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     elif format_name == "json": data, media = json.dumps(record, indent=2).encode(), "application/json"
     elif format_name == "csv":
         stream = io.StringIO(); writer = csv.writer(stream); writer.writerow(["field", "value", "unit"])
@@ -602,7 +720,7 @@ def export_record(record: dict[str, Any], format_name: str) -> Response:
                     ["closest_constraint", result["closest_constraint"]["type"], ""],
                     ["closest_reserve", result["closest_constraint"]["reserve_percent"], "%"]]: writer.writerow(row)
         data, media = stream.getvalue().encode("utf-8-sig"), "text/csv"
-    else: raise HTTPException(status_code=422, detail="Supported formats: xlsx, pdf, csv, json")
+    else: raise HTTPException(status_code=422, detail="Supported formats: xlsx, pdf, docx, csv, json")
     return Response(content=data, media_type=media, headers={"Content-Disposition": f'attachment; filename="{safe_name}.{format_name}"'})
 
 
@@ -614,7 +732,8 @@ def export_saved_analysis(analysis_id: str, format_name: str) -> Response:
 @app.post("/api/export/{format_name}")
 def export_current_analysis(format_name: str, request: SaveAnalysisRequest) -> Response:
     record = {"id": "unsaved", "name": request.name, "input": request.input.model_dump(), "result": request.result,
-              "parent_id": request.parent_id, "created_at": utc_now(), "updated_at": utc_now()}
+              "parent_id": request.parent_id, "report_config": request.report_config.model_dump() if request.report_config else None,
+              "created_at": utc_now(), "updated_at": utc_now()}
     return export_record(record, format_name.lower())
 
 

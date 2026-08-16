@@ -34,10 +34,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
   border-right: 1px solid rgba(255,255,255,.07);
   transition: width .22s ease, padding .22s ease;
 }
-.nav-toggle { position: absolute; z-index: 2; top: 12px; right: 10px; width: 30px; height: 30px; padding: 0; display: grid; place-items: center; border: 1px solid rgba(166,194,220,.25); border-radius: 6px; color: #b7c9dc; background: rgba(255,255,255,.06); cursor: pointer; }
+.nav-rail-control { height: 34px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; border-bottom: 1px solid rgba(166,194,220,.1); }
+.nav-toggle { width: 26px; height: 26px; padding: 0; display: grid; place-items: center; border: 1px solid rgba(166,194,220,.25); border-radius: 6px; color: #b7c9dc; background: rgba(255,255,255,.04); cursor: pointer; }
 .nav-toggle:hover, .nav-toggle:focus-visible { color: #fff; border-color: rgba(119,172,224,.65); background: rgba(255,255,255,.1); outline: 0; }
-.nav-logo { height: 130px; margin-bottom: 14px; position: relative; display: grid; place-items: center; overflow: hidden; }
-.nav-logo img { width: 174px; height: 116px; object-fit: contain; filter: drop-shadow(0 7px 14px rgba(0,111,230,.18)); }
+.nav-logo { height: 102px; margin: 5px 0 12px; display: grid; place-items: center; overflow: hidden; }
+.nav-logo img { width: 158px; height: 96px; object-fit: contain; filter: drop-shadow(0 7px 14px rgba(0,111,230,.18)); }
 .navigation nav { display: grid; gap: 4px; }
 .navigation nav button {
   min-height: 41px; border: 0; border-radius: 8px; padding: 0 10px;
@@ -59,12 +60,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 .nav-collapsed .navigation { width: 72px; padding-left: 7px; padding-right: 7px; }
 .nav-collapsed .application-frame { margin-left: 72px; }
-.nav-collapsed .nav-logo { height: 92px; margin-bottom: 12px; }
-.nav-collapsed .nav-logo img { width: 58px; height: 72px; }
+.nav-collapsed .nav-rail-control { justify-content: center; }
+.nav-collapsed .nav-logo { height: 64px; margin: 4px 0 10px; }
+.nav-collapsed .nav-logo img { width: 52px; height: 60px; }
 .nav-collapsed .navigation nav button { grid-template-columns: 1fr; place-items: center; padding: 0; }
 .nav-collapsed .navigation nav button span, .nav-collapsed .navigation nav button small, .nav-collapsed .nav-engine div { display: none; }
 .nav-collapsed .nav-engine { justify-content: center; padding: 11px 6px; }
-.nav-collapsed .nav-toggle { top: 10px; right: 14px; }
 .app-header {
   height: 86px; padding: 0 30px; position: sticky; top: 0; z-index: 12;
   display: flex; align-items: center; justify-content: space-between;
@@ -556,7 +557,7 @@ html[data-theme="dark"] .batch-tools>label, html[data-theme="dark"] .batch-tools
   .nav-logo img { width: 50px; height: 50px; }
   .navigation nav button { grid-template-columns: 1fr; place-items: center; }
   .navigation nav button span, .navigation nav button small, .nav-engine { display: none; }
-  .nav-toggle { display: none; }
+  .nav-rail-control { display: none; }
   .application-frame { margin-left: 62px; }
   .header-brand small, .api-state, .header-actions > a { display: none; }
   .header-brand strong { font-size: 19px; }

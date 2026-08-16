@@ -1,4 +1,7 @@
-from api.main import AnalysisRequest, analyze, health, models, soa_curves
+from io import BytesIO
+from zipfile import ZipFile
+
+from api.main import AnalysisRequest, SaveAnalysisRequest, analyze, export_current_analysis, health, models, soa_curves
 
 
 def main() -> None:
@@ -43,6 +46,27 @@ def main() -> None:
     assert response["result"]["margins"]["voltage_reserve_percent"] > 0
     assert response["source"]["verification_status"] == "REVIEW_PENDING"
     assert response["analysis_metadata"]["engine_version"] == "2.1.0"
+    export_request = SaveAnalysisRequest(
+        name="CSD19536KTT Analysis Report",
+        input=request,
+        result=response,
+        report_config={
+            "report_type": "analysis",
+            "sections": ["overview", "soa", "losses"],
+            "embed_charts": True,
+            "embed_3d": True,
+            "show_limits": True,
+        },
+    )
+    for format_name in ("pdf", "xlsx", "docx", "json", "csv"):
+        exported = export_current_analysis(format_name, export_request)
+        content = bytes(exported.body)
+        assert exported.status_code == 200
+        assert len(content) > 100
+        if format_name == "pdf": assert content.startswith(b"%PDF")
+        if format_name in ("xlsx", "docx"):
+            member = "xl/workbook.xml" if format_name == "xlsx" else "word/document.xml"
+            assert member in ZipFile(BytesIO(content)).namelist()
     print("TransiSafe API smoke test passed.")
 
 

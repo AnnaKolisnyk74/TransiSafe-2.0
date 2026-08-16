@@ -265,6 +265,40 @@ html[data-theme="dark"] .what-if-fields input { color: var(--text-primary); }
 html[data-theme="dark"] .what-if-fields b { color: var(--text-secondary); border-color: var(--border-strong); background: #102337; }
 html[data-theme="dark"] .what-if-baseline { color: var(--text-secondary); background: var(--surface-secondary); }
 html[data-theme="dark"] .what-if-baseline b { color: var(--text-primary); }
+html[data-theme="dark"] .what-if-overlay { background: rgba(1,8,18,.72); }
+html[data-theme="dark"] .what-if-dialog { color: var(--text-normal); border-color: var(--border-strong); background: var(--surface-primary); box-shadow: 0 28px 90px rgba(0,0,0,.5); }
+html[data-theme="dark"] .what-if-dialog > header { border-color: var(--border-default); background: linear-gradient(135deg,var(--surface-secondary),var(--surface-primary)); }
+html[data-theme="dark"] .what-if-dialog > header h2, html[data-theme="dark"] .what-if-engine-flow b, html[data-theme="dark"] .what-if-baseline-card > strong, html[data-theme="dark"] .what-if-stress strong, html[data-theme="dark"] .what-if-rationale b, html[data-theme="dark"] .what-if-calculating b, html[data-theme="dark"] .what-if-result article > b { color: var(--text-primary); }
+html[data-theme="dark"] .what-if-dialog > header p, html[data-theme="dark"] .what-if-engine-flow small, html[data-theme="dark"] .what-if-baseline-card > small, html[data-theme="dark"] .what-if-rationale small, html[data-theme="dark"] .what-if-rationale ul, html[data-theme="dark"] .what-if-calculating small, html[data-theme="dark"] .what-if-result article > span, html[data-theme="dark"] .what-if-result article > small { color: var(--text-secondary); }
+html[data-theme="dark"] .what-if-dialog > header > button, html[data-theme="dark"] .what-if-engine-flow, html[data-theme="dark"] .what-if-fields, html[data-theme="dark"] .what-if-result, html[data-theme="dark"] .what-if-reset { color: var(--text-normal); border-color: var(--border-default); background: var(--surface-primary); }
+html[data-theme="dark"] .what-if-baseline-card { border-color: var(--border-default); background: var(--surface-secondary); }
+html[data-theme="dark"] .what-if-fields label, html[data-theme="dark"] .what-if-stress span { color: var(--text-secondary); }
+html[data-theme="dark"] .what-if-fields label > div { border-color: var(--border-strong); background: var(--surface-input); }
+html[data-theme="dark"] .what-if-fields input { color: var(--text-primary); }
+html[data-theme="dark"] .what-if-fields label > div > b { color: var(--text-secondary); border-color: var(--border-strong); background: #102337; }
+html[data-theme="dark"] .what-if-stress { border-color: var(--border-default); }
+html[data-theme="dark"] .what-if-rationale { background: rgba(22,139,255,.1); }
+html[data-theme="dark"] .what-if-calculating { border-color: #276887; background: rgba(22,139,255,.08); }
+html[data-theme="dark"] .what-if-result > header { border-color: var(--border-default); background: var(--surface-secondary); }
+html[data-theme="dark"] .what-if-result > header > strong { color: var(--text-primary); }
+html[data-theme="dark"] .what-if-result > header > div b { color: var(--status-safe); background: rgba(50,213,131,.1); }
+html[data-theme="dark"] .what-if-result.critical > header > div b { color: var(--status-warning); background: rgba(245,185,66,.1); }
+html[data-theme="dark"] .what-if-result.unsafe > header > div b { color: var(--status-critical); background: rgba(255,100,124,.1); }
+html[data-theme="dark"] .what-if-result article { border-color: var(--border-default); }
+html[data-theme="dark"] .what-if-point-map { color: var(--text-normal); border-color: var(--border-default); background: var(--surface-primary); }
+html[data-theme="dark"] .what-if-point-map > header, html[data-theme="dark"] .what-if-point-map > footer { border-color: var(--border-default); }
+html[data-theme="dark"] .what-if-point-map > header b, html[data-theme="dark"] .what-if-map-point text { color: var(--text-primary); fill: var(--text-primary); }
+html[data-theme="dark"] .what-if-point-map button { color: var(--text-secondary); border-color: var(--border-strong); background: var(--surface-input); }
+html[data-theme="dark"] .what-if-map-paper { fill: var(--chart-plot); stroke: var(--border-strong); }
+html[data-theme="dark"] .what-if-map-grid { stroke: var(--chart-grid); }
+html[data-theme="dark"] .what-if-map-axis { stroke: var(--chart-axis); }
+html[data-theme="dark"] .what-if-point-map svg text, html[data-theme="dark"] .what-if-point-map > footer { fill: var(--text-secondary); color: var(--text-secondary); }
+html[data-theme="dark"] .soa-chart-tools { color: var(--text-secondary); border-color: var(--border-default); background: var(--surface-secondary); }
+html[data-theme="dark"] .soa-chart-tools > span { color: var(--text-secondary); }
+html[data-theme="dark"] .soa-chart-tools button, html[data-theme="dark"] .soa-legend button { color: var(--text-secondary); border-color: var(--border-strong); background: var(--surface-input); }
+html[data-theme="dark"] .soa-chart-tools b { color: var(--text-primary); }
+html[data-theme="dark"] .soa-tooltip rect { fill: rgba(16,32,51,.98); stroke: var(--border-strong); }
+html[data-theme="dark"] .soa-tooltip text { fill: var(--text-secondary); } html[data-theme="dark"] .soa-tooltip .soa-tooltip-title, html[data-theme="dark"] .soa-tooltip tspan { fill: var(--text-primary); }
 html[data-theme="dark"] .batch-stepper span { background: var(--surface-primary); }
 html[data-theme="dark"] .batch-stepper b { color: var(--text-primary); }
 html[data-theme="dark"] .batch-stepper small { color: var(--text-muted); }
@@ -300,5 +334,20 @@ html[data-theme="dark"] .package-view-presets img, html[data-theme="dark"] .pack
 html[data-theme="dark"] .component-inspector-actions a, html[data-theme="dark"] .component-inspector-actions button { color: var(--accent-bright); border-color: var(--border-default); background: var(--surface-primary); }
 
 html[data-theme="dark"] .analysis-error { color: var(--status-critical); background: rgba(255, 100, 124, .1); }
+html[data-theme="dark"] .report-wizard-overlay { background: rgba(1,8,18,.78); }
+html[data-theme="dark"] .report-wizard,html[data-theme="dark"] .report-wizard > footer { color: var(--text-normal); border-color: var(--border-default); background: var(--surface-primary); }
+html[data-theme="dark"] .report-wizard > header,html[data-theme="dark"] .report-wizard > nav,html[data-theme="dark"] .report-config-columns { border-color: var(--border-default); }
+html[data-theme="dark"] .report-wizard > header h2,html[data-theme="dark"] .report-config h3,html[data-theme="dark"] .report-preview > h3,html[data-theme="dark"] .report-export > h3,html[data-theme="dark"] .report-success h3,html[data-theme="dark"] .report-file b { color: var(--text-primary); }
+html[data-theme="dark"] .report-wizard > header button,html[data-theme="dark"] .report-type-options button,html[data-theme="dark"] .report-format-options button,html[data-theme="dark"] .report-file-actions button,html[data-theme="dark"] .report-wizard > footer button,html[data-theme="dark"] .report-preview-controls button { color: var(--text-secondary); border-color: var(--border-strong); background: var(--surface-input); }
+html[data-theme="dark"] .report-wizard > nav i { border-color: var(--border-strong); background: var(--surface-input); }
+html[data-theme="dark"] .report-wizard > nav .active i { color: var(--text-primary); border-color: var(--accent-primary); background: var(--accent-primary); }
+html[data-theme="dark"] .report-type-options button b,html[data-theme="dark"] .report-format-options button b { color: var(--text-primary); }
+html[data-theme="dark"] .report-type-options button small,html[data-theme="dark"] .report-format-options button small,html[data-theme="dark"] .report-config-columns label,html[data-theme="dark"] .report-export > p,html[data-theme="dark"] .report-success p,html[data-theme="dark"] .report-file small { color: var(--text-secondary); }
+html[data-theme="dark"] .report-type-options button.active,html[data-theme="dark"] .report-format-options button.active { border-color: var(--accent-primary); background: rgba(22,139,255,.11); }
+html[data-theme="dark"] .report-preview { background: var(--bg-canvas); }
+html[data-theme="dark"] .report-preview-paper,html[data-theme="dark"] .report-page { border-color: var(--border-strong); }
+html[data-theme="dark"] .report-export-tasks > div.active,html[data-theme="dark"] .report-export-note { background: rgba(22,139,255,.1); }
+html[data-theme="dark"] .report-file { border-color: var(--border-default); }
+html[data-theme="dark"] .report-export-progress > i { background: var(--chart-track); }
 html[data-theme="dark"] .incomplete-notice { color: var(--text-normal); border-color: var(--border-default); background: var(--surface-secondary); }
 html[data-theme="dark"] .app-footer { color: var(--text-muted); border-color: var(--border-default); background: var(--bg-sidebar); }

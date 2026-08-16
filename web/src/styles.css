@@ -208,7 +208,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .analysis-zone { margin-top: 9px; }
-.result-status-strip { min-height: 76px; margin-bottom: 10px; display: grid; grid-template-columns: 1.35fr repeat(4,.72fr) .65fr; align-items: stretch; overflow: hidden; border: 1px solid var(--line); border-left: 4px solid var(--info); border-radius: 8px; background: #fff; box-shadow: var(--shadow); }
+.result-status-strip { min-height: 76px; margin-bottom: 10px; display: grid; grid-template-columns: 1.35fr repeat(4,.72fr) .65fr; align-items: stretch; overflow: hidden; border: 0; border-left: 4px solid var(--info); border-radius: 8px; background: #fff; box-shadow: var(--shadow); }
 .result-status-strip.safe { border-left-color: var(--green); }
 .result-status-strip.critical { border-left-color: var(--amber); }
 .result-status-strip.unsafe { border-left-color: var(--red); }

@@ -8,9 +8,10 @@ import { AnalysisActions } from "./components/AnalysisActions";
 import { ThermalSettings } from "./components/ThermalSettings";
 import { BatchWorkspace } from "./components/BatchWorkspace";
 import { SavedAnalyses } from "./components/SavedAnalyses";
-import type { AnalysisInput, AnalysisResponse, EngineState, ModelSummary, Mode, SavedAnalysis, SoaCurve, SoaCurveResponse, WorkspacePage } from "./types";
+import type { AnalysisInput, AnalysisResponse, EngineState, ModelSummary, Mode, RecentAnalysis, SavedAnalysis, SoaCurve, SoaCurveResponse, WorkspacePage } from "./types";
 
 const API = import.meta.env.VITE_API_URL ?? "";
+const RECENT_ANALYSES_KEY = "transisafe-recent-analyses";
 const initialInput: AnalysisInput = {
   transistor_id: "CSD19536KTT", vds_v: 48, id_a: 40, mode: "SWITCHING",
   pulse_duration_s: 0.00001, frequency_hz: 100000, duty_cycle: 0.5,
@@ -43,6 +44,12 @@ export default function App() {
   const [page, setPage] = useState<WorkspacePage>("analyze");
   const [savedRefresh, setSavedRefresh] = useState(0);
   const [currentSaved, setCurrentSaved] = useState<{id:string;name:string}|null>(null);
+  const [recentAnalyses, setRecentAnalyses] = useState<RecentAnalysis[]>(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(RECENT_ANALYSES_KEY) ?? "[]");
+      return Array.isArray(stored) ? stored.slice(0, 5) : [];
+    } catch { return []; }
+  });
 
   useEffect(() => {
     Promise.all([
@@ -68,6 +75,16 @@ export default function App() {
   const selectedModel = useMemo(() => models.find((model) => model.id === input.transistor_id) ?? null, [models, input.transistor_id]);
   function update<K extends keyof AnalysisInput>(key: K, value: AnalysisInput[K]) { setInput((current) => ({ ...current, [key]: value })); setResult(null); setError(null); }
 
+  function rememberAnalysis(nextInput: AnalysisInput, nextResult: AnalysisResponse) {
+    const inputKey = JSON.stringify(nextInput);
+    const entry: RecentAnalysis = { id: crypto.randomUUID?.() ?? `recent-${Date.now()}`, timestamp: new Date().toISOString(), input: nextInput, result: nextResult };
+    setRecentAnalyses((current) => {
+      const next = [entry, ...current.filter((item) => JSON.stringify(item.input) !== inputKey)].slice(0, 5);
+      localStorage.setItem(RECENT_ANALYSES_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
+
   function selectMode(mode: Mode) {
     setInput((current) => ({
       ...current, mode,
@@ -89,7 +106,7 @@ export default function App() {
         throw new Error(detail);
       }
       if (!isAnalysisResponse(payload)) throw new Error("API und C-Engine haben unterschiedliche Versionen. Bitte die API neu bauen und starten.");
-      setResult(payload); setEngineState("ready");
+      setResult(payload); rememberAnalysis(payload.input, payload); setEngineState("ready");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Die Analyse-API ist nicht erreichbar."); setEngineState("offline");
     } finally { setLoading(false); }
@@ -106,8 +123,9 @@ export default function App() {
     setSavedRefresh((current) => current + 1);
   }
 
-  function openSaved(analysis: SavedAnalysis) { setInput(analysis.input); setResult(analysis.result); setCurrentSaved({id:analysis.id,name:analysis.name}); setError(null); setPage("analyze"); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function openBatchResult(nextInput: AnalysisInput, nextResult: AnalysisResponse) { setInput(nextInput); setResult(nextResult); setCurrentSaved(null); setError(null); setPage("analyze"); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function openSaved(analysis: SavedAnalysis) { setInput(analysis.input); setResult(analysis.result); rememberAnalysis(analysis.input, analysis.result); setCurrentSaved({id:analysis.id,name:analysis.name}); setError(null); setPage("analyze"); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function openBatchResult(nextInput: AnalysisInput, nextResult: AnalysisResponse) { setInput(nextInput); setResult(nextResult); rememberAnalysis(nextInput, nextResult); setCurrentSaved(null); setError(null); setPage("analyze"); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function openRecent(analysis: RecentAnalysis) { setInput(analysis.input); setResult(analysis.result); setCurrentSaved(null); setError(null); setPage("analyze"); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
   return <div className={`engineering-shell ${navigationCollapsed ? "nav-collapsed" : ""}`}>
     <Navigation collapsed={navigationCollapsed} onToggle={() => setNavigationCollapsed((current) => !current)} page={page} onNavigate={setPage}/>
@@ -118,7 +136,7 @@ export default function App() {
         <section className="workflow-grid" aria-label="Analysekonfiguration">
           <ComponentSelector models={models} selectedModel={selectedModel} onSelect={(transistorId) => { update("transistor_id", transistorId); setResult(null); }} loading={engineState === "checking"}/>
           <OperatingPointForm input={input} update={update} error={error} onSubmit={runAnalysis}/>
-          <AnalysisActions mode={input.mode} onModeChange={selectMode} disabled={!selectedModel || engineState !== "ready"} loading={loading} hasResult={Boolean(result)}/>
+          <AnalysisActions mode={input.mode} onModeChange={selectMode} disabled={!selectedModel || engineState !== "ready"} loading={loading} hasResult={Boolean(result)} recentAnalyses={recentAnalyses} onOpenRecent={openRecent}/>
           <ThermalSettings input={input} model={selectedModel} update={update}/>
         </section>
         <AnalysisResult result={result} input={input} model={selectedModel} soaCurves={soaCurves} savedName={currentSaved?.name} onSave={() => void saveCurrentAnalysis()} onSaveAs={() => void saveCurrentAnalysis(true)}/>

@@ -47,6 +47,7 @@ html[data-theme="dark"] .nav-engine span { color: var(--text-secondary); }
 html[data-theme="dark"] .application-frame { background: linear-gradient(rgba(11, 23, 38, .975), rgba(11, 23, 38, .99)), url('/transisafe-background.png') center/cover fixed; }
 html[data-theme="dark"] .app-header { color: var(--text-normal); border-color: var(--border-default); background: rgba(11, 23, 38, .96); }
 html[data-theme="dark"] .header-brand { color: var(--text-primary); }
+html[data-theme="dark"] .header-brand::before, html[data-theme="dark"] .header-brand::after { border-color: #36556f; }
 html[data-theme="dark"] .header-brand strong > span, html[data-theme="dark"] .header-brand small { color: var(--accent-bright); }
 html[data-theme="dark"] .header-actions > a, html[data-theme="dark"] .api-state, html[data-theme="dark"] .header-icon-button { color: var(--text-secondary); border-color: var(--border-default); }
 html[data-theme="dark"] .header-actions > a:hover, html[data-theme="dark"] .header-icon-button:hover { color: var(--accent-bright); background: var(--surface-hover); }
@@ -127,6 +128,18 @@ html[data-theme="dark"] .critical .status-icon { color: var(--status-warning); b
 html[data-theme="dark"] .unsafe .status-icon { color: var(--status-critical); background: rgba(255, 100, 124, .13); }
 html[data-theme="dark"] .details-trigger { color: var(--accent-bright); }
 html[data-theme="dark"] .details-trigger:hover { background: var(--surface-hover); }
+html[data-theme="dark"] .history-trigger { color: var(--text-secondary); }
+html[data-theme="dark"] .history-trigger:hover, html[data-theme="dark"] .history-trigger[aria-expanded="true"] { color: var(--accent-bright); border-color: var(--border-strong); background: var(--surface-hover); }
+html[data-theme="dark"] .recent-analysis-panel { color: var(--text-normal); border-color: var(--border-strong); background: var(--surface-primary); box-shadow: 0 14px 34px rgba(0, 6, 15, .38); }
+html[data-theme="dark"] .recent-analysis-panel > header { border-color: var(--border-default); background: var(--surface-secondary); }
+html[data-theme="dark"] .recent-analysis-panel > header span { color: var(--accent-bright); }
+html[data-theme="dark"] .recent-analysis-panel > header b { color: var(--text-primary); }
+html[data-theme="dark"] .recent-analysis-panel > header button { color: var(--text-secondary); background: var(--surface-input); }
+html[data-theme="dark"] .recent-analysis-panel > div > p, html[data-theme="dark"] .recent-analysis-item small { color: var(--text-muted); }
+html[data-theme="dark"] .recent-analysis-item { color: var(--text-normal); border-color: var(--border-default); }
+html[data-theme="dark"] .recent-analysis-item:hover { background: var(--surface-hover); }
+html[data-theme="dark"] .recent-analysis-item strong { color: var(--text-primary); }
+html[data-theme="dark"] .recent-analysis-item em { color: var(--status-safe); background: rgba(50, 213, 131, .1); }
 
 html[data-theme="dark"] .soa-body { background: var(--surface-primary); }
 html[data-theme="dark"] .chart-plot { fill: var(--chart-plot); stroke: var(--border-strong); }

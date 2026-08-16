@@ -33,7 +33,7 @@ export function AnalysisResult({ result, input, model, soaCurves, savedName, onS
       <div className="status-metric"><Zap size={20}/><div><span>Total Power Loss</span><strong>{formatNumber(result.result.p_total_w, 2)} W</strong></div></div>
       <div className="status-metric"><TrendingUp size={20}/><div><span>SOA Reserve</span><strong>{formatNumber(margins.soa_reserve_percent, 0)} %</strong><small>engine result</small></div></div>
       <div className="status-metric"><ShieldCheck size={20}/><div><span>Closest constraint</span><strong>{result.result.closest_constraint.type}</strong><small>{formatNumber(result.result.closest_constraint.reserve_percent, 0)} % reserve</small></div></div>
-      <button type="button" onClick={() => setDetailsOpen(true)}>Engineering Details<ChevronRight size={15}/></button>
+      <button className="details-trigger" type="button" onClick={() => setDetailsOpen(true)}>Details<ChevronRight size={14}/></button>
     </div>
     <div className="result-main-grid engineering-visuals">
       <SOAChart curves={soaCurves} input={input} result={result}/>

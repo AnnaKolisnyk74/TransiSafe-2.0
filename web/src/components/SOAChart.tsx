@@ -1,60 +1,55 @@
-import { Info, ShieldCheck } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type WheelEvent } from "react";
+import { Crosshair, Info, RotateCcw, ShieldCheck, ZoomIn, ZoomOut } from "lucide-react";
 import type { AnalysisInput, AnalysisResponse, SoaCurve } from "../types";
 import { formatNumber } from "./format";
 
 const fallbackColors = ["#168BFF", "#22D3EE", "#32D583", "#F5B942", "#FF647C", "#8B5CF6"];
+function curveColor(seconds:number,index:number){if(seconds>=1000000)return"#F5B942";if(seconds>=.01)return"#32D583";if(seconds>=.001)return"#22D3EE";if(seconds>0)return"#168BFF";return fallbackColors[index%fallbackColors.length];}
+function labelPulse(seconds:number){if(seconds>=1000000)return"DC";if(seconds>=1)return`${formatNumber(seconds)} s`;if(seconds>=.001)return`${formatNumber(seconds*1000)} ms`;return`${formatNumber(seconds*1000000)} µs`;}
+type ViewDomain={xMin:number;xMax:number;yMin:number;yMax:number};
+type HoverPoint={label:string;vds:number;id:number;color:string};
+const log=(value:number)=>Math.log10(Math.max(value,.000001));
 
-function curveColor(seconds: number, index: number) {
-  if (seconds >= 1000000) return "#F5B942";
-  if (seconds >= 0.01) return "#32D583";
-  if (seconds >= 0.001) return "#22D3EE";
-  if (seconds > 0) return "#168BFF";
-  return fallbackColors[index % fallbackColors.length];
-}
+export function SOAChart({curves,input,result}:{curves:SoaCurve[];input:AnalysisInput;result:AnalysisResponse}){
+  const svgRef=useRef<SVGSVGElement>(null);
+  const allPoints=useMemo(()=>curves.flatMap((curve)=>curve.points),[curves]);
+  const safePoint=result.optimization.max_current_available?{vds_v:input.vds_v,id_a:result.optimization.max_current_a}:null;
+  const fullDomain=useMemo<ViewDomain>(()=>{
+    const xs=[...allPoints.map((point)=>point.vds_v),input.vds_v].filter((value)=>value>0).map(log);
+    const ys=[...allPoints.map((point)=>point.id_a),input.id_a,safePoint?.id_a??0].filter((value)=>value>0).map(log);
+    const xMin=Math.min(...(xs.length?xs:[0])),xMax=Math.max(...(xs.length?xs:[2])),yMin=Math.min(...(ys.length?ys:[-1])),yMax=Math.max(...(ys.length?ys:[3]));
+    return{xMin:xMin-.08,xMax:xMax+.08,yMin:yMin-.1,yMax:yMax+.13};
+  },[allPoints,input.vds_v,input.id_a,safePoint?.id_a]);
+  const[view,setView]=useState<ViewDomain>(fullDomain);const[hover,setHover]=useState<HoverPoint|null>(null);
+  useEffect(()=>{setView(fullDomain);setHover(null);},[fullDomain]);
+  if(!allPoints.length)return<section className="result-card soa-chart"><header><div><span>SOA Kennlinie</span><h3>Keine gespeicherten Kurven verfügbar</h3></div></header></section>;
 
-function labelPulse(seconds: number) {
-  if (seconds >= 1000000) return "DC";
-  if (seconds >= 1) return `${formatNumber(seconds)} s`;
-  if (seconds >= 0.001) return `${formatNumber(seconds * 1000)} ms`;
-  return `${formatNumber(seconds * 1000000)} µs`;
-}
+  const width=700,height=390,left=83,right=31,top=48,bottom=65,plotWidth=width-left-right,plotHeight=height-top-bottom;
+  const x=(value:number)=>left+(log(value)-view.xMin)/(view.xMax-view.xMin)*plotWidth;
+  const y=(value:number)=>top+(view.yMax-log(value))/(view.yMax-view.yMin)*plotHeight;
+  const xTicks=Array.from({length:6},(_,index)=>10**(view.xMin+(view.xMax-view.xMin)*index/5));
+  const yTicks=Array.from({length:6},(_,index)=>10**(view.yMin+(view.yMax-view.yMin)*index/5));
+  const zoomLevel=Math.min((fullDomain.xMax-fullDomain.xMin)/(view.xMax-view.xMin),(fullDomain.yMax-fullDomain.yMin)/(view.yMax-view.yMin));
+  const formatTick=(value:number)=>formatNumber(value,value<1?2:value<10?1:0);
+  function clampDomain(next:ViewDomain){const xSpan=next.xMax-next.xMin,ySpan=next.yMax-next.yMin;if(xSpan>=fullDomain.xMax-fullDomain.xMin||ySpan>=fullDomain.yMax-fullDomain.yMin)return fullDomain;let{xMin,xMax,yMin,yMax}=next;if(xMin<fullDomain.xMin){xMax+=fullDomain.xMin-xMin;xMin=fullDomain.xMin;}if(xMax>fullDomain.xMax){xMin-=xMax-fullDomain.xMax;xMax=fullDomain.xMax;}if(yMin<fullDomain.yMin){yMax+=fullDomain.yMin-yMin;yMin=fullDomain.yMin;}if(yMax>fullDomain.yMax){yMin-=yMax-fullDomain.yMax;yMax=fullDomain.yMax;}return{xMin,xMax,yMin,yMax};}
+  function zoomBy(factor:number,anchorX=.5,anchorY=.5){setView((current)=>{const fullX=fullDomain.xMax-fullDomain.xMin,fullY=fullDomain.yMax-fullDomain.yMin;const xSpan=Math.max(fullX/12,Math.min(fullX,(current.xMax-current.xMin)*factor)),ySpan=Math.max(fullY/12,Math.min(fullY,(current.yMax-current.yMin)*factor));const anchorLogX=current.xMin+(current.xMax-current.xMin)*anchorX,anchorLogY=current.yMax-(current.yMax-current.yMin)*anchorY;return clampDomain({xMin:anchorLogX-xSpan*anchorX,xMax:anchorLogX+xSpan*(1-anchorX),yMin:anchorLogY-ySpan*(1-anchorY),yMax:anchorLogY+ySpan*anchorY});});}
+  function focusPoint(vds:number,id:number,label:string,color:string){const xSpan=(fullDomain.xMax-fullDomain.xMin)/3.4,ySpan=(fullDomain.yMax-fullDomain.yMin)/3.4,centerX=log(vds),centerY=log(id);setView(clampDomain({xMin:centerX-xSpan/2,xMax:centerX+xSpan/2,yMin:centerY-ySpan/2,yMax:centerY+ySpan/2}));setHover({label,vds,id,color});}
+  function wheel(event:WheelEvent<SVGSVGElement>){event.preventDefault();const bounds=svgRef.current?.getBoundingClientRect();if(!bounds)return;const svgX=(event.clientX-bounds.left)/bounds.width*width,svgY=(event.clientY-bounds.top)/bounds.height*height;if(svgX<left||svgX>width-right||svgY<top||svgY>height-bottom)return;zoomBy(event.deltaY<0?.8:1.24,(svgX-left)/plotWidth,(svgY-top)/plotHeight);}
+  const hoverX=hover?x(hover.vds):0,hoverY=hover?y(hover.id):0,tooltipX=Math.min(width-right-162,Math.max(left+6,hoverX+12)),tooltipY=Math.min(height-bottom-66,Math.max(top+6,hoverY-69));
+  const pointKey=(event:ReactKeyboardEvent<SVGGElement>,callback:()=>void)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();callback();}};
 
-export function SOAChart({ curves, input, result }: { curves: SoaCurve[]; input: AnalysisInput; result: AnalysisResponse }) {
-  const allPoints = curves.flatMap((curve) => curve.points);
-  if (!allPoints.length) return <section className="result-card soa-chart"><header><div><span>SOA Kennlinie</span><h3>Keine gespeicherten Kurven verfügbar</h3></div></header></section>;
-  const width = 680, height = 340, left = 72, right = 28, top = 44, bottom = 52;
-  const minX = Math.max(0.5, Math.min(...allPoints.map((point) => point.vds_v))), maxX = Math.max(...allPoints.map((point) => point.vds_v));
-  const rawMinY = Math.min(...allPoints.map((point) => point.id_a));
-  const rawMaxY = Math.max(...allPoints.map((point) => point.id_a));
-  const minY = Math.max(0.05, rawMinY / Math.pow(10, 0.08));
-  const maxY = rawMaxY * Math.pow(10, 0.12);
-  const log = (value: number) => Math.log10(Math.max(value, 0.000001));
-  const x = (value: number) => left + (log(value) - log(minX)) / (log(maxX) - log(minX)) * (width - left - right);
-  const y = (value: number) => top + (log(maxY) - log(value)) / (log(maxY) - log(minY)) * (height - top - bottom);
-  const xTicks = [1, 10, 100].filter((value) => value >= minX && value <= maxX);
-  const yTicks = [0.1, 1, 10, 100, 1000].filter((value) => value >= minY && value <= maxY);
-  const safePoint = result.optimization.max_current_available ? { vds_v: input.vds_v, id_a: result.optimization.max_current_a } : null;
-  const safePointPosition = safePoint && safePoint.id_a > 0 ? { x: x(safePoint.vds_v), y: y(safePoint.id_a) } : null;
-  return <section className="result-card soa-chart">
-    <header><div><span><ShieldCheck size={14}/>SOA Kennlinie</span><h3>Stored Safe-Operating-Area Curves</h3></div><small>VDS [V] · ID [A]</small></header>
-    <div className="soa-body"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Stored SOA curves and current operating point">
-      <defs>
-        <pattern id="soa-minor-grid" width="12" height="12" patternUnits="userSpaceOnUse"><path className="chart-grid-minor" d="M 12 0 L 0 0 0 12" fill="none"/></pattern>
-        <pattern id="soa-major-grid" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="url(#soa-minor-grid)"/><path className="chart-grid-major" d="M 60 0 L 0 0 0 60" fill="none"/></pattern>
-        <marker id="axis-arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path className="axis-arrow" d="M0,0 L7,3.5 L0,7 z"/></marker>
-      </defs>
-      <rect className="chart-plot" x={left} y={top} width={width-left-right} height={height-top-bottom}/>
-      <rect className="chart-paper-grid" x={left} y={top} width={width-left-right} height={height-top-bottom} fill="url(#soa-major-grid)"/>
-      {xTicks.map((tick) => <g key={`x-${tick}`}><line className="chart-grid" x1={x(tick)} x2={x(tick)} y1={top} y2={height-bottom}/><text className="chart-tick" x={x(tick)} y={height-17} textAnchor="middle">{tick}</text></g>)}
-      {yTicks.map((tick) => <g key={`y-${tick}`}><line className="chart-grid" x1={left} x2={width-right} y1={y(tick)} y2={y(tick)}/><text className="chart-tick" x={left-9} y={y(tick)+3} textAnchor="end">{tick}</text></g>)}
+  return<section className="result-card soa-chart"><header><div><span><ShieldCheck size={14}/>SOA Kennlinie</span><h3>Stored Safe-Operating-Area Curves</h3></div><small>VDS [V] · ID [A]</small></header>
+    <div className="soa-chart-tools"><span><Crosshair size={14}/>Punkt wählen oder im Diagramm scrollen</span><div><button type="button" onClick={()=>zoomBy(1.28)} title="Herauszoomen"><ZoomOut size={14}/></button><b>{formatNumber(zoomLevel,1)}×</b><button type="button" onClick={()=>zoomBy(.78)} title="Hineinzoomen"><ZoomIn size={14}/></button><button type="button" onClick={()=>{setView(fullDomain);setHover(null);}} title="Gesamtansicht"><RotateCcw size={14}/></button></div></div>
+    <div className="soa-body"><svg ref={svgRef} viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Interaktive SOA-Kurven mit Betriebspunkt und Engine-Limit" onWheel={wheel} onDoubleClick={()=>{setView(fullDomain);setHover(null);}}><defs><clipPath id="soa-plot-clip"><rect x={left} y={top} width={plotWidth} height={plotHeight}/></clipPath><pattern id="soa-minor-grid" width="12" height="12" patternUnits="userSpaceOnUse"><path className="chart-grid-minor" d="M 12 0 L 0 0 0 12" fill="none"/></pattern><pattern id="soa-major-grid" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="url(#soa-minor-grid)"/><path className="chart-grid-major" d="M 60 0 L 0 0 0 60" fill="none"/></pattern><marker id="axis-arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path className="axis-arrow" d="M0,0 L7,3.5 L0,7 z"/></marker></defs>
+      <rect className="chart-plot" x={left} y={top} width={plotWidth} height={plotHeight}/><rect className="chart-paper-grid" x={left} y={top} width={plotWidth} height={plotHeight} fill="url(#soa-major-grid)"/>
+      {xTicks.map((tick,index)=><g key={`x-${index}`}><line className="chart-grid" x1={x(tick)} x2={x(tick)} y1={top} y2={height-bottom}/><text className="chart-tick" x={x(tick)} y={height-27} textAnchor="middle">{formatTick(tick)}</text></g>)}{yTicks.map((tick,index)=><g key={`y-${index}`}><line className="chart-grid" x1={left} x2={width-right} y1={y(tick)} y2={y(tick)}/><text className="chart-tick" x={left-11} y={y(tick)+4} textAnchor="end">{formatTick(tick)}</text></g>)}
       <line className="chart-axis" markerEnd="url(#axis-arrow)" x1={left} x2={width-right+2} y1={height-bottom} y2={height-bottom}/><line className="chart-axis" markerEnd="url(#axis-arrow)" x1={left} x2={left} y1={height-bottom} y2={top-2}/>
-      {curves.map((curve, index) => { const color = curveColor(curve.pulse_duration_s, index); return <g key={curve.pulse_duration_s}><polyline className="soa-curve" fill="none" stroke={color} strokeWidth="2.35" strokeDasharray={curve.pulse_duration_s >= 1000000 ? "7 4" : undefined} points={curve.points.map((point) => `${x(point.vds_v)},${y(point.id_a)}`).join(" ")}/>{curve.points.map((point, pointIndex) => <circle className="soa-sample" key={pointIndex} cx={x(point.vds_v)} cy={y(point.id_a)} r="1.9" fill={color}/>)}</g>; })}
-      {safePointPosition && <g className="engine-limit-marker"><title>Engine-Limit: maximal zulässiger Strom bei {formatNumber(input.vds_v)} V</title><circle className="chart-point safe-point" cx={safePointPosition.x} cy={safePointPosition.y} r="6"/><text className="engine-limit-label" x={safePointPosition.x-11} y={Math.max(top+15, safePointPosition.y-10)} textAnchor="end">Engine-Limit</text></g>}
-      <circle className="operating-point-ring" cx={x(input.vds_v)} cy={y(input.id_a)} r="10"/>
-      <circle className="chart-point current-point" cx={x(input.vds_v)} cy={y(input.id_a)} r="6.5"/>
-      <text className="point-label" x={Math.min(width-right-72, x(input.vds_v)+12)} y={Math.max(top+14, y(input.id_a)-10)}>Betriebspunkt</text>
-      <text className="axis-label chart-y-title" x={left} y={top-17}>ID [A]</text><text className="axis-label chart-x-title" x={width-right} y={height-7} textAnchor="end">VDS [V]</text>
-    </svg><div className="soa-legend">{curves.map((curve, index) => <span key={curve.pulse_duration_s}><i style={{ background: curveColor(curve.pulse_duration_s, index) }}/>{labelPulse(curve.pulse_duration_s)}</span>)}<span><i className="point current"/>Betriebspunkt</span>{safePoint && <span><i className="point safe"/>Engine-Limit</span>}</div></div>
-    <div className="chart-note"><Info size={18}/><span>Kurven werden unverändert aus der gespeicherten Engineering-Digitalisierung dargestellt. TransiSafe berechnet im Browser keine SOA-Grenze.</span></div>
+      <g clipPath="url(#soa-plot-clip)">{curves.map((curve,index)=>{const color=curveColor(curve.pulse_duration_s,index),label=labelPulse(curve.pulse_duration_s);return<g key={curve.pulse_duration_s}><polyline className="soa-curve" fill="none" stroke={color} strokeWidth="2.5" strokeDasharray={curve.pulse_duration_s>=1000000?"7 4":undefined} points={curve.points.map((point)=>`${x(point.vds_v)},${y(point.id_a)}`).join(" ")}/>{curve.points.map((point,pointIndex)=><g key={pointIndex}><circle className="soa-sample" cx={x(point.vds_v)} cy={y(point.id_a)} r="2" fill={color}/><circle className="soa-hit" cx={x(point.vds_v)} cy={y(point.id_a)} r="8" onMouseEnter={()=>setHover({label:`${label} curve`,vds:point.vds_v,id:point.id_a,color})} onMouseLeave={()=>setHover(null)} onClick={()=>focusPoint(point.vds_v,point.id_a,`${label} curve`,color)}/></g>)}</g>})}
+        {safePoint&&safePoint.id_a>0&&<g className="engine-limit-marker interactive-point" role="button" tabIndex={0} onClick={()=>focusPoint(safePoint.vds_v,safePoint.id_a,"Engine-Limit","#60778e")} onKeyDown={(event)=>pointKey(event,()=>focusPoint(safePoint.vds_v,safePoint.id_a,"Engine-Limit","#60778e"))} onMouseEnter={()=>setHover({label:"Engine-Limit",vds:safePoint.vds_v,id:safePoint.id_a,color:"#60778e"})}><circle className="chart-point safe-point" cx={x(safePoint.vds_v)} cy={y(safePoint.id_a)} r="7"/><text className="engine-limit-label" x={x(safePoint.vds_v)-12} y={y(safePoint.id_a)-11} textAnchor="end">Engine-Limit</text></g>}
+        <g className="interactive-point" role="button" tabIndex={0} onClick={()=>focusPoint(input.vds_v,input.id_a,"Betriebspunkt","#168bff")} onKeyDown={(event)=>pointKey(event,()=>focusPoint(input.vds_v,input.id_a,"Betriebspunkt","#168bff"))} onMouseEnter={()=>setHover({label:"Betriebspunkt",vds:input.vds_v,id:input.id_a,color:"#168bff"})}><circle className="operating-point-ring" cx={x(input.vds_v)} cy={y(input.id_a)} r="11"/><circle className="chart-point current-point" cx={x(input.vds_v)} cy={y(input.id_a)} r="7"/><text className="point-label" x={x(input.vds_v)+13} y={y(input.id_a)-11}>Betriebspunkt</text></g></g>
+      {hover&&<g className="soa-tooltip" pointerEvents="none"><rect x={tooltipX} y={tooltipY} width="156" height="60" rx="6"/><circle cx={tooltipX+12} cy={tooltipY+14} r="4" fill={hover.color}/><text className="soa-tooltip-title" x={tooltipX+22} y={tooltipY+17}>{hover.label}</text><text x={tooltipX+11} y={tooltipY+36}>VDS <tspan>{formatNumber(hover.vds,3)} V</tspan></text><text x={tooltipX+11} y={tooltipY+52}>ID <tspan>{formatNumber(hover.id,3)} A</tspan></text></g>}
+      <text className="axis-label chart-y-title" x={left} y={top-20}>ID [A]</text><text className="axis-label chart-x-title" x={width-right} y={height-8} textAnchor="end">VDS [V]</text></svg>
+      <div className="soa-legend">{curves.map((curve,index)=><span key={curve.pulse_duration_s}><i style={{background:curveColor(curve.pulse_duration_s,index)}}/>{labelPulse(curve.pulse_duration_s)}</span>)}<button type="button" onClick={()=>focusPoint(input.vds_v,input.id_a,"Betriebspunkt","#168bff")}><i className="point current"/>Betriebspunkt</button>{safePoint&&<button type="button" onClick={()=>focusPoint(safePoint.vds_v,safePoint.id_a,"Engine-Limit","#60778e")}><i className="point safe"/>Engine-Limit</button>}</div></div>
+    <div className="chart-note"><Info size={18}/><span>Hover zeigt exakte Werte · Klick fokussiert einen Punkt · Mausrad zoomt · Doppelklick setzt die Gesamtansicht zurück.</span></div>
   </section>;
 }

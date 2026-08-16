@@ -125,4 +125,11 @@ export interface SavedAnalysis {
   updated_at: string;
 }
 
+export interface RecentAnalysis {
+  id: string;
+  timestamp: string;
+  input: AnalysisInput;
+  result: AnalysisResponse;
+}
+
 export type WorkspacePage = "analyze" | "batch" | "reports";

@@ -47,6 +47,7 @@ html[data-theme="dark"] .nav-engine span { color: var(--text-secondary); }
 html[data-theme="dark"] .application-frame { background: linear-gradient(rgba(11, 23, 38, .975), rgba(11, 23, 38, .99)), url('/transisafe-background.png') center/cover fixed; }
 html[data-theme="dark"] .app-header { color: var(--text-normal); border-color: var(--border-default); background: rgba(11, 23, 38, .96); }
 html[data-theme="dark"] .header-brand { color: var(--text-primary); }
+html[data-theme="dark"] .header-brand::before, html[data-theme="dark"] .header-brand::after { border-color: #36556f; }
 html[data-theme="dark"] .header-brand strong > span, html[data-theme="dark"] .header-brand small { color: var(--accent-bright); }
 html[data-theme="dark"] .header-actions > a, html[data-theme="dark"] .api-state, html[data-theme="dark"] .header-icon-button { color: var(--text-secondary); border-color: var(--border-default); }
 html[data-theme="dark"] .header-actions > a:hover, html[data-theme="dark"] .header-icon-button:hover { color: var(--accent-bright); background: var(--surface-hover); }
@@ -127,6 +128,18 @@ html[data-theme="dark"] .critical .status-icon { color: var(--status-warning); b
 html[data-theme="dark"] .unsafe .status-icon { color: var(--status-critical); background: rgba(255, 100, 124, .13); }
 html[data-theme="dark"] .details-trigger { color: var(--accent-bright); }
 html[data-theme="dark"] .details-trigger:hover { background: var(--surface-hover); }
+html[data-theme="dark"] .history-trigger { color: var(--text-secondary); }
+html[data-theme="dark"] .history-trigger:hover, html[data-theme="dark"] .history-trigger[aria-expanded="true"] { color: var(--accent-bright); border-color: var(--border-strong); background: var(--surface-hover); }
+html[data-theme="dark"] .recent-analysis-panel { color: var(--text-normal); border-color: var(--border-strong); background: var(--surface-primary); box-shadow: 0 14px 34px rgba(0, 6, 15, .38); }
+html[data-theme="dark"] .recent-analysis-panel > header { border-color: var(--border-default); background: var(--surface-secondary); }
+html[data-theme="dark"] .recent-analysis-panel > header span { color: var(--accent-bright); }
+html[data-theme="dark"] .recent-analysis-panel > header b { color: var(--text-primary); }
+html[data-theme="dark"] .recent-analysis-panel > header button { color: var(--text-secondary); background: var(--surface-input); }
+html[data-theme="dark"] .recent-analysis-panel > div > p, html[data-theme="dark"] .recent-analysis-item small { color: var(--text-muted); }
+html[data-theme="dark"] .recent-analysis-item { color: var(--text-normal); border-color: var(--border-default); }
+html[data-theme="dark"] .recent-analysis-item:hover { background: var(--surface-hover); }
+html[data-theme="dark"] .recent-analysis-item strong { color: var(--text-primary); }
+html[data-theme="dark"] .recent-analysis-item em { color: var(--status-safe); background: rgba(50, 213, 131, .1); }
 
 html[data-theme="dark"] .soa-body { background: var(--surface-primary); }
 html[data-theme="dark"] .chart-plot { fill: var(--chart-plot); stroke: var(--border-strong); }
@@ -174,6 +187,7 @@ html[data-theme="dark"] .thermal-facts strong { color: var(--text-primary); }
 html[data-theme="dark"] .thermal-path-compact .thermal-reserve { border-color: var(--border-default); }
 html[data-theme="dark"] .thermal-path-compact .thermal-reserve > div:first-child span, html[data-theme="dark"] .thermal-path-compact .thermal-reserve > small, html[data-theme="dark"] .thermal-path-compact .thermal-reserve em { color: var(--text-secondary); }
 html[data-theme="dark"] .thermal-path-compact .thermal-reserve b, html[data-theme="dark"] .thermal-path-compact .thermal-reserve strong { color: var(--status-safe); }
+html[data-theme="dark"] .thermal-path-compact .thermal-reserve.reserve-critical b, html[data-theme="dark"] .thermal-path-compact .thermal-reserve.reserve-critical strong { color: var(--status-critical); }
 html[data-theme="dark"] .reserve-track, html[data-theme="dark"] .thermal-reserve-track { background: var(--chart-track); }
 html[data-theme="dark"] .reserve-track span, html[data-theme="dark"] .thermal-reserve-track i { background: var(--status-safe); }
 
@@ -235,6 +249,37 @@ html[data-theme="dark"] .validation-card .invalid strong { color: var(--status-c
 html[data-theme="dark"] .batch-toolbar > a, html[data-theme="dark"] .mapping-card header button, html[data-theme="dark"] .validation-card > button, html[data-theme="dark"] .secondary-action { color: var(--accent-bright); border-color: var(--border-strong); background: var(--surface-input); }
 html[data-theme="dark"] .upload-button { color: var(--text-primary); border-color: var(--accent-primary); background: var(--accent-primary); }
 html[data-theme="dark"] .table-status { color: var(--status-safe); background: rgba(50, 213, 131, .1); }
+
+html[data-theme="dark"] .what-if-panel,
+html[data-theme="dark"] .batch-stepper,
+html[data-theme="dark"] .batch-dropzone,
+html[data-theme="dark"] .batch-file-summary,
+html[data-theme="dark"] .batch-preview { color: var(--text-normal); border-color: var(--border-default); background: var(--surface-primary); box-shadow: var(--shadow); }
+html[data-theme="dark"] .what-if-panel > header { border-color: var(--border-default); background: var(--surface-secondary); }
+html[data-theme="dark"] .what-if-panel > header span { color: var(--accent-bright); }
+html[data-theme="dark"] .what-if-panel > header b, html[data-theme="dark"] .batch-dropzone h2, html[data-theme="dark"] .batch-file-summary h2, html[data-theme="dark"] .batch-file-summary > header b, html[data-theme="dark"] .batch-file-metrics strong, html[data-theme="dark"] .batch-preview h2 { color: var(--text-primary); }
+html[data-theme="dark"] .what-if-panel > header button, html[data-theme="dark"] .batch-file-summary > header button { color: var(--text-secondary); border-color: var(--border-default); background: var(--surface-input); }
+html[data-theme="dark"] .what-if-panel > p, html[data-theme="dark"] .what-if-fields label, html[data-theme="dark"] .batch-dropzone p, html[data-theme="dark"] .batch-dropzone footer span, html[data-theme="dark"] .batch-file-summary.empty, html[data-theme="dark"] .batch-file-summary.empty p, html[data-theme="dark"] .batch-file-summary > header small, html[data-theme="dark"] .batch-file-metrics span, html[data-theme="dark"] .batch-preview > header b { color: var(--text-secondary); }
+html[data-theme="dark"] .what-if-fields label > div { border-color: var(--border-strong); background: var(--surface-input); }
+html[data-theme="dark"] .what-if-fields input { color: var(--text-primary); }
+html[data-theme="dark"] .what-if-fields b { color: var(--text-secondary); border-color: var(--border-strong); background: #102337; }
+html[data-theme="dark"] .what-if-baseline { color: var(--text-secondary); background: var(--surface-secondary); }
+html[data-theme="dark"] .what-if-baseline b { color: var(--text-primary); }
+html[data-theme="dark"] .batch-stepper span { background: var(--surface-primary); }
+html[data-theme="dark"] .batch-stepper b { color: var(--text-primary); }
+html[data-theme="dark"] .batch-stepper small { color: var(--text-muted); }
+html[data-theme="dark"] .batch-stepper i { color: var(--text-secondary); background: var(--chart-track); }
+html[data-theme="dark"] .batch-stepper .active i { color: var(--text-primary); background: var(--accent-primary); }
+html[data-theme="dark"] .batch-stepper > div:not(:last-child)::after, html[data-theme="dark"] .batch-dropzone footer, html[data-theme="dark"] .batch-file-metrics, html[data-theme="dark"] .batch-file-metrics article, html[data-theme="dark"] .batch-preview > header, html[data-theme="dark"] .batch-preview th, html[data-theme="dark"] .batch-preview td { border-color: var(--border-default); }
+html[data-theme="dark"] .batch-dropzone.drag-active { border-color: var(--accent-primary); background: var(--surface-hover); }
+html[data-theme="dark"] .batch-dropzone a { color: var(--text-normal); border-color: var(--border-strong); background: var(--surface-input); }
+html[data-theme="dark"] .batch-preview th { color: var(--text-secondary); background: var(--surface-secondary); }
+html[data-theme="dark"] .validation-progress > i { background: var(--chart-track); }
+html[data-theme="dark"] .thermal-stack { color: var(--text-normal); border-color: var(--border-default); background: linear-gradient(135deg,var(--surface-secondary),var(--surface-input)); }
+html[data-theme="dark"] .thermal-stack-copy > span { color: var(--accent-bright); }
+html[data-theme="dark"] .thermal-stack-copy > strong, html[data-theme="dark"] .thermal-stack-copy > small { color: var(--text-primary); }
+html[data-theme="dark"] .thermal-stack-copy > div > * { color: var(--text-secondary); border-color: var(--border-default); background: var(--surface-primary); }
+html[data-theme="dark"] .thermal-stack-copy > div > b { color: var(--status-critical); }
 
 html[data-theme="dark"] .analysis-error { color: var(--status-critical); background: rgba(255, 100, 124, .1); }
 html[data-theme="dark"] .incomplete-notice { color: var(--text-normal); border-color: var(--border-default); background: var(--surface-secondary); }

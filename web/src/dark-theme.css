@@ -141,6 +141,7 @@ html[data-theme="dark"] .soa-sample { stroke: var(--chart-plot); }
 html[data-theme="dark"] .current-point { fill: var(--accent-primary); stroke: #bde2ff; }
 html[data-theme="dark"] .operating-point-ring { stroke: rgba(53, 167, 255, .38); }
 html[data-theme="dark"] .safe-point { fill: var(--chart-plot); stroke: #c2d0dc; }
+html[data-theme="dark"] .engine-limit-label { fill: var(--text-secondary); stroke: var(--chart-plot); }
 html[data-theme="dark"] .soa-legend span { color: var(--text-secondary); }
 html[data-theme="dark"] .chart-note, html[data-theme="dark"] .loss-note { color: var(--text-secondary); border-color: var(--border-default); background: var(--surface-secondary); }
 html[data-theme="dark"] .chart-note svg, html[data-theme="dark"] .loss-note b { color: var(--accent-bright); }

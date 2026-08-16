@@ -92,6 +92,14 @@
 .current-point { fill: #168bff; stroke: #eaf5ff; stroke-width: 2.6; }
 .operating-point-ring { fill: none; stroke: rgba(22, 139, 255, .34); stroke-width: 5; }
 .point-label { stroke: #fbfdff; }
+.engine-limit-label {
+  fill: #526a82;
+  font: 700 9px Inter, sans-serif;
+  paint-order: stroke;
+  stroke: #fbfdff;
+  stroke-width: 3px;
+}
+.chart-y-title, .chart-x-title { font-weight: 700; }
 
 @media (max-width: 760px) {
   .thermal-facts { grid-template-columns: 1fr; }

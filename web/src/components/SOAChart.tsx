@@ -22,15 +22,19 @@ function labelPulse(seconds: number) {
 export function SOAChart({ curves, input, result }: { curves: SoaCurve[]; input: AnalysisInput; result: AnalysisResponse }) {
   const allPoints = curves.flatMap((curve) => curve.points);
   if (!allPoints.length) return <section className="result-card soa-chart"><header><div><span>SOA Kennlinie</span><h3>Keine gespeicherten Kurven verfügbar</h3></div></header></section>;
-  const width = 680, height = 330, left = 62, right = 24, top = 24, bottom = 48;
+  const width = 680, height = 340, left = 72, right = 28, top = 44, bottom = 52;
   const minX = Math.max(0.5, Math.min(...allPoints.map((point) => point.vds_v))), maxX = Math.max(...allPoints.map((point) => point.vds_v));
-  const minY = Math.max(0.1, Math.min(...allPoints.map((point) => point.id_a))), maxY = Math.max(...allPoints.map((point) => point.id_a));
+  const rawMinY = Math.min(...allPoints.map((point) => point.id_a));
+  const rawMaxY = Math.max(...allPoints.map((point) => point.id_a));
+  const minY = Math.max(0.05, rawMinY / Math.pow(10, 0.08));
+  const maxY = rawMaxY * Math.pow(10, 0.12);
   const log = (value: number) => Math.log10(Math.max(value, 0.000001));
   const x = (value: number) => left + (log(value) - log(minX)) / (log(maxX) - log(minX)) * (width - left - right);
   const y = (value: number) => top + (log(maxY) - log(value)) / (log(maxY) - log(minY)) * (height - top - bottom);
   const xTicks = [1, 10, 100].filter((value) => value >= minX && value <= maxX);
   const yTicks = [0.1, 1, 10, 100, 1000].filter((value) => value >= minY && value <= maxY);
   const safePoint = result.optimization.max_current_available ? { vds_v: input.vds_v, id_a: result.optimization.max_current_a } : null;
+  const safePointPosition = safePoint && safePoint.id_a > 0 ? { x: x(safePoint.vds_v), y: y(safePoint.id_a) } : null;
   return <section className="result-card soa-chart">
     <header><div><span><ShieldCheck size={14}/>SOA Kennlinie</span><h3>Stored Safe-Operating-Area Curves</h3></div><small>VDS [V] · ID [A]</small></header>
     <div className="soa-body"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Stored SOA curves and current operating point">
@@ -45,12 +49,12 @@ export function SOAChart({ curves, input, result }: { curves: SoaCurve[]; input:
       {yTicks.map((tick) => <g key={`y-${tick}`}><line className="chart-grid" x1={left} x2={width-right} y1={y(tick)} y2={y(tick)}/><text className="chart-tick" x={left-9} y={y(tick)+3} textAnchor="end">{tick}</text></g>)}
       <line className="chart-axis" markerEnd="url(#axis-arrow)" x1={left} x2={width-right+2} y1={height-bottom} y2={height-bottom}/><line className="chart-axis" markerEnd="url(#axis-arrow)" x1={left} x2={left} y1={height-bottom} y2={top-2}/>
       {curves.map((curve, index) => { const color = curveColor(curve.pulse_duration_s, index); return <g key={curve.pulse_duration_s}><polyline className="soa-curve" fill="none" stroke={color} strokeWidth="2.35" strokeDasharray={curve.pulse_duration_s >= 1000000 ? "7 4" : undefined} points={curve.points.map((point) => `${x(point.vds_v)},${y(point.id_a)}`).join(" ")}/>{curve.points.map((point, pointIndex) => <circle className="soa-sample" key={pointIndex} cx={x(point.vds_v)} cy={y(point.id_a)} r="1.9" fill={color}/>)}</g>; })}
-      {safePoint && safePoint.id_a > 0 && <circle className="chart-point safe-point" cx={x(safePoint.vds_v)} cy={y(safePoint.id_a)} r="6"/>}
+      {safePointPosition && <g className="engine-limit-marker"><title>Engine-Limit: maximal zulässiger Strom bei {formatNumber(input.vds_v)} V</title><circle className="chart-point safe-point" cx={safePointPosition.x} cy={safePointPosition.y} r="6"/><text className="engine-limit-label" x={safePointPosition.x-11} y={Math.max(top+15, safePointPosition.y-10)} textAnchor="end">Engine-Limit</text></g>}
       <circle className="operating-point-ring" cx={x(input.vds_v)} cy={y(input.id_a)} r="10"/>
       <circle className="chart-point current-point" cx={x(input.vds_v)} cy={y(input.id_a)} r="6.5"/>
       <text className="point-label" x={Math.min(width-right-72, x(input.vds_v)+12)} y={Math.max(top+14, y(input.id_a)-10)}>Betriebspunkt</text>
-      <text className="axis-label" x={width-right} y={height-4} textAnchor="end">VDS [V]</text><text className="axis-label" x="12" y={top+4}>ID [A]</text>
-    </svg><div className="soa-legend">{curves.map((curve, index) => <span key={curve.pulse_duration_s}><i style={{ background: curveColor(curve.pulse_duration_s, index) }}/>{labelPulse(curve.pulse_duration_s)}</span>)}<span><i className="point current"/>Betriebspunkt</span>{safePoint && <span><i className="point safe"/>Engine-Grenzpunkt</span>}</div></div>
+      <text className="axis-label chart-y-title" x={left} y={top-17}>ID [A]</text><text className="axis-label chart-x-title" x={width-right} y={height-7} textAnchor="end">VDS [V]</text>
+    </svg><div className="soa-legend">{curves.map((curve, index) => <span key={curve.pulse_duration_s}><i style={{ background: curveColor(curve.pulse_duration_s, index) }}/>{labelPulse(curve.pulse_duration_s)}</span>)}<span><i className="point current"/>Betriebspunkt</span>{safePoint && <span><i className="point safe"/>Engine-Limit</span>}</div></div>
     <div className="chart-note"><Info size={18}/><span>Kurven werden unverändert aus der gespeicherten Engineering-Digitalisierung dargestellt. TransiSafe berechnet im Browser keine SOA-Grenze.</span></div>
   </section>;
 }

@@ -192,6 +192,22 @@
 .component-limits > div { min-height: 25px; font-size: 10px; }
 .component-limits dt { font-size: 9px; }
 .component-limits dd { font-size: 10px; letter-spacing: .01em; }
+.component-inspector-layout { min-height: 161px; margin-top: 5px; display: grid; grid-template-columns: minmax(150px,1.18fr) minmax(120px,.82fr); align-items: start; gap: 9px; }
+.component-specification { min-width: 0; }
+.component-specification .component-identity { min-height: 55px; margin: 0; display: block; }
+.component-specification .component-identity h3 { font-size: 12px; }
+.component-specification .component-identity .documented { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.component-specification .component-limits { margin-top: 5px; }
+.component-specification .component-limits > div { min-height: 22px; }
+.component-package-inspector .package-canvas { height: 105px; }
+.package-view-presets { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 3px; }
+.package-view-presets button { min-width: 0; height: 43px; padding: 3px 2px; display: grid; place-items: center; gap: 2px; border: 1px solid #d5e0ea; border-radius: 5px; color: #60778e; background: #fff; cursor: pointer; }
+.package-view-presets button.active { color: #1768b8; border-color: #168bff; box-shadow: inset 0 0 0 1px rgba(22,139,255,.2); background: #edf6ff; }
+.package-view-presets i { width: 18px; height: 12px; display: block; position: relative; border: 1px solid currentColor; border-radius: 2px; background: linear-gradient(145deg,rgba(96,119,142,.08),rgba(23,104,184,.15)); }
+.package-view-presets button:first-child i { transform: skewY(-12deg) rotate(-8deg); }
+.package-view-presets button:nth-child(3) i::after { content: ''; position: absolute; inset: 3px; border: 1px solid currentColor; }
+.package-view-presets button:nth-child(4) i { width: 22px; height: 7px; }
+.package-view-presets span { overflow: hidden; max-width: 100%; font-size: 5.5px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .thermal-settings-fields { gap: 4px; }
 .thermal-settings-fields .number-field { min-height: 34px; }
 .thermal-settings-fields .number-field > span { font-size: 9px; }
@@ -322,6 +338,8 @@
   .what-if-fields { grid-template-columns: 1fr; }
   .thermal-stack { grid-template-columns: 1fr; }
   .package-canvas { height: 130px; }
+  .component-inspector-layout { grid-template-columns: 1fr; }
+  .component-package-inspector .package-canvas { height: 180px; }
   .batch-stepper { grid-template-columns: 1fr; }
   .batch-dropzone > div,.batch-dropzone footer { align-items: stretch; flex-direction: column; }
   .batch-dropzone a,.upload-button { justify-content: center; }

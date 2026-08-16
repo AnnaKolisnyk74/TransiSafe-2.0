@@ -190,6 +190,7 @@
 
 /* Legible component and thermal engineering values. */
 .component-limits > div { min-height: 25px; font-size: 10px; }
+.component-card { height: 390px; min-height: 390px; }
 .component-limits dt { font-size: 9px; }
 .component-limits dd { font-size: 10px; letter-spacing: .01em; }
 .component-inspector-layout { min-height: 161px; margin-top: 5px; display: grid; grid-template-columns: minmax(150px,1.18fr) minmax(120px,.82fr); align-items: start; gap: 9px; }
@@ -199,15 +200,23 @@
 .component-specification .component-identity .documented { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .component-specification .component-limits { margin-top: 5px; }
 .component-specification .component-limits > div { min-height: 22px; }
-.component-package-inspector .package-canvas { height: 105px; }
+.component-package-inspector .package-canvas { height: 160px; }
+.component-package-inspector .package-viewer-actions { top: 6px; right: auto; left: 6px; flex-direction: column; }
+.component-package-inspector .package-viewer-actions button.active { color: #fff; border-color: #168bff; background: #168bff; }
+.package-axis { width: 46px; height: 46px; position: absolute; z-index: 2; bottom: 12px; left: 8px; overflow: visible; pointer-events: none; }
+.package-axis line { stroke-width: 3; stroke-linecap: round; }
+.package-axis text { font: 700 8px/1 "IBM Plex Mono", monospace; }
+.package-axis .axis-x { fill: #d63b48; stroke: #d63b48; }
+.package-axis .axis-y { fill: #17945c; stroke: #17945c; }
+.package-axis .axis-z { fill: #168bff; stroke: #168bff; }
 .package-view-presets { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 3px; }
-.package-view-presets button { min-width: 0; height: 43px; padding: 3px 2px; display: grid; place-items: center; gap: 2px; border: 1px solid #d5e0ea; border-radius: 5px; color: #60778e; background: #fff; cursor: pointer; }
+.package-view-presets button { min-width: 0; height: 54px; padding: 2px; display: grid; grid-template-rows: minmax(0,1fr) auto; place-items: center; gap: 2px; overflow: hidden; border: 1px solid #d5e0ea; border-radius: 5px; color: #60778e; background: #fff; cursor: pointer; }
 .package-view-presets button.active { color: #1768b8; border-color: #168bff; box-shadow: inset 0 0 0 1px rgba(22,139,255,.2); background: #edf6ff; }
-.package-view-presets i { width: 18px; height: 12px; display: block; position: relative; border: 1px solid currentColor; border-radius: 2px; background: linear-gradient(145deg,rgba(96,119,142,.08),rgba(23,104,184,.15)); }
-.package-view-presets button:first-child i { transform: skewY(-12deg) rotate(-8deg); }
-.package-view-presets button:nth-child(3) i::after { content: ''; position: absolute; inset: 3px; border: 1px solid currentColor; }
-.package-view-presets button:nth-child(4) i { width: 22px; height: 7px; }
+.package-view-presets img { width: 100%; height: 35px; display: block; object-fit: contain; border-radius: 3px; background: #f6f9fc; }
+.package-view-presets i { width: 100%; height: 35px; display: block; border-radius: 3px; background: linear-gradient(145deg,#f7fafc,#e7f0f7); }
 .package-view-presets span { overflow: hidden; max-width: 100%; font-size: 5.5px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.component-inspector-actions { margin-top: 8px; display: grid; grid-template-columns: 1fr 1.25fr; gap: 5px; }
+.component-inspector-actions a, .component-inspector-actions button { min-height: 29px; padding: 0 7px; display: flex; align-items: center; justify-content: center; gap: 5px; border: 1px solid #d4e0ea; border-radius: 5px; color: #1768b8; background: #fff; font-size: 7px; font-weight: 700; text-decoration: none; cursor: pointer; }
 .thermal-settings-fields { gap: 4px; }
 .thermal-settings-fields .number-field { min-height: 34px; }
 .thermal-settings-fields .number-field > span { font-size: 9px; }
@@ -245,31 +254,48 @@
 .what-if-baseline b { color: #173d61; font: 700 8px/1.2 "IBM Plex Mono", monospace; }
 .what-if-run { min-height: 32px; margin: 0 9px 9px; padding: 0 10px; display: flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 5px; color: #fff; background: #0a6ed1; font-size: 8px; font-weight: 700; cursor: pointer; }
 
-/* Package-specific 3D thermal stack: visual hierarchy, not an invented FEM result. */
-.thermal-stack { margin: 0 14px 8px; padding: 9px 11px; display: grid; grid-template-columns: minmax(136px, .9fr) 1.25fr; align-items: center; gap: 10px; border: 1px solid #dbe5ee; border-radius: 8px; background: linear-gradient(135deg,#f8fbfe,#eef5fa); }
+/* Package-specific 3D thermal stack: compact engineering inspector, subordinate to the component viewer. */
+.thermal-stack { margin: 0 14px 8px; padding: 10px 11px; display: grid; grid-template-columns: 1fr; gap: 7px; border: 1px solid #dbe5ee; border-radius: 8px; background: linear-gradient(135deg,#f8fbfe,#eef5fa); }
+.thermal-stack-heading { display: flex; align-items: center; gap: 5px; color: #1f3b55; }
+.thermal-stack-heading strong { font-size: 8px; letter-spacing: .03em; }
+.thermal-stack-heading svg { color: #60778e; }
+.thermal-stack-tabs { width: min(260px,70%); height: 25px; display: grid; grid-template-columns: 1fr 1fr; }
+.thermal-stack-tabs button { border: 1px solid #cad8e5; color: #526a82; background: #fff; font-size: 7px; font-weight: 700; cursor: pointer; }
+.thermal-stack-tabs button:first-child { border-radius: 5px 0 0 5px; }
+.thermal-stack-tabs button:last-child { border-left: 0; border-radius: 0 5px 5px 0; }
+.thermal-stack-tabs button.active { color: #fff; border-color: #0a6ed1; background: #0a6ed1; }
+.thermal-stack-body { display: grid; grid-template-columns: minmax(155px,1.15fr) minmax(125px,.85fr); align-items: stretch; gap: 9px; }
 .package-inspector { min-width: 0; display: grid; gap: 4px; }
 .package-viewer-loading { height: 112px; display: grid; place-items: center; color: #718398; border: 1px solid #dce6ee; border-radius: 6px; font-size: 7px; }
-.package-inspector-modes { height: 20px; display: flex; align-items: center; gap: 2px; }
-.package-inspector-modes button { height: 20px; padding: 0 6px; border: 1px solid #d4e0ea; border-radius: 4px; color: #60778e; background: #fff; font-size: 6px; font-weight: 700; cursor: pointer; }
-.package-inspector-modes button.active { color: #fff; border-color: #1768b8; background: #1768b8; }
 .package-canvas { height: 88px; position: relative; overflow: hidden; border: 1px solid #dce6ee; border-radius: 6px; background: radial-gradient(circle at 48% 35%,#fff,#edf4f9); touch-action: none; }
+.thermal-package-inspector .package-canvas { height: 150px; }
 .package-canvas canvas { position: absolute; inset: 0; display: block; }
 .package-viewer-actions { position: absolute; z-index: 3; top: 4px; right: 4px; display: flex; gap: 2px; }
 .package-viewer-actions button { width: 20px; height: 20px; padding: 0; display: grid; place-items: center; border: 1px solid rgba(171,193,211,.85); border-radius: 4px; color: #486984; background: rgba(255,255,255,.88); cursor: pointer; backdrop-filter: blur(3px); }
 .package-viewer-actions button:hover { color: #0a6ed1; border-color: #62a9ea; }
 .package-canvas > small { position: absolute; z-index: 2; right: 4px; bottom: 3px; left: 4px; overflow: hidden; color: #718398; font-size: 5px; text-align: center; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
 .package-tooltip { max-width: 125px; padding: 4px 6px; position: absolute; z-index: 4; transform: translate(7px,-105%); border: 1px solid #bfd1e2; border-radius: 4px; color: #173d61; background: rgba(255,255,255,.96); box-shadow: 0 4px 12px rgba(20,55,88,.14); font-size: 6px; font-weight: 700; line-height: 1.25; pointer-events: none; }
-.package-canvas:fullscreen { width: 100vw; height: 100vh; border: 0; border-radius: 0; background: radial-gradient(circle at 50% 38%,#17314d,#07111f); }
-.package-canvas:fullscreen > small { bottom: 14px; color: #afc0d0; font-size: 10px; }
-.package-canvas:fullscreen .package-viewer-actions { top: 14px; right: 14px; }
-.package-canvas:fullscreen .package-viewer-actions button { width: 32px; height: 32px; }
-.thermal-stack-copy { min-width: 0; display: grid; gap: 4px; }
-.thermal-stack-copy > span { overflow: hidden; color: #1768b8; font: 700 7px/1.2 "IBM Plex Mono", monospace; text-overflow: ellipsis; white-space: nowrap; }
-.thermal-stack-copy > strong { overflow: hidden; color: #17314d; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
-.thermal-stack-copy > div { display: flex; flex-wrap: wrap; gap: 3px; }
-.thermal-stack-copy > div > * { margin: 0; padding: 3px 4px; border: 1px solid #d8e4ed; border-radius: 3px; color: #60778e; background: #fff; font-size: 6px; font-style: normal; }
-.thermal-stack-copy > div > b { color: #c72e3e; }
-.thermal-stack-copy > small { color: #526a82; font: 600 7px/1.35 "IBM Plex Mono", monospace; }
+.package-inspector:fullscreen { width: 100vw; height: 100vh; padding: 18px; grid-template-rows: 1fr auto; background: radial-gradient(circle at 50% 38%,#17314d,#07111f); }
+.package-inspector:fullscreen .package-canvas { height: auto; min-height: 0; border: 0; }
+.package-inspector:fullscreen .package-canvas > small { bottom: 14px; color: #afc0d0; font-size: 10px; }
+.package-inspector:fullscreen .package-viewer-actions { top: 14px; right: auto; left: 14px; }
+.package-inspector:fullscreen .package-viewer-actions button { width: 32px; height: 32px; }
+.thermal-layer-legend { min-width: 0; display: grid; align-content: center; gap: 9px; }
+.thermal-layer-legend article { min-width: 0; margin: 0; display: grid; grid-template-columns: 8px 1fr; align-items: start; gap: 6px; }
+.thermal-layer-legend i { width: 7px; height: 7px; margin-top: 2px; border-radius: 50%; background: #60778e; }
+.thermal-layer-legend .junction i { background: #dc273c; }
+.thermal-layer-legend .attach i { background: #f5a623; }
+.thermal-layer-legend .leadframe i { background: #168bff; }
+.thermal-layer-legend .case i { background: #173d61; }
+.thermal-layer-legend span { min-width: 0; display: grid; gap: 2px; }
+.thermal-layer-legend b { overflow: hidden; color: #294761; font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
+.thermal-layer-legend small { color: #60778e; font: 600 6px/1.2 "IBM Plex Mono", monospace; }
+.thermal-stack-metrics { display: grid; grid-template-columns: repeat(3,1fr); overflow: hidden; border: 1px solid #dbe5ee; border-radius: 6px; background: rgba(255,255,255,.72); }
+.thermal-stack-metrics span { min-width: 0; min-height: 42px; padding: 6px 4px; display: grid; place-items: center; gap: 3px; color: #60778e; border-right: 1px solid #dbe5ee; font-size: 6px; text-align: center; }
+.thermal-stack-metrics span:last-child { border-right: 0; }
+.thermal-stack-metrics b { color: #17314d; font: 700 8px/1.1 "IBM Plex Mono", monospace; }
+.thermal-details-button { min-height: 28px; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid #d5e1eb; border-radius: 5px; color: #1768b8; background: #fff; font-size: 7px; font-weight: 700; cursor: pointer; }
+.thermal-details-button svg { margin-left: auto; }
 
 /* Batch intake workflow based on the requested four-stage engineering layout. */
 .batch-stepper { margin-top: 10px; padding: 15px 20px; display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--line); border-radius: 9px; background: #fff; box-shadow: var(--shadow); }
@@ -336,7 +362,8 @@
 }
 @media (max-width: 760px) {
   .what-if-fields { grid-template-columns: 1fr; }
-  .thermal-stack { grid-template-columns: 1fr; }
+  .thermal-stack-body { grid-template-columns: 1fr; }
+  .thermal-stack-tabs { width: 100%; }
   .package-canvas { height: 130px; }
   .component-inspector-layout { grid-template-columns: 1fr; }
   .component-package-inspector .package-canvas { height: 180px; }

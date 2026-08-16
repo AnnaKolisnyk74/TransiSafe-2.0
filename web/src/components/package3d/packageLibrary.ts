@@ -111,11 +111,12 @@ function buildTo263(spec: PackageSpec, mode: PackageViewMode, marking: string) {
   const bodyY = mode === "thermal" ? 6.1 : 2.65;
   addPart(group, rounded(spec.body.width, spec.body.height, spec.body.depth, spec.body.radius), [0, bodyY, .7], { label: "D²PAK molded compound", color: 0x20262d, metalness: .03, roughness: .72, opacity: mode === "thermal" ? .18 : 1, thermalRole: "case" });
   addPart(group, rounded(8.45, .3, 7.25, .08), [0, .27, 2.7], { label: "Drain tab / exposed case reference", color: 0xb9c2ca, metalness: .94, roughness: .16, thermalRole: "case" });
-  for (let index = 0; index < 3; index += 1) {
-    const x = (index - 1) * 3.25;
-    const lead = addPart(group, rounded(1.15, .28, 5.2, .08), [x, .35, -5.2], { label: ["Gate lead (pin 1)", "Drain lead / tab (pin 2)", "Source lead (pin 3)"][index], color: 0xb9c2ca, metalness: .94, roughness: .16 });
-    lead.rotation.x = -.04;
+  for (const [x,label] of [[-3.25,"Gate lead (pin 1)"],[3.25,"Source lead (pin 3)"]] as [number,string][]) {
+    addPart(group, rounded(1.15,.25,2.5,.07), [x,.8,-4.35], { label, color:0xb9c2ca,metalness:.94,roughness:.16 });
+    const bend=addPart(group, rounded(1.15,.25,2.25,.07), [x,.48,-6.05], { label, color:0xb9c2ca,metalness:.94,roughness:.16 }); bend.rotation.x=-.24;
+    addPart(group, rounded(1.15,.25,2.2,.07), [x,.18,-7.65], { label:`${label} solder foot`,color:0xb9c2ca,metalness:.94,roughness:.16 });
   }
+  addPart(group, rounded(1.15,.38,1.25,.07), [0,.75,-4.05], { label:"Drain lead / tab (pin 2)",color:0xb9c2ca,metalness:.94,roughness:.16 });
   addPart(group, new THREE.CylinderGeometry(.26, .26, .12, 24), [-3.9, bodyY + spec.body.height / 2 + .08, -2.1], { label: "Pin 1 / gate index", color: 0xd5d9dc, metalness: .3, roughness: .4 });
   addThermalCore(group, spec, mode, .5);
   if (mode === "package") addMarking(group, spec, marking, bodyY + spec.body.height / 2 + .015);

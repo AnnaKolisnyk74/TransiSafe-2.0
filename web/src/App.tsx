@@ -96,17 +96,17 @@ export default function App() {
     setResult(null); setError(null);
   }
 
-  async function runAnalysis() {
+  async function runAnalysis(analysisInput: AnalysisInput = input) {
     setLoading(true); setError(null);
     try {
-      const response = await fetch(`${API}/api/analyze`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+      const response = await fetch(`${API}/api/analyze`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(analysisInput) });
       const payload: unknown = await response.json();
       if (!response.ok) {
         const detail = payload && typeof payload === "object" && "detail" in payload ? String(payload.detail) : "Analyse fehlgeschlagen";
         throw new Error(detail);
       }
       if (!isAnalysisResponse(payload)) throw new Error("API und C-Engine haben unterschiedliche Versionen. Bitte die API neu bauen und starten.");
-      setResult(payload); rememberAnalysis(payload.input, payload); setEngineState("ready");
+      setInput(payload.input); setResult(payload); rememberAnalysis(payload.input, payload); setCurrentSaved(null); setEngineState("ready");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Die Analyse-API ist nicht erreichbar."); setEngineState("offline");
     } finally { setLoading(false); }
@@ -136,7 +136,7 @@ export default function App() {
         <section className="workflow-grid" aria-label="Analysekonfiguration">
           <ComponentSelector models={models} selectedModel={selectedModel} onSelect={(transistorId) => { update("transistor_id", transistorId); setResult(null); }} loading={engineState === "checking"}/>
           <OperatingPointForm input={input} update={update} error={error} onSubmit={runAnalysis}/>
-          <AnalysisActions mode={input.mode} onModeChange={selectMode} disabled={!selectedModel || engineState !== "ready"} loading={loading} hasResult={Boolean(result)} recentAnalyses={recentAnalyses} onOpenRecent={openRecent}/>
+          <AnalysisActions input={input} mode={input.mode} onModeChange={selectMode} disabled={!selectedModel || engineState !== "ready"} loading={loading} hasResult={Boolean(result)} recentAnalyses={recentAnalyses} onOpenRecent={openRecent} onRunWhatIf={runAnalysis}/>
           <ThermalSettings input={input} model={selectedModel} update={update}/>
         </section>
         <AnalysisResult result={result} input={input} model={selectedModel} soaCurves={soaCurves} savedName={currentSaved?.name} onSave={() => void saveCurrentAnalysis()} onSaveAs={() => void saveCurrentAnalysis(true)}/>

@@ -65,7 +65,7 @@ int main(void)
         "load MOSFET master data");
     check(load_mosfet_curves("mosfet_curves.csv", db),
         "load MOSFET curve data");
-    check(db->count == 3, "fixture plus two real MOSFETs loaded");
+    check(db->count == 6, "fixture plus five real MOSFETs loaded");
     check(find_transistor_by_id(db, "PSMN1R4-100ASEJ", &real_model),
         "find Nexperia reference MOSFET");
     check(real_model->id_pulse_max == 2186,
@@ -86,6 +86,10 @@ int main(void)
         check(real_result.status == STATUS_NOT_SAFE_SOA,
             "real Nexperia SOA boundary rejects overstress");
     }
+    check(find_transistor_by_id(db, "IPB017N10N5", &real_model),
+        "find Infineon 7-pin reference MOSFET");
+    check(real_model->id_max == 273 && real_model->rth_jc == 0.4,
+        "load Infineon master ratings");
 
     close_to(interpolate_rds_on(&m, 75), .012, 1e-12,
         "linear RDS(on) interpolation");

@@ -1,3 +1,6 @@
 transistor_id;datasheet_type;manufacturer;package_name;product_url;image_path
 PSMN1R4-100ASEJ;PSMN1R4-100ASE;Nexperia;CCPAK1212 (SOT8000A);https://www.digikey.in/en/products/detail/nexperia-usa-inc/PSMN1R4-100ASEJ/25698009;/components/psmn1r4-100asej.png
 CSD19536KTT;CSD19536KTT;Texas Instruments;D²PAK (TO-263 / KTT);https://www.ti.com/product/CSD19536KTT;/components/csd19536ktt.png
+IPB017N10N5;IPB017N10N5;Infineon Technologies;D²PAK 7-pin (PG-TO263-7);https://www.infineon.com/part/IPB017N10N5;
+IPB035N10NF2S;IPB035N10NF2S;Infineon Technologies;D²PAK 3-pin (PG-TO263-3);https://www.infineon.com/part/IPB035N10NF2S;
+IPT015N10N5;IPT015N10N5;Infineon Technologies;TOLL (PG-HSOF-8);https://www.infineon.com/part/IPT015N10N5;

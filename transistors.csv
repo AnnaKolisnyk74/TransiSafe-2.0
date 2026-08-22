@@ -3,3 +3,6 @@ transistor_id;type;vds_max;id_continuous_max;id_pulse_max;id_pulse_duration_max_
 ENGINEERING_FIXTURE;MOSFET;60;80;160;0.0001;0.01;25;175;1.2;50;0.00000008;https://example.invalid/engineering-fixture;SYNTHETIC-NOT-FOR-DESIGN;2026-08-15
 PSMN1R4-100ASEJ;MOSFET;100;340;2186;0.00001;0;25;175;0.16;58;0.000000366;https://assets.nexperia.com/documents/data-sheet/PSMN1R4-100ASE.pdf;20-OCT-2025;2026-08-15
 CSD19536KTT;MOSFET;100;200;400;0.0001;0.01;25;175;0.4;62;0.000000153;https://www.ti.com/lit/ds/symlink/csd19536ktt.pdf;SLPS540C-MAY-2025;2026-08-15
+IPB017N10N5;MOSFET;100;273;1092;0.00001;0.01;25;175;0.4;62;0.000000168;https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipb017n10n5-datasheet-en.pdf;REV-2.5-2019-11-13;2026-08-17
+IPB035N10NF2S;MOSFET;100;151;604;0.00001;0.01;25;175;0.7;62;0.000000069;https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipb035n10nf2s-datasheet-en.pdf;REV-1.0-2025-01-20;2026-08-17
+IPT015N10N5;MOSFET;100;300;1200;0.00001;0.01;25;175;0.4;62;0.000000169;https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipt015n10n5-datasheet-en.pdf;REV-2.4-2023-05-04;2026-08-17

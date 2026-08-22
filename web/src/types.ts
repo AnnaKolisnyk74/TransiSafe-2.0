@@ -132,4 +132,4 @@ export interface RecentAnalysis {
   result: AnalysisResponse;
 }
 
-export type WorkspacePage = "analyze" | "batch" | "reports";
+export type WorkspacePage = "analyze" | "batch" | "reports" | "lab";

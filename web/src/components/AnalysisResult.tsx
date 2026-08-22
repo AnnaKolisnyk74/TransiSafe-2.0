@@ -5,6 +5,7 @@ import { EmptyState } from "./EmptyState";
 import { EngineeringDetails } from "./EngineeringDetails";
 import { ExportMenu } from "./ExportMenu";
 import { LossBreakdown } from "./LossBreakdown";
+import { MosfetOperation } from "./MosfetOperation";
 import { SOAChart } from "./SOAChart";
 import { ThermalPathCompact } from "./ThermalPathCompact";
 import { formatNumber } from "./format";
@@ -33,12 +34,12 @@ export function AnalysisResult({ result, input, model, soaCurves, savedName, onS
       <div className="status-metric"><Zap size={20}/><div><span>Total Power Loss</span><strong>{formatNumber(result.result.p_total_w, 2)} W</strong></div></div>
       <div className="status-metric"><TrendingUp size={20}/><div><span>SOA Reserve</span><strong>{formatNumber(margins.soa_reserve_percent, 0)} %</strong><small>engine result</small></div></div>
       <div className="status-metric"><ShieldCheck size={20}/><div><span>Closest constraint</span><strong>{result.result.closest_constraint.type}</strong><small>{formatNumber(result.result.closest_constraint.reserve_percent, 0)} % reserve</small></div></div>
-      <button className="details-trigger" type="button" onClick={() => setDetailsOpen(true)}>Details<ChevronRight size={14}/></button>
     </div>
-    <div className="result-main-grid engineering-visuals">
+    <div className="result-evidence-layout">
       <SOAChart curves={soaCurves} input={input} result={result}/>
       <LossBreakdown result={result}/>
       <ThermalPathCompact result={result} input={input} model={model} onDetails={() => setDetailsOpen(true)}/>
+      <section className="result-card operation-deep-dive" id="mosfet-operation-deep-dive"><header><div><span>Explanatory deep dive</span><h3>MOSFET Operation · Switching Cycle</h3></div><strong>Normalized<small>C-engine values</small></strong></header><MosfetOperation result={result}/></section>
     </div>
     {meta.tone === "incomplete" && <div className="incomplete-notice"><CircleAlert size={17}/><div><b>Technische Unsicherheit wird nicht als Sicherheit dargestellt.</b><span>Für diesen Betriebspunkt wurde keine SAFE-Klassifikation ausgegeben.</span></div></div>}
     <div className="result-actions-row"><button type="button" onClick={onSave}><Save size={15}/>{savedName ? `Speichern · ${savedName}` : "Analyse speichern"}</button>{savedName&&<button type="button" onClick={onSaveAs}><Save size={15}/>Save As</button>}<ExportMenu input={input} result={result} name={savedName}/><button type="button" onClick={() => setDetailsOpen(true)}>Traceability & Details<ChevronRight size={15}/></button></div>

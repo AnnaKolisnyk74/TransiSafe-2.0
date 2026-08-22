@@ -8,6 +8,10 @@ import os
 import secrets
 import sqlite3
 import subprocess
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -15,7 +19,7 @@ from typing import Any, Literal
 
 from fastapi import Body, FastAPI, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response
+from fastapi.responses import RedirectResponse, Response
 from openpyxl import Workbook, load_workbook
 from openpyxl.chart import Reference, ScatterChart, Series
 from openpyxl.styles import Alignment, Font, PatternFill
@@ -37,6 +41,8 @@ DATA_DIR = Path(os.getenv("TRANSISAFE_DATA_DIR", ROOT / "api" / "data"))
 DB_PATH = DATA_DIR / "analyses.sqlite3"
 APP_VERSION = "2.1.0"
 DATASET_VERSION = "2.1"
+LINKEDIN_OAUTH_STATES: dict[str, float] = {}
+LINKEDIN_LOGIN_CODES: dict[str, tuple[float, str]] = {}
 
 
 class AnalysisRequest(BaseModel):
@@ -225,6 +231,14 @@ def init_storage() -> None:
             id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, name TEXT NOT NULL,
             password_hash TEXT NOT NULL, salt TEXT NOT NULL, created_at TEXT NOT NULL
         )""")
+        user_columns = {row[1] for row in connection.execute("PRAGMA table_info(users)")}
+        for column, definition in (
+            ("company", "TEXT"), ("avatar_url", "TEXT"),
+            ("auth_provider", "TEXT NOT NULL DEFAULT 'local'"), ("linkedin_sub", "TEXT")
+        ):
+            if column not in user_columns:
+                connection.execute(f"ALTER TABLE users ADD COLUMN {column} {definition}")
+        connection.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_linkedin_sub ON users(linkedin_sub) WHERE linkedin_sub IS NOT NULL")
         connection.execute("""CREATE TABLE IF NOT EXISTS sessions (
             token TEXT PRIMARY KEY, user_id TEXT NOT NULL, created_at TEXT NOT NULL,
             FOREIGN KEY(user_id) REFERENCES users(id)
@@ -235,11 +249,11 @@ def password_hash(password: str, salt: bytes) -> str:
     return hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 210_000).hex()
 
 
-def session_user(token: str) -> dict[str, str]:
+def session_user(token: str) -> dict[str, Any]:
     init_storage()
     with sqlite3.connect(DB_PATH) as connection:
         connection.row_factory=sqlite3.Row
-        row=connection.execute("SELECT users.id, users.email, users.name FROM sessions JOIN users ON users.id=sessions.user_id WHERE sessions.token=?",(token,)).fetchone()
+        row=connection.execute("SELECT users.id, users.email, users.name, users.company, users.avatar_url, users.auth_provider FROM sessions JOIN users ON users.id=sessions.user_id WHERE sessions.token=?",(token,)).fetchone()
     if row is None: raise HTTPException(status_code=401,detail="Invalid or expired session")
     return dict(row)
 
@@ -463,15 +477,15 @@ def register(request: AuthRequest) -> dict[str, Any]:
     init_storage(); user_id=str(uuid.uuid4()); salt=secrets.token_bytes(16); timestamp=utc_now()
     try:
         with sqlite3.connect(DB_PATH) as connection:
-            connection.execute("INSERT INTO users VALUES (?,?,?,?,?,?)",(user_id,request.email.lower(),request.name.strip(),password_hash(request.password,salt),salt.hex(),timestamp))
+            connection.execute("INSERT INTO users (id,email,name,password_hash,salt,created_at,auth_provider) VALUES (?,?,?,?,?,?,?)",(user_id,request.email.lower(),request.name.strip(),password_hash(request.password,salt),salt.hex(),timestamp,"local"))
     except sqlite3.IntegrityError as exc: raise HTTPException(status_code=409,detail="Account already exists") from exc
     return create_session(user_id,request.email.lower(),request.name.strip())
 
 
-def create_session(user_id: str,email: str,name: str) -> dict[str,Any]:
+def create_session(user_id: str,email: str,name: str, company: str | None = None, avatar_url: str | None = None, auth_provider: str = "local") -> dict[str,Any]:
     token=secrets.token_urlsafe(32)
     with sqlite3.connect(DB_PATH) as connection: connection.execute("INSERT INTO sessions VALUES (?,?,?)",(token,user_id,utc_now()))
-    return {"token":token,"user":{"id":user_id,"email":email,"name":name}}
+    return {"token":token,"user":{"id":user_id,"email":email,"name":name,"company":company,"avatar_url":avatar_url,"auth_provider":auth_provider}}
 
 
 @app.post("/api/auth/login")
@@ -481,7 +495,82 @@ def login(request: AuthRequest) -> dict[str,Any]:
         connection.row_factory=sqlite3.Row; row=connection.execute("SELECT * FROM users WHERE email=?",(request.email.lower(),)).fetchone()
     if row is None or not secrets.compare_digest(row["password_hash"],password_hash(request.password,bytes.fromhex(row["salt"]))):
         raise HTTPException(status_code=401,detail="Invalid email or password")
-    return create_session(row["id"],row["email"],row["name"])
+    return create_session(row["id"],row["email"],row["name"],row["company"],row["avatar_url"],row["auth_provider"])
+
+
+def linkedin_configuration() -> tuple[str, str, str, str]:
+    return (os.getenv("LINKEDIN_CLIENT_ID", ""), os.getenv("LINKEDIN_CLIENT_SECRET", ""),
+        os.getenv("LINKEDIN_REDIRECT_URI", "http://127.0.0.1:8000/api/auth/linkedin/callback"),
+        os.getenv("TRANSISAFE_WEB_URL", "http://127.0.0.1:5174/"))
+
+
+@app.get("/api/auth/linkedin/status")
+def linkedin_status() -> dict[str, Any]:
+    client_id, client_secret, redirect_uri, _ = linkedin_configuration()
+    return {"configured": bool(client_id and client_secret), "redirect_uri": redirect_uri,
+            "profile_fields": ["name", "email", "picture"],
+            "company_note": "Company is shown only when LinkedIn returns an approved organization claim."}
+
+
+@app.get("/api/auth/linkedin/start")
+def linkedin_start() -> RedirectResponse:
+    client_id, client_secret, redirect_uri, _ = linkedin_configuration()
+    if not client_id or not client_secret: raise HTTPException(status_code=503, detail="LinkedIn OAuth is not configured")
+    state = secrets.token_urlsafe(28)
+    if len(LINKEDIN_OAUTH_STATES) > 1000: LINKEDIN_OAUTH_STATES.clear()
+    LINKEDIN_OAUTH_STATES[state] = time.time()
+    query = urllib.parse.urlencode({"response_type":"code","client_id":client_id,"redirect_uri":redirect_uri,
+        "state":state,"scope":"openid profile email"})
+    return RedirectResponse(f"https://www.linkedin.com/oauth/v2/authorization?{query}")
+
+
+def linkedin_request(url: str, *, data: dict[str, str] | None = None, token: str = "") -> dict[str, Any]:
+    body = urllib.parse.urlencode(data).encode() if data is not None else None
+    headers = {"Accept":"application/json"}
+    if data is not None: headers["Content-Type"] = "application/x-www-form-urlencoded"
+    if token: headers["Authorization"] = f"Bearer {token}"
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url,data=body,headers=headers),timeout=10) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except (urllib.error.URLError,json.JSONDecodeError) as exc:
+        raise HTTPException(status_code=502,detail="LinkedIn authentication could not be completed") from exc
+
+
+@app.get("/api/auth/linkedin/callback")
+def linkedin_callback(code: str = Query(default=""), state: str = Query(default=""), error: str = Query(default="")) -> RedirectResponse:
+    client_id, client_secret, redirect_uri, web_url = linkedin_configuration()
+    issued_at = LINKEDIN_OAUTH_STATES.pop(state,0)
+    if error or not code or not state or time.time()-issued_at > 600:
+        return RedirectResponse(f"{web_url}?linkedin_error=cancelled")
+    token_payload = linkedin_request("https://www.linkedin.com/oauth/v2/accessToken",data={"grant_type":"authorization_code",
+        "code":code,"client_id":client_id,"client_secret":client_secret,"redirect_uri":redirect_uri})
+    profile = linkedin_request("https://api.linkedin.com/v2/userinfo",token=str(token_payload.get("access_token","")))
+    subject=str(profile.get("sub","")); email=str(profile.get("email","")).lower(); name=str(profile.get("name","")).strip() or "LinkedIn User"
+    avatar_url=str(profile.get("picture","")) or None; company=str(profile.get("organization","")).strip() or None
+    if not subject: raise HTTPException(status_code=502,detail="LinkedIn profile is incomplete")
+    if not email: email=f"linkedin-{subject}@users.transisafe.local"
+    init_storage()
+    with sqlite3.connect(DB_PATH) as connection:
+        connection.row_factory=sqlite3.Row; row=connection.execute("SELECT * FROM users WHERE linkedin_sub=? OR email=?",(subject,email)).fetchone()
+        if row is None:
+            user_id=str(uuid.uuid4()); salt=secrets.token_bytes(16)
+            connection.execute("INSERT INTO users (id,email,name,password_hash,salt,created_at,company,avatar_url,auth_provider,linkedin_sub) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (user_id,email,name,password_hash(secrets.token_urlsafe(48),salt),salt.hex(),utc_now(),company,avatar_url,"linkedin",subject))
+        else:
+            user_id=row["id"]; connection.execute("UPDATE users SET name=?,avatar_url=?,company=COALESCE(?,company),auth_provider='linkedin',linkedin_sub=? WHERE id=?",(name,avatar_url,company,subject,user_id))
+    login_code=secrets.token_urlsafe(24); LINKEDIN_LOGIN_CODES[login_code]=(time.time(),user_id)
+    separator="&" if "?" in web_url else "?"
+    return RedirectResponse(f"{web_url}{separator}linkedin_code={urllib.parse.quote(login_code)}")
+
+
+@app.post("/api/auth/linkedin/exchange")
+def linkedin_exchange(code: str = Body(embed=True, min_length=20, max_length=100)) -> dict[str,Any]:
+    issued_at, user_id = LINKEDIN_LOGIN_CODES.pop(code,(0,""))
+    if not user_id or time.time()-issued_at > 120: raise HTTPException(status_code=401,detail="LinkedIn login code is invalid or expired")
+    with sqlite3.connect(DB_PATH) as connection:
+        connection.row_factory=sqlite3.Row; row=connection.execute("SELECT * FROM users WHERE id=?",(user_id,)).fetchone()
+    if row is None: raise HTTPException(status_code=401,detail="LinkedIn account no longer exists")
+    return create_session(row["id"],row["email"],row["name"],row["company"],row["avatar_url"],row["auth_provider"])
 
 
 @app.get("/api/auth/me")

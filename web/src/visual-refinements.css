@@ -87,6 +87,182 @@
   .header-brand::before, .header-brand::after { display: none; }
 }
 
+/* Analyze workspace refinement: keep the calculation flow untouched while making the
+   engineering hierarchy legible from 1440 px through wide desktop layouts. */
+.app-header {
+  height: 68px;
+  margin: 7px 12px 0;
+  padding: 0 20px;
+  top: 7px;
+  border-radius: 8px;
+}
+.header-brand { min-height: 46px; padding: 0 25px; }
+.header-brand::before, .header-brand::after { width: 10px; }
+.header-brand strong { font-size: 22px; }
+.header-brand small { margin-top: 4px; font-size: 7px; letter-spacing: .15em; }
+.header-actions > a, .api-state, .engine-badge { min-height: 31px; padding-right: 14px; padding-left: 14px; font-size: 8px; }
+.header-icon-button { width: 34px; height: 34px; }
+.header-user-button { width: 32px; height: 32px; }
+
+.analyze-workspace { padding-top: 9px; padding-bottom: 18px; }
+.workspace-context { min-height: 30px; margin-bottom: 7px; font-size: 10px; }
+.workspace-context p { display: flex; align-items: center; gap: 8px; color: #3f5c76; font-weight: 700; }
+.workspace-context p i { color: #8ca0b2; font-style: normal; }
+.workspace-context b { color: #74879a; font-size: 8px; font-weight: 600; }
+
+.workflow-grid {
+  grid-template-columns: minmax(380px,1.15fr) minmax(480px,1.52fr) minmax(220px,.72fr);
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "component operating action"
+    "component operating thermal";
+  gap: 9px;
+}
+.workflow-grid > .component-card { grid-area: component; }
+.workflow-grid > .operating-card { grid-area: operating; }
+.workflow-grid > .action-card { grid-area: action; }
+.workflow-grid > .thermal-settings { grid-area: thermal; }
+.workflow-card { height: auto; min-height: 0; }
+.component-card, .operating-card { height: 520px; }
+.action-card, .thermal-settings { height: 255.5px; }
+.component-card { padding: 12px 13px; }
+.component-inspector-layout {
+  min-height: 349px;
+  grid-template-columns: minmax(235px,1.45fr) minmax(120px,.55fr);
+  gap: 11px;
+}
+.component-package-inspector .package-canvas { height: 276px; }
+.package-view-presets { gap: 3px; }
+.package-view-presets button {
+  height: 34px;
+  padding: 0 4px;
+  display: flex;
+  grid-template-rows: none;
+  justify-content: center;
+  border-radius: 4px;
+}
+.package-view-presets img, .package-view-presets i { display: none; }
+.package-view-presets span { font-size: 7px; }
+.component-specification .component-identity h3 { margin-top: 6px; font-size: 14px; }
+.component-specification .component-identity p { font-size: 9px; }
+.component-specification .component-identity b { font-size: 8px; line-height: 1.35; }
+.component-specification .component-limits { margin-top: 10px; }
+.component-specification .component-limits > div { min-height: 28px; }
+.component-inspector-actions { margin-top: 7px; }
+.component-inspector-actions a, .component-inspector-actions button { min-height: 31px; font-size: 8px; }
+
+.operating-card { padding: 12px 15px; }
+.operating-card .operating-primary { padding-top: 16px; }
+.operating-card .operating-input-grid { gap: 17px 15px; }
+.operating-card .number-field > span { font-size: 9px; }
+.operating-card .number-field > div { height: 39px; }
+.operating-card .number-field input { font-size: 14px; }
+.action-card .run-analysis { min-height: 42px; }
+.action-card .secondary-action { min-height: 34px; }
+.thermal-settings .reference-control { margin-top: 7px; }
+.thermal-settings-fields .number-field { min-height: 31px; }
+
+.analysis-zone { margin-top: 9px; }
+.analysis-empty { min-height: 190px; padding: 26px 20px; }
+.analysis-empty > div:last-child { margin-top: 16px; }
+.result-status-strip {
+  min-height: 82px;
+  grid-template-columns: minmax(270px,1.55fr) repeat(4,minmax(122px,.72fr)) auto;
+  border: 1px solid #d8e3ec;
+  border-left-width: 4px;
+  box-shadow: 0 7px 20px rgba(25,55,83,.07);
+}
+.status-assessment { padding-left: 15px; }
+.status-assessment strong { font-size: 15px; }
+.status-assessment p { max-width: 310px; line-height: 1.35; }
+.status-metric strong { font-size: 14px; }
+
+.result-main-grid {
+  grid-template-columns: minmax(430px,1.45fr) minmax(300px,.97fr) minmax(260px,.8fr);
+  gap: 9px;
+  align-items: stretch;
+}
+.engineering-visuals > .result-card { height: 100%; align-self: stretch; }
+.result-card > header { min-height: 55px; padding: 10px 13px; }
+.result-card > header h3 { font-size: 12px; }
+.soa-body svg { height: 335px; }
+.soa-legend { padding-bottom: 10px; }
+.loss-breakdown { display: flex; flex-direction: column; }
+.loss-visual {
+  min-height: 0;
+  flex: 1;
+  padding: 18px 14px 12px;
+  grid-template-columns: 105px minmax(155px,1fr);
+  gap: 15px;
+}
+.loss-donut { width: 104px; }
+.loss-donut strong { font-size: 12px; }
+.loss-donut span { font-size: 8px; }
+.loss-row + .loss-row { margin-top: 18px; }
+.loss-track { height: 11px; border-radius: 3px; }
+.loss-note { margin-top: auto; padding-top: 10px; }
+.loss-note span { font-size: 7px; line-height: 1.45; }
+
+.thermal-path-compact .thermal-flow { min-height: 116px; padding: 10px 12px 7px; }
+.thermal-path-compact .thermal-node > i { width: 43px; height: 43px; }
+.thermal-facts { margin: 0 11px 7px; }
+.thermal-facts article { min-height: 51px; padding: 7px; }
+.thermal-stack { margin: 0 11px 8px; padding: 9px; background: #f5f8fb; }
+.thermal-stack-body { grid-template-columns: minmax(170px,1.48fr) minmax(92px,.52fr); gap: 7px; }
+.thermal-package-inspector .package-canvas { height: 220px; }
+.thermal-layer-legend { gap: 11px; }
+.thermal-layer-legend b { font-size: 7.5px; }
+.thermal-path-compact .thermal-reserve { margin: auto 13px 12px; }
+
+.navigation { background: #061a38; }
+.nav-logo { height: 82px; margin-top: 3px; }
+.nav-logo img { width: 136px; height: 78px; }
+.navigation nav { gap: 2px; }
+.navigation nav button { min-height: 39px; border-radius: 6px; }
+.navigation nav button.active { background: #0a6ed1; box-shadow: inset 3px 0 #55b6ff; }
+.nav-engine { padding: 10px 9px; border-radius: 7px; background: rgba(11,66,74,.2); }
+
+@media (max-width: 1599px) {
+  .workflow-grid {
+    grid-template-columns: minmax(360px,.92fr) minmax(500px,1.28fr);
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "component operating"
+      "action thermal";
+  }
+  .component-card, .operating-card { height: 500px; }
+  .action-card, .thermal-settings { height: 265px; }
+  .result-main-grid { grid-template-columns: minmax(390px,1.42fr) minmax(280px,.94fr) minmax(250px,.82fr); }
+  .header-brand { padding: 0 18px; }
+}
+
+@media (max-width: 1190px) {
+  .workflow-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "component" "operating" "action" "thermal";
+  }
+  .component-card, .operating-card, .action-card, .thermal-settings { height: auto; }
+  .component-card { min-height: 500px; }
+  .operating-card { min-height: 350px; }
+  .action-card, .thermal-settings { min-height: 245px; }
+  .result-main-grid { grid-template-columns: 1fr; }
+  .engineering-visuals > .result-card { height: auto; }
+  .result-status-strip { grid-template-columns: 1.4fr repeat(2,1fr); }
+}
+
+@media (max-width: 760px) {
+  .app-header { height: 66px; margin: 0; top: 0; }
+  .header-brand { padding: 0; }
+  .workspace-context b { display: none; }
+  .component-inspector-layout { min-height: 0; grid-template-columns: 1fr; }
+  .component-package-inspector .package-canvas { height: 245px; }
+  .component-card { min-height: 0; }
+  .operating-card { min-height: 0; }
+  .operating-card .operating-input-grid { gap: 11px 8px; }
+  .result-status-strip { grid-template-columns: 1fr; }
+  .thermal-stack-body { grid-template-columns: 1fr; }
+}
+
 /* Guided report creation */
 .report-wizard-overlay { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; padding: 20px; background: rgba(8,25,43,.58); backdrop-filter: blur(5px); }
 .report-wizard { width: min(900px,calc(100vw - 32px)); max-height: calc(100vh - 32px); display: grid; grid-template-rows: auto auto minmax(0,1fr) auto; overflow: hidden; border: 1px solid #cbd9e6; border-radius: 12px; color: #17314d; background: #fff; box-shadow: 0 28px 90px rgba(7,34,60,.28); }
@@ -596,4 +772,752 @@
   .batch-dropzone a,.upload-button { justify-content: center; }
   .batch-file-metrics { grid-template-columns: 1fr; }
   .batch-file-metrics article { border-right: 0; border-bottom: 1px solid #e5ecf2; }
+}
+
+/* Analyze cascade terminus — keep these after the legacy package rules above. */
+.analyze-workspace .component-card { height: 520px; min-height: 520px; }
+.analyze-workspace .component-inspector-layout { min-height: 349px; grid-template-columns: minmax(235px,1.45fr) minmax(120px,.55fr); gap: 11px; }
+.analyze-workspace .component-package-inspector .package-canvas { height: 276px; }
+.analyze-workspace .package-view-presets { gap: 3px; }
+.analyze-workspace .package-view-presets button { height: 34px; padding: 0 4px; display: flex; grid-template-rows: none; justify-content: center; border-radius: 4px; }
+.analyze-workspace .package-view-presets img, .analyze-workspace .package-view-presets i { display: none; }
+.analyze-workspace .package-view-presets span { font-size: 7px; }
+.analysis-zone .engineering-visuals > .result-card { height: 100%; align-self: stretch; }
+.analysis-zone .soa-body svg { height: 335px; }
+.analysis-zone .loss-donut { width: 104px; }
+.analysis-zone .thermal-stack { margin: 0 11px 8px; padding: 9px; background: #f5f8fb; }
+.analysis-zone .thermal-stack-body { grid-template-columns: minmax(170px,1.48fr) minmax(92px,.52fr); gap: 7px; }
+.analysis-zone .thermal-package-inspector .package-canvas { height: 220px; }
+
+@media (max-width: 1599px) {
+  .analyze-workspace .component-card { height: 500px; min-height: 500px; }
+}
+
+@media (max-width: 1190px) {
+  .analyze-workspace .component-card { height: auto; min-height: 500px; }
+  .analysis-zone .engineering-visuals > .result-card { height: auto; }
+}
+
+@media (max-width: 760px) {
+  .analyze-workspace .component-card { min-height: 0; }
+  .analyze-workspace .component-inspector-layout { min-height: 0; grid-template-columns: 1fr; }
+  .analyze-workspace .component-package-inspector .package-canvas { height: 245px; }
+  .analysis-zone .thermal-stack-body { grid-template-columns: 1fr; }
+}
+
+/* Large-format engineering outputs and real interactive thermal inspection. */
+.package-fullscreen-meta { display: none; }
+.package-inspector-modes { height: 31px; padding: 3px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; border: 1px solid #cfdae5; border-radius: 6px; background: #eaf0f5; }
+.package-inspector-modes button { min-width: 0; border: 0; border-radius: 4px; color: #587086; background: transparent; font-size: 7px; font-weight: 700; cursor: pointer; }
+.package-inspector-modes button.active { color: #fff; background: #0a6ed1; box-shadow: 0 2px 6px rgba(10,110,209,.2); }
+.thermal-package-inspector { gap: 7px; }
+.thermal-package-inspector .package-axis { width: 50px; height: 50px; bottom: 10px; left: 7px; opacity: .9; }
+.thermal-package-inspector .package-viewer-actions { top: 6px; left: 6px; right: auto; flex-direction: column; }
+.thermal-package-inspector .package-viewer-actions button { width: 23px; height: 23px; }
+.thermal-package-inspector .package-viewer-actions button.active { color: #fff; border-color: #168bff; background: #168bff; }
+.package-inspector:fullscreen .package-fullscreen-meta { z-index: 5; display: grid; position: absolute; top: 18px; left: 68px; gap: 4px; color: #fff; }
+.package-inspector:fullscreen .package-fullscreen-meta strong { font-size: 17px; }
+.package-inspector:fullscreen .package-fullscreen-meta span { color: #a9c0d3; font-size: 9px; }
+.package-inspector:fullscreen .package-inspector-modes { z-index: 5; width: 320px; position: absolute; right: 18px; bottom: 18px; }
+.package-inspector:fullscreen .package-view-presets { z-index: 5; width: min(520px,60vw); position: absolute; right: 18px; bottom: 18px; }
+
+.result-status-strip { min-height: 92px; }
+.status-icon { width: 42px; height: 42px; }
+.status-assessment strong { font-size: 17px; }
+.status-assessment p { font-size: 9px; }
+.status-metric { padding: 10px 14px; }
+.status-metric span { font-size: 9px; }
+.status-metric strong { margin-top: 2px; font-size: 16px; }
+.status-metric small { font-size: 8px; }
+
+.result-main-grid { grid-template-columns: minmax(420px,1.3fr) minmax(310px,1fr) minmax(300px,.92fr); }
+.analysis-zone .soa-body { padding: 4px 7px 0; }
+.analysis-zone .soa-body svg { height: 405px; }
+.soa-chart .chart-tick, .soa-chart .axis-label { font-size: 14px; }
+.operating-point-ring { stroke-width: 6; }
+.current-point { stroke-width: 3.2; }
+.soa-legend { min-height: 54px; gap: 9px 14px; padding: 5px 11px 11px; }
+.soa-legend span, .soa-legend button { font-size: 10px; }
+.chart-note { min-height: 42px; font-size: 8px; }
+
+.loss-visual { min-height: 430px; padding: 24px 18px; grid-template-columns: 148px minmax(170px,1fr); align-content: center; align-items: center; gap: 22px; }
+.analysis-zone .loss-donut { width: 142px; }
+.loss-donut::after { width: 59%; }
+.loss-donut strong { font-size: 17px; }
+.loss-donut span { font-size: 10px; }
+.loss-rows { display: grid; align-content: center; }
+.loss-row + .loss-row { margin-top: 27px; }
+.loss-row > div:first-child { margin-bottom: 9px; align-items: center; gap: 8px; }
+.loss-row span { font-size: 11px; }
+.loss-row span > i.loss-type-icon { width: 25px; height: 25px; display: grid; place-items: center; }
+.loss-row b { font-size: 11px; }
+.loss-row > strong { margin: 0 0 8px 31px; font-size: 13px; }
+.loss-track { height: 13px; }
+.loss-note { min-height: 55px; padding: 10px 12px; }
+.loss-note b { font-size: 8px; }
+.loss-note span { font-size: 8px; }
+
+.thermal-path-compact .thermal-flow { min-height: 136px; padding: 14px 13px 10px; }
+.thermal-path-compact .thermal-node > i { width: 51px; height: 51px; }
+.thermal-path-compact .thermal-node strong { font-size: 16px; }
+.thermal-path-compact .thermal-delta b { font-size: 14px; }
+.thermal-facts article { min-height: 63px; }
+.thermal-facts span { font-size: 9px; }
+.thermal-facts small { font-size: 7px; }
+.thermal-facts strong { font-size: 10px; }
+.analysis-zone .thermal-stack { padding: 11px; }
+.analysis-zone .thermal-stack-body { grid-template-columns: minmax(205px,1.55fr) minmax(105px,.45fr); align-items: stretch; }
+.analysis-zone .thermal-package-inspector .package-canvas { height: 330px; }
+.thermal-layer-legend { gap: 7px; }
+.thermal-layer-legend button { width: 100%; min-width: 0; margin: 0; padding: 7px 6px; display: grid; grid-template-columns: 8px 1fr; align-items: start; gap: 6px; border: 1px solid transparent; border-radius: 5px; color: inherit; background: transparent; text-align: left; cursor: pointer; }
+.thermal-layer-legend button:hover, .thermal-layer-legend button.active { border-color: #bfd8eb; background: #edf6fd; }
+.thermal-layer-legend button.active { box-shadow: inset 2px 0 #168bff; }
+.thermal-layer-legend button.all { grid-template-columns: 14px 1fr; border-color: #d5e2eb; background: #f8fbfd; }
+.thermal-layer-legend button.all > svg { color: #0877d1; }
+.thermal-layer-legend button.all.active { border-color: #8fc8ea; background: #eaf6fd; }
+.thermal-layer-legend i { width: 8px; height: 8px; }
+.thermal-layer-legend b { overflow: visible; font-size: 8px; line-height: 1.25; text-overflow: clip; white-space: normal; }
+.thermal-layer-legend small { margin-top: 3px; font-size: 7px; line-height: 1.3; }
+.thermal-layer-readout { min-height: 48px; padding: 7px 10px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 3px 10px; border: 1px solid #d7e3ec; border-radius: 6px; background: #fff; }
+.thermal-layer-readout > span { display: flex; align-items: center; gap: 6px; }
+.thermal-layer-readout i { width: 8px; height: 8px; border-radius: 50%; background: #60778e; }
+.thermal-layer-readout.junction i { background: #dc273c; }.thermal-layer-readout.attach i { background: #f5a623; }.thermal-layer-readout.leadframe i { background: #168bff; }.thermal-layer-readout.case i { background: #173d61; }
+.thermal-layer-readout b { font-size: 8px; }
+.thermal-layer-readout strong { color: #173651; font: 700 10px/1 "IBM Plex Mono",monospace; }
+.thermal-layer-readout small { grid-column: 1/-1; color: #6d8194; font-size: 7px; }
+.thermal-stack-metrics span { min-height: 51px; font-size: 7px; }
+.thermal-stack-metrics b { font-size: 9px; }
+.thermal-details-button { min-height: 32px; font-size: 8px; }
+
+@media (max-width: 1599px) {
+  .result-main-grid { grid-template-columns: minmax(370px,1.3fr) minmax(270px,1fr) minmax(275px,.92fr); }
+  .analysis-zone .soa-body svg { height: 415px; }
+  .loss-visual { min-height: 400px; grid-template-columns: 132px minmax(145px,1fr); padding: 20px 13px; gap: 16px; }
+  .analysis-zone .loss-donut { width: 142px; }
+  .analysis-zone .thermal-package-inspector .package-canvas { height: 320px; }
+  .analysis-zone .thermal-stack-body { grid-template-columns: minmax(185px,1.5fr) minmax(100px,.5fr); }
+}
+
+@media (max-width: 1190px) {
+  .result-main-grid { grid-template-columns: 1fr; }
+  .loss-visual { min-height: 360px; grid-template-columns: minmax(150px,.65fr) minmax(250px,1.35fr); }
+  .analysis-zone .thermal-package-inspector .package-canvas { height: 360px; }
+}
+
+@media (max-width: 760px) {
+  .result-status-strip { min-height: 0; }
+  .loss-visual { min-height: 0; grid-template-columns: 1fr; }
+  .analysis-zone .thermal-stack-body { grid-template-columns: 1fr; }
+  .thermal-layer-legend { grid-template-columns: 1fr 1fr; }
+  .analysis-zone .thermal-package-inspector .package-canvas { height: 310px; }
+}
+
+.package-inspector:fullscreen { position: relative; grid-template-rows: minmax(0,1fr) auto; }
+.package-inspector:fullscreen .package-canvas,
+.analyze-workspace .package-inspector:fullscreen .package-canvas { height: auto !important; min-height: 0; }
+.package-inspector:fullscreen .package-fullscreen-meta { color: #173651; text-shadow: 0 1px 0 rgba(255,255,255,.9); }
+.package-inspector:fullscreen .package-fullscreen-meta span { color: #60778e; }
+
+.loss-view-tabs { margin: 8px 12px 0; padding: 3px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; border: 1px solid #ccdae6; border-radius: 6px; background: #f1f6fa; }
+.loss-view-tabs button { min-height: 29px; border: 0; border-radius: 4px; color: #577087; background: transparent; font: 700 8px/1 "IBM Plex Sans",sans-serif; cursor: pointer; }
+.loss-view-tabs button.active { color: #fff; background: #087be8; box-shadow: 0 2px 7px rgba(8,123,232,.22); }
+.mosfet-operation { min-height: 471px; padding: 13px; display: grid; grid-template-columns: minmax(185px,.85fr) minmax(180px,1.15fr); gap: 12px; align-content: center; }
+.operation-stage,.operation-signals { min-width: 0; border: 1px solid #d8e4ed; border-radius: 8px; background: linear-gradient(145deg,#fbfdff,#f2f7fb); }
+.operation-stage { padding: 10px; display: grid; grid-template-rows: auto 1fr auto; }
+.operation-flow-labels { display: flex; align-items: center; justify-content: center; gap: 4px; color: #587088; font-size: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: .025em; }
+.operation-flow-labels i { color: #168bff; font-style: normal; }
+.operation-device { min-height: 220px; position: relative; display: grid; grid-template-columns: 54px 82px 54px; align-items: center; justify-content: center; }
+.operation-gate { z-index: 2; height: 56px; padding: 8px; position: relative; display: grid; place-content: center; border: 1px solid #aebdca; border-radius: 6px 0 0 6px; color: #496178; background: #e8eef3; transition: .18s; }
+.operation-gate:after { width: 18px; height: 3px; content: ""; position: absolute; right: -18px; top: 26px; background: #788b9c; }
+.operation-gate.energized { border-color: #8b5cf6; color: #6238c3; background: #eee9ff; box-shadow: 0 0 18px rgba(139,92,246,.24); }
+.operation-gate small,.operation-gate strong { text-align: center; }.operation-gate small { font-size: 6px; }.operation-gate strong { font: 700 9px/1.5 "IBM Plex Mono",monospace; }
+.operation-mosfet-body { width: 82px; height: 170px; position: relative; display: grid; grid-template-rows: 25px 1fr 25px; place-items: center; overflow: hidden; border: 2px solid #22313d; border-radius: 9px; color: #dfe8ef; background: linear-gradient(90deg,#121920,#26333e 52%,#111820); box-shadow: 0 11px 20px rgba(20,43,62,.18); }
+.operation-mosfet-body > span { z-index: 2; font-size: 7px; font-weight: 700; letter-spacing: .08em; }
+.operation-channel { width: 14px; height: 92px; position: relative; border: 2px dashed #5e7282; border-radius: 8px; transition: .18s; }
+.operation-channel.open { border-style: solid; border-color: #18b8ff; background: rgba(24,184,255,.2); box-shadow: 0 0 15px rgba(24,184,255,.55); }
+.current-particle { --particle: 0; width: 5px; height: 5px; position: absolute; left: 38px; top: calc(25px + var(--particle) * 17px); border-radius: 50%; background: #8ee7ff; opacity: 0; box-shadow: 0 0 7px #22d3ee; }
+.mosfet-operation.on .current-particle,.mosfet-operation.turning-on .current-particle,.mosfet-operation.turning-off .current-particle { opacity: calc(.35 + .09 * var(--particle)); animation: operation-current .75s linear infinite; animation-delay: calc(var(--particle) * -.1s); }
+@keyframes operation-current { from { transform: translateY(-12px); } to { transform: translateY(12px); } }
+.operation-heat { width: 54px; display: grid; justify-items: center; gap: 3px; color: #6a7f91; transition: .2s; }
+.operation-heat i { width: 30px; height: 4px; border-radius: 50%; background: #cbd5dc; }
+.operation-heat i:nth-child(2) { width: 39px; }.operation-heat i:nth-child(3) { width: 48px; }
+.operation-heat.active { color: #c3352c; }.operation-heat.active i { background: linear-gradient(90deg,#f8b84d,#e44938); box-shadow: 0 0 8px rgba(232,78,45,.24); }
+.operation-heat strong { font: 700 9px/1 "IBM Plex Mono",monospace; }.operation-heat small { font-size: 6px; }
+.operation-readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.operation-readouts span { padding: 5px; display: grid; border: 1px solid #dbe6ee; border-radius: 4px; background: #fff; }
+.operation-readouts small { color: #718598; font-size: 6px; }.operation-readouts b { color: #173651; font: 700 8px/1.5 "IBM Plex Mono",monospace; }
+.operation-signals { padding: 10px; display: grid; align-content: center; gap: 7px; }
+.operation-phase { display: flex; align-items: center; justify-content: space-between; gap: 6px; }.operation-phase strong { padding: 4px 7px; border-radius: 10px; color: #087be8; background: #e3f2ff; font-size: 7px; }.operation-phase span { color: #647b8f; font-size: 6.5px; text-align: right; }
+.operation-wave { min-width: 0; display: grid; grid-template-columns: 28px 1fr; align-items: center; gap: 4px; }.operation-wave > span { color: #294762; font: 700 8px/1 "IBM Plex Mono",monospace; }
+.operation-wave svg { width: 100%; height: 50px; overflow: visible; border-bottom: 1px solid #dbe4eb; background-image: linear-gradient(#e5edf3 1px,transparent 1px),linear-gradient(90deg,#e5edf3 1px,transparent 1px); background-size: 25% 50%; }
+.operation-wave path { fill: none; stroke: #8b5cf6; stroke-width: 2.2; vector-effect: non-scaling-stroke; }.operation-wave.current path { stroke: #22a6db; }.operation-wave.drain path { stroke: #168bff; }.operation-wave line { stroke: #e34a40; stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.operation-loss-focus { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; }.operation-loss-focus span { padding: 5px 3px; display: grid; gap: 2px; border: 1px solid #dbe5ec; border-radius: 4px; color: #718497; background: #fff; font-size: 5.8px; text-align: center; }.operation-loss-focus span.active { border-color: #22a6db; color: #0b6996; background: #eaf8ff; box-shadow: inset 0 2px #22a6db; }.operation-loss-focus b { font: 700 6.5px/1 "IBM Plex Mono",monospace; }
+.operation-controls { display: grid; grid-template-columns: 27px 1fr 39px; align-items: center; gap: 6px; }.operation-controls button { width: 27px; height: 27px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #fff; background: #087be8; cursor: pointer; }.operation-controls input { width: 100%; accent-color: #087be8; }.operation-controls b { color: #294762; font: 700 7px/1 "IBM Plex Mono",monospace; }
+.operation-disclaimer { grid-column: 1/-1; margin: -4px 3px 0; color: #6c8295; font-size: 6.5px; text-align: center; }
+@media (max-width: 1190px) { .mosfet-operation { grid-template-columns: minmax(260px,.85fr) minmax(330px,1.15fr); } }
+@media (max-width: 760px) { .mosfet-operation { grid-template-columns: 1fr; }.operation-device { min-height: 205px; } }
+
+/* Second visual pass: compact independent result cards and conventional MOSFET symbol. */
+.analysis-zone .result-main-grid { align-items: start; }
+.analysis-zone .engineering-visuals > .result-card { height: auto; align-self: start; }
+.analysis-zone .loss-breakdown { min-height: 0; }
+.analysis-zone .loss-breakdown .loss-visual { min-height: 360px; }
+.operation-device { grid-template-columns: 62px minmax(95px,125px) 64px; }
+.operation-mosfet-symbol { width: 118px; height: 190px; overflow: visible; color: #17212b; }
+.operation-mosfet-symbol text { fill: #526b80; font: 700 8px/1 Inter,"IBM Plex Sans",sans-serif; text-anchor: middle; }
+.operation-mosfet-symbol path:not(marker path) { fill: none; stroke: #17212b; stroke-width: 4; stroke-linecap: square; stroke-linejoin: round; transition: .18s; }
+.operation-mosfet-symbol .gate { stroke: #0877d1; }
+.operation-mosfet-symbol .diode { stroke-width: 2.4; }
+.operation-mosfet-symbol .current { stroke: #16a3c7; stroke-width: 2.5; opacity: .28; }
+.operation-mosfet-symbol marker path { fill: #16a3c7; }
+.operation-mosfet-symbol.conducting .channel { stroke: #16b348; filter: drop-shadow(0 0 4px rgba(22,179,72,.35)); }
+.operation-mosfet-symbol.conducting .current { opacity: 1; stroke-dasharray: 8 5; animation: conventional-current .75s linear infinite; }
+.operation-mosfet-symbol .current-text { fill: #16849f; }
+@keyframes conventional-current { to { stroke-dashoffset: -26; } }
+.operation-gate { border-radius: 6px; }
+.operation-gate::after { width: 12px; right: -12px; }
+.operation-heat { align-content: center; }
+.operation-heat > span { color: #16849f; font-size: 7px; font-weight: 700; text-align: center; }
+.operation-heat > small { text-align: center; }
+.operation-phase-track { display: grid; grid-template-columns: .65fr 2fr .75fr 1.25fr; gap: 3px; }
+.operation-phase-track span { min-height: 20px; display: grid; place-items: center; border-radius: 3px; color: #708497; background: #edf2f6; font-size: 6px; font-weight: 800; letter-spacing: .03em; }
+.operation-phase-track span.active { color: #fff; background: #0877d1; box-shadow: 0 2px 5px rgba(8,119,209,.25); }
+.operation-wave { grid-template-columns: 31px 1fr; }
+.operation-wave.gate path { stroke: #16b348; }.operation-wave.current path { stroke: #16a3c7; }.operation-wave.drain path { stroke: #0877d1; }
+.operation-wave .transition-marker { stroke: #c98912; stroke-width: 1.4; stroke-dasharray: 3 2; opacity: .82; }
+.operation-wave .cycle-cursor { stroke: #c33b32; stroke-width: 1.4; }
+.operation-transition-note { min-height: 27px; padding: 4px 7px; display: grid; grid-template-columns: auto 1fr auto 1fr auto; align-items: center; gap: 5px; border-radius: 5px; color: #64798b; background: #f4f8fb; }
+.operation-transition-note > span { color: #855c0e; font-size: 5.8px; font-weight: 800; }.operation-transition-note > i { border-top: 1px dashed #c98912; }.operation-transition-note p { margin: 0; display: grid; text-align: center; }.operation-transition-note b { color: #324d63; font-size: 6.5px; }.operation-transition-note small { color: #718496; font-size: 5.7px; }
+.operation-overlap-key { min-height: 39px; padding: 6px 8px; display: grid; grid-template-columns: 4px 1fr auto; align-items: center; gap: 8px; border: 1px solid #cbdde9; border-radius: 5px; background: #f8fbfd; }
+.operation-overlap-key > i { width: 4px; height: 26px; border-radius: 4px; background: #c98912; }
+.operation-overlap-key > span { display: grid; gap: 2px; }.operation-overlap-key b { color: #29475e; font-size: 7px; }.operation-overlap-key small { color: #687e90; font-size: 5.8px; line-height: 1.3; }
+.operation-overlap-key > strong { color: #855c0e; font: 700 8px/1 "IBM Plex Mono",monospace; }
+
+/* Wide synchronized switching visualization with explanatory instantaneous power. */
+.result-evidence-power .loss-view-tabs { margin-top: 10px; }
+.result-evidence-power .loss-view-tabs button { min-height: 34px; font-size: 9px; }
+.result-evidence-power .mosfet-operation { min-height: 690px; padding: 15px; grid-template-columns: 250px minmax(0,1fr); align-content: start; gap: 14px; }
+.result-evidence-power .operation-stage { min-height: 650px; align-content: center; }
+.result-evidence-power .operation-device { min-height: 300px; grid-template-columns: 54px 118px 54px; }
+.result-evidence-power .operation-mosfet-symbol { width: 145px; height: 230px; }
+.result-evidence-power .operation-readouts { grid-template-columns: repeat(4,1fr); }
+.result-evidence-power .operation-readouts span { padding: 8px; }
+.result-evidence-power .operation-signals { padding: 14px 16px; align-content: start; gap: 8px; }
+.operation-signals-heading { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #dbe5ec; }
+.operation-signals-heading > div { display: grid; gap: 3px; }.operation-signals-heading strong { color: #203c53; font-size: 12px; }.operation-signals-heading small { color: #6d8191; font-size: 8px; }
+.operation-signals-heading code { padding: 7px 10px; border: 1px solid #bcd9e9; border-radius: 5px; color: #0877d1; background: #edf8ff; font: 700 10px/1 "IBM Plex Mono",monospace; white-space: nowrap; }
+.result-evidence-power .operation-phase strong { font-size: 8px; }.result-evidence-power .operation-phase span { font-size: 8px; }
+.result-evidence-power .operation-phase-track span { min-height: 25px; font-size: 7px; }
+.result-evidence-power .operation-transition-note { min-height: 33px; }.result-evidence-power .operation-transition-note b { font-size: 7.5px; }.result-evidence-power .operation-transition-note small { font-size: 6.5px; }
+.result-evidence-power .operation-wave { grid-template-columns: 42px 1fr; gap: 8px; }
+.result-evidence-power .operation-wave > span { font-size: 10px; }
+.result-evidence-power .operation-wave svg { height: 66px; background-size: 20% 50%; }
+.operation-power-wave { min-width: 0; padding: 8px 9px 5px; display: grid; grid-template-columns: 110px 1fr; align-items: center; gap: 9px; border: 1px solid #e1b7b2; border-radius: 7px; background: linear-gradient(90deg,#fffafa,#fff); }
+.operation-power-label { display: grid; gap: 5px; }.operation-power-label > span { color: #c33b32; font: 800 13px/1 "IBM Plex Mono",monospace; }.operation-power-label small { color: #6d8191; font-size: 8px; line-height: 1.35; }
+.operation-power-wave svg { width: 100%; height: 126px; overflow: visible; background-image: linear-gradient(#f0e5e3 1px,transparent 1px),linear-gradient(90deg,#e7edf1 1px,transparent 1px); background-size: 20% 33.333%; }
+.operation-power-wave .power-area { fill: url(#operation-power-fill); stroke: none; }.operation-power-wave .power-line { fill: none; stroke: #c33b32; stroke-width: 2.7; vector-effect: non-scaling-stroke; }.operation-power-wave .transition-marker { stroke: #c98912; stroke-width: 1.2; stroke-dasharray: 4 3; }.operation-power-wave .cycle-cursor { stroke: #17212b; stroke-width: 1.2; }.operation-power-wave text { fill: #9e3029; font: 700 9px/1 "IBM Plex Mono",monospace; }
+.result-evidence-power .operation-overlap-key { min-height: 47px; }.result-evidence-power .operation-overlap-key b { font-size: 8px; }.result-evidence-power .operation-overlap-key small { font-size: 7px; }
+.result-evidence-power .operation-loss-focus span { min-height: 38px; font-size: 7px; }.result-evidence-power .operation-loss-focus b { font-size: 8px; }
+.result-evidence-power .operation-controls { grid-template-columns: 32px 1fr 48px; }.result-evidence-power .operation-controls button { width: 32px; height: 32px; }.result-evidence-power .operation-controls b { font-size: 8px; }
+.result-evidence-power .operation-disclaimer { margin-top: 0; font-size: 7.5px; }
+
+/* Lab workspace */
+.lab-workspace { width: min(1460px,calc(100% - 28px)); margin: 0 auto; padding-bottom: 28px; color: #17212b; }
+.lab-hero { min-height: 188px; margin-top: 10px; padding: 28px 32px; display: grid; grid-template-columns: minmax(0,1fr) 300px; align-items: center; gap: 30px; overflow: hidden; position: relative; border: 1px solid #d5e1ea; border-radius: 10px; background: radial-gradient(circle at 86% 10%,rgba(22,163,199,.15),transparent 31%),linear-gradient(135deg,#fafdff,#eef6fb); box-shadow: var(--shadow); }
+.lab-hero > div > span { display: flex; align-items: center; gap: 7px; color: #0877d1; font-size: 9px; font-weight: 800; letter-spacing: .09em; }
+.lab-hero h1 { margin: 8px 0 9px; color: #17212b; font-size: clamp(24px,3vw,38px); line-height: 1.05; letter-spacing: -.035em; }
+.lab-hero p { max-width: 760px; margin: 0; color: #586e80; font-size: 11px; line-height: 1.65; }
+.lab-hero aside { padding: 18px; display: grid; grid-template-columns: 32px 1fr; gap: 5px 10px; border: 1px solid #b9d8e7; border-radius: 8px; background: rgba(255,255,255,.82); }
+.lab-hero aside svg { grid-row: 1/3; color: #16a3c7; }.lab-hero aside strong { font-size: 10px; }.lab-hero aside span { color: #64798a; font-size: 8px; line-height: 1.45; }
+.lab-flow { margin-top: 10px; padding: 9px; display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; border: 1px solid #d7e2eb; border-radius: 8px; background: #fff; box-shadow: var(--shadow); }
+.lab-flow button { min-width: 0; min-height: 54px; padding: 8px 12px; position: relative; display: grid; gap: 4px; border: 1px solid transparent; border-radius: 5px; color: #5b7082; background: transparent; text-align: left; cursor: pointer; }
+.lab-flow button.active { border-color: #afd5ec; color: #0877d1; background: #edf8ff; }.lab-flow small { font-size: 6px; font-weight: 800; letter-spacing: .05em; }.lab-flow b { overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.lab-flow i { position: absolute; right: -7px; top: 17px; z-index: 2; color: #16a3c7; font-size: 15px; font-style: normal; }
+.lab-system-demo { margin-top: 10px; padding: 14px 16px 12px; border: 1px solid #cbdde8; border-radius: 9px; background: linear-gradient(135deg,#fafdff,#edf6fb); box-shadow: var(--shadow); }
+.lab-system-demo > header { display: grid; grid-template-columns: 1fr minmax(280px,420px); align-items: center; gap: 20px; }.lab-system-demo > header > div { display: grid; gap: 4px; }.lab-system-demo > header small { color: #0877d1; font-size: 6px; font-weight: 800; letter-spacing: .08em; }.lab-system-demo > header strong { font-size: 12px; }.lab-system-demo label { padding: 8px 10px; display: grid; grid-template-columns: 1fr auto; gap: 5px 9px; border: 1px solid #d2e1ea; border-radius: 6px; background: #fff; }.lab-system-demo label span { color: #587083; font-size: 7px; font-weight: 700; }.lab-system-demo label input { grid-column: 1/-1; width: 100%; accent-color: #0877d1; }.lab-system-demo label b { color: #0877d1; font: 700 8px/1 "IBM Plex Mono",monospace; }
+.lab-system-chain { margin-top: 12px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr; align-items: stretch; gap: 6px; }.lab-system-chain > i { align-self: center; color: #9eb2c1; font-style: normal; }.lab-system-chain article { min-height: 62px; padding: 8px; display: grid; align-content: center; gap: 3px; border: 1px solid #d6e1e8; border-radius: 6px; color: #7c8f9e; background: rgba(255,255,255,.7); transition: .2s; }.lab-system-chain article small { font-size: 6px; font-weight: 800; }.lab-system-chain article b { font-size: 8px; }.lab-system-chain article span { font-size: 6.5px; }.lab-system-chain article.active { border-color: #8fc9e9; color: #145f91; background: #e9f6fd; box-shadow: inset 0 3px #0877d1; }.lab-system-chain article.warm { border-color: #ddbf78; color: #76520d; background: #fff8e9; box-shadow: inset 0 3px #c98912; }.lab-system-chain article.hot { border-color: #e2a6a1; color: #8f2d26; background: #fff1f0; box-shadow: inset 0 3px #c33b32; }.lab-system-demo > p { margin: 9px 0 0; color: #687e8f; font-size: 6.5px; text-align: center; }
+.lab-content { margin-top: 10px; display: grid; grid-template-columns: 320px minmax(0,1fr); gap: 10px; align-items: start; }
+.lab-content > nav,.lab-module { border: 1px solid #d7e2eb; border-radius: 9px; background: #fff; box-shadow: var(--shadow); }
+.lab-content > nav { padding: 7px; display: grid; gap: 4px; }
+.lab-content > nav button { min-height: 74px; padding: 10px; display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 7px; border: 1px solid transparent; border-radius: 6px; color: #63798a; background: transparent; text-align: left; cursor: pointer; }
+.lab-content > nav button.active { border-color: #add3e9; color: #0877d1; background: #eff8fd; box-shadow: inset 3px 0 #0877d1; }.lab-content > nav button > span { min-width: 0; display: grid; gap: 3px; }.lab-content > nav small { font-size: 6px; font-weight: 800; letter-spacing: .06em; }.lab-content > nav b { color: #233646; font-size: 9px; }.lab-content > nav em { color: #718596; font-size: 7px; font-style: normal; line-height: 1.35; }
+.lab-module { overflow: hidden; }.lab-module > header { min-height: 64px; padding: 13px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e0e8ee; }.lab-module > header small { color: #0877d1; font-size: 7px; font-weight: 800; letter-spacing: .07em; }.lab-module > header h2 { margin: 4px 0 0; font-size: 17px; }.lab-module > header > span { padding: 5px 8px; border-radius: 4px; color: #5e7486; background: #edf2f6; font-size: 6px; font-weight: 800; letter-spacing: .08em; }
+.lab-interactive { min-height: 285px; padding: 18px; display: grid; grid-template-columns: minmax(0,1fr) 220px; align-items: center; gap: 22px; background: linear-gradient(145deg,#fbfdff,#f1f6f9); }
+.lab-interactive > label { padding: 14px; display: grid; grid-template-columns: 1fr auto; gap: 9px; border: 1px solid #d6e2ea; border-radius: 7px; background: #fff; }.lab-interactive > label span { color: #526b7f; font-size: 8px; font-weight: 700; }.lab-interactive > label input { grid-column: 1/-1; width: 100%; accent-color: #0877d1; }.lab-interactive > label b { color: #0877d1; font: 700 9px/1 "IBM Plex Mono",monospace; }
+.lab-explanation { padding: 15px 18px 17px; border-top: 1px solid #dde7ee; }.lab-explanation > span { color: #16a3c7; font-size: 6px; font-weight: 800; letter-spacing: .08em; }.lab-explanation h3 { margin: 5px 0; font-size: 12px; }.lab-explanation p { margin: 0; color: #566e80; font-size: 8.5px; line-height: 1.55; }.lab-explanation small { margin-top: 7px; display: block; color: #8b6414; font-size: 7px; }
+.lab-module-navigation { padding: 9px 14px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; border-top: 1px solid #dfe8ee; background: #f7fafc; }.lab-module-navigation button { min-height: 30px; padding: 0 10px; border: 1px solid #c9dae6; border-radius: 5px; color: #0877d1; background: #fff; font-size: 7px; font-weight: 700; cursor: pointer; }.lab-module-navigation button:last-child { justify-self: end; }.lab-module-navigation button:disabled { color: #9aabb8; background: #edf2f5; cursor: default; }.lab-module-navigation span { color: #6e8292; font: 700 7px/1 "IBM Plex Mono",monospace; }
+.lab-gate-visual { height: 220px; position: relative; display: grid; place-items: center; }.lab-gate-electrode { width: 170px; height: 28px; display: grid; place-items: center; z-index: 2; border: 2px solid #0877d1; color: #0877d1; background: #eaf6ff; font-size: 8px; font-weight: 800; }.lab-gate-visual > i { width: 150px; height: 67px; position: absolute; top: 64px; background: linear-gradient(#16a3c7,transparent); filter: blur(10px); }.lab-gate-visual > div { width: 280px; margin-top: 62px; padding: 12px; display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; border-bottom: 8px solid #9db1bf; color: #687f91; background: #dfe7ec; }.lab-gate-visual > div b { text-align: center; }.lab-gate-visual > div em { height: 8px; border-radius: 6px; background: #aebdc7; font-size: 0; transition: .2s; }.lab-gate-visual > div.formed em { background: #16b348; box-shadow: 0 0 10px rgba(22,179,72,.45); }.lab-gate-visual > small { position: absolute; bottom: 3px; color: #586f80; font-size: 8px; }
+.lab-diode-visual { height: 220px; display: grid; grid-template-rows: auto 1fr auto 1fr auto; place-items: center; color: #17212b; }.lab-diode-visual > b { width: 48px; height: 28px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: #17212b; }.lab-diode-visual > span { display: grid; place-items: center; color: #16a3c7; font-size: 24px; }.lab-diode-visual > span small { color: #667c8d; font-size: 7px; }.lab-diode-visual > i { font-size: 31px; font-style: normal; transform: rotate(90deg); }.lab-diode-visual.reverse > span:nth-of-type(1),.lab-diode-visual.forward > span:nth-of-type(2) { opacity: .18; }
+.lab-overlap-visual svg { width: 100%; height: 190px; overflow: visible; background-image: linear-gradient(#e3eaf0 1px,transparent 1px),linear-gradient(90deg,#e3eaf0 1px,transparent 1px); background-size: 25% 25%; }.lab-overlap-visual path { fill: none; stroke-width: 4; vector-effect: non-scaling-stroke; }.lab-overlap-visual .vds { stroke: #0877d1; }.lab-overlap-visual .id { stroke: #16a3c7; }.lab-overlap-visual rect { fill: rgba(201,137,18,.21); stroke: #c98912; stroke-dasharray: 4 3; }.lab-overlap-visual text { fill: #8b600f; font-size: 10px; }.lab-overlap-visual > div { display: flex; gap: 14px; color: #617789; font-size: 7px; }.lab-overlap-visual > div span { display: flex; align-items: center; gap: 4px; }.lab-overlap-visual > div i { width: 13px; height: 2px; background: #0877d1; }.lab-overlap-visual > div span:nth-child(2) i { background: #16a3c7; }.lab-overlap-visual > div b { margin-left: auto; color: #8b600f; }
+.lab-temp-visual { display: grid; justify-items: center; gap: 22px; }.lab-temp-axis { width: 90%; height: 11px; position: relative; border-radius: 8px; background: linear-gradient(90deg,#16b348,#c98912,#c33b32); }.lab-temp-axis i { height: 20px; position: absolute; top: -5px; left: 0; border-right: 3px solid #17212b; }.lab-temp-axis span { position: absolute; top: 18px; color: #687d8e; font-size: 7px; }.lab-temp-axis span:last-child { right: 0; }.lab-temp-visual > strong { width: 105px; height: 105px; display: grid; place-items: center; border: 8px solid #c98912; border-radius: 50%; color: #895f10; background: #fff8e9; transition: .2s; }.lab-temp-visual p { max-width: 420px; margin: 0; color: #647a8b; font-size: 8px; text-align: center; line-height: 1.5; }
+.lab-limits-visual { display: grid; gap: 15px; }.lab-soa-field { height: 160px; position: relative; overflow: hidden; border-left: 2px solid #17212b; border-bottom: 2px solid #17212b; background: linear-gradient(145deg,rgba(22,179,72,.13) 0 47%,rgba(195,59,50,.1) 47%); }.lab-soa-field::after { content:""; width: 140%; position: absolute; left: -20%; top: 47%; border-top: 2px solid #c33b32; transform: rotate(-22deg); }.lab-soa-field i { width: 12px; height: 12px; position: absolute; z-index: 2; border: 3px solid #fff; border-radius: 50%; background: #0877d1; box-shadow: 0 0 0 2px #0877d1; transition: .2s; }.lab-soa-field span { position: absolute; top: 12px; right: 12px; color: #a3322a; font-size: 7px; }.lab-thermal-chain { display: flex; align-items: center; justify-content: center; gap: 7px; }.lab-thermal-chain b { padding: 7px; border-radius: 4px; color: #40586b; background: #e9eff3; font-size: 7px; }.lab-thermal-chain i { color: #c98912; font-style: normal; }
+.lab-integrity { margin-top: 10px; padding: 14px 18px; display: grid; grid-template-columns: 24px 1fr; gap: 9px; border: 1px solid #e0c789; border-radius: 8px; color: #7a5817; background: #fff9eb; }.lab-integrity strong { font-size: 9px; }.lab-integrity p { margin: 4px 0 0; font-size: 7.5px; line-height: 1.5; }
+@media (max-width: 1000px) { .lab-content { grid-template-columns: 1fr; }.lab-content > nav { grid-template-columns: repeat(5,1fr); }.lab-content > nav button { min-height: 62px; grid-template-columns: 1fr; }.lab-content > nav svg,.lab-content > nav em { display: none; }.lab-flow { display: none; }.lab-system-chain { grid-template-columns: repeat(5,1fr); }.lab-system-chain > i { display: none; } }
+@media (max-width: 760px) { .lab-workspace { width: calc(100% - 16px); }.lab-hero { padding: 20px; grid-template-columns: 1fr; }.lab-content > nav { grid-template-columns: 1fr 1fr; }.lab-interactive { grid-template-columns: 1fr; }.lab-thermal-chain { flex-wrap: wrap; }.lab-system-demo > header { grid-template-columns: 1fr; }.lab-system-chain { grid-template-columns: 1fr 1fr; } }
+
+/* Focused product architecture correction: content-driven Analyze + engineering Lab. */
+.workflow-grid { grid-template-columns: minmax(420px,1fr) minmax(560px,1.45fr); align-items: start; gap: 10px; }
+.workflow-column { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.workflow-column > .workflow-card { width: 100%; height: auto; min-height: 0; align-self: start; }
+.workflow-column > .component-card { min-height: 520px; }
+.workflow-column > .operating-card { min-height: 0; padding-bottom: 24px; }
+.workflow-column > .action-card,.workflow-column > .thermal-settings { min-height: 0; }
+.workflow-action-row { min-width: 0; grid-column: 1 / -1; }
+.workflow-action-row > .action-card { width: 100%; height: auto; min-height: 0; padding-bottom: 12px; display: grid; grid-template-columns: minmax(135px,.7fr) minmax(210px,1.15fr) minmax(170px,1fr) minmax(145px,.78fr) minmax(190px,1fr) minmax(150px,.8fr); align-items: end; gap: 8px; }
+.workflow-action-row .workflow-heading { min-height: 58px; align-self: stretch; border-bottom: 0; }
+.workflow-action-row .analysis-mode { margin: 0; }
+.workflow-action-row .run-analysis,.workflow-action-row .secondary-action { min-height: 38px; margin: 0; }
+.workflow-action-row .last-analysis { min-height: 38px; margin: 0; padding: 4px 8px; border: 1px solid #d8e3ec; border-radius: 6px; }
+.workflow-action-row .recent-analysis-panel { inset: 68px 8px 8px; min-height: 210px; }
+.analyze-workspace .component-inspector-layout { grid-template-columns: minmax(0,1.42fr) minmax(150px,.72fr); }
+.analyze-workspace .component-specification,.analyze-workspace .component-identity,.analyze-workspace .component-limits { min-width: 0; }
+.analyze-workspace .component-identity .documented { display: block; white-space: normal; line-height: 1.25; }
+.analyze-workspace .component-limits > div { min-width: 0; gap: 8px; }
+.analyze-workspace .component-limits dt { min-width: 0; flex: 1; }
+.analyze-workspace .component-limits dd { flex: none; white-space: nowrap; }
+.operating-card .operating-primary { padding-bottom: 0; }
+.result-status-strip { align-items: stretch; }
+.status-metric > div { display: flex; flex-direction: column; justify-content: center; }
+.status-metric strong { order: 0; font-size: 17px; font-variant-numeric: tabular-nums; }.status-metric span { order: 1; margin-top: 3px; font-size: 8px; }.status-metric small { order: 2; }
+.status-assessment strong { font-size: 18px; }.status-assessment p { max-width: 360px; font-weight: 400; }
+.result-evidence-layout { margin-top: 10px; display: grid; grid-template-columns: minmax(0,62fr) minmax(380px,38fr); align-items: start; gap: 10px; }
+.result-evidence-layout > .result-card { height: auto; min-height: 0; align-self: start; }
+.result-evidence-layout > .soa-chart .soa-body { padding: 0 10px; }.result-evidence-layout > .soa-chart .soa-body svg { height: 590px; }.result-evidence-layout > .soa-chart .soa-legend { min-height: 48px; }.result-evidence-layout > .soa-chart .chart-note { min-height: 40px; }
+.result-evidence-power { min-width: 0; grid-column: 1 / -1; }
+.result-evidence-power > .loss-breakdown { width: 100%; height: auto; min-height: 0; }
+.result-evidence-power .loss-visual { min-height: 360px; padding: 24px 12%; grid-template-columns: minmax(180px,38fr) minmax(300px,62fr); align-items: center; align-content: center; }
+.result-evidence-layout .thermal-stack { padding: 10px; }.result-evidence-layout .thermal-stack-body { grid-template-columns: minmax(0,1fr) 126px; gap: 8px; }.result-evidence-layout .thermal-package-inspector .package-canvas { height: 405px; }.result-evidence-layout .thermal-layer-legend { gap: 4px; }.result-evidence-layout .thermal-layer-legend button { padding: 7px 6px; }.result-evidence-layout .thermal-layer-legend b { font-size: 8px; }.result-evidence-layout .thermal-layer-legend small { font-size: 7px; }
+
+.engineering-lab { width: min(1660px,calc(100% - 28px)); margin: 0 auto; padding: 10px 0 30px; color: #17212b; font-family: Inter,"IBM Plex Sans",sans-serif; }
+.engineering-lab b,.engineering-lab strong,.engineering-lab input { font-variant-numeric: tabular-nums; }
+.lab-tool-header { min-height: 88px; padding: 14px 18px; display: grid; grid-template-columns: minmax(250px,.8fr) minmax(0,1.55fr) minmax(145px,.45fr); align-items: center; gap: 14px; border: 1px solid #d6e1e9; border-radius: 9px; background: #fff; box-shadow: var(--shadow); }
+.lab-tool-header > div:first-child > span,.engineering-lab section > header > span,.engineering-lab section > header div > span,.lab-results-panel > header span,.lab-thermal-results > span { color: #0877d1; font-size: 11px; font-weight: 600; letter-spacing: .07em; }
+.lab-tool-header > div:first-child > span { display: flex; align-items: center; gap: 5px; }
+.lab-tool-header h1 { margin: 5px 0 0; font-size: 22px; font-weight: 650; letter-spacing: -.02em; }
+.lab-tool-header > div:first-child > p { margin: 4px 0 0; color: #63798b; font-size: 11px; }
+.lab-experiment-toolbar { min-width: 0; display: flex; align-items: end; gap: 7px; }.lab-experiment-toolbar label { min-width: 0; display: grid; gap: 4px; color: #607487; font-size: 11px; }.lab-experiment-toolbar select { width: 165px; height: 34px; padding: 0 8px; border: 1px solid #c9d8e3; border-radius: 5px; color: #233b4f; background: #f9fbfc; font-size: 12px; font-weight: 600; }.lab-experiment-toolbar button { min-height: 34px; padding: 0 9px; display: flex; align-items: center; gap: 5px; white-space: nowrap; border: 1px solid #c9d9e5; border-radius: 5px; color: #426079; background: #fff; font-size: 11px; cursor: pointer; }.lab-experiment-toolbar button.primary { color: #fff; border-color: #0877d1; background: #0877d1; }.lab-experiment-toolbar button:disabled { opacity: .45; }
+.lab-persistent-status { padding: 10px 12px; display: flex; align-items: center; gap: 9px; border-radius: 6px; background: #eef3f6; }.lab-persistent-status > i { width: 9px; height: 9px; border-radius: 50%; background: #718596; }.lab-persistent-status span { display: grid; gap: 3px; }.lab-persistent-status small { color: #718596; font-size: 9px; }.lab-persistent-status b { font-size: 14px; }.lab-persistent-status.safe { color: #087c4d; background: #eaf8f1; }.lab-persistent-status.safe > i { background: #16b348; }.lab-persistent-status.critical { color: #8a5e0b; background: #fff7e4; }.lab-persistent-status.critical > i { background: #c98912; }.lab-persistent-status.unsafe { color: #9b2e28; background: #fff0ef; }.lab-persistent-status.unsafe > i { background: #c33b32; }
+.lab-causal-flow { margin-top: 9px; padding: 8px 12px; display: grid; grid-template-columns: repeat(5,1fr); border: 1px solid #d7e2ea; border-radius: 8px; background: linear-gradient(90deg,#f7fbfe,#eef8fc 52%,#fff8f2); box-shadow: var(--shadow); }
+.lab-causal-flow > div { min-width: 0; display: grid; grid-template-columns: 1fr 18px; align-items: center; }.lab-causal-flow > div:last-child { grid-template-columns: 1fr; }.lab-causal-flow > div > i { color: #80a4bc; font-style: normal; text-align: center; animation: lab-flow-pulse 1.8s ease-in-out infinite; }
+.lab-causal-flow button { min-width: 0; min-height: 48px; padding: 6px 9px; display: grid; grid-template-columns: 26px 1fr; grid-template-rows: 1fr 1fr; align-items: center; column-gap: 7px; border: 1px solid transparent; border-radius: 6px; color: #38566d; background: transparent; text-align: left; cursor: pointer; transition: transform .2s ease,border-color .2s ease,background .2s ease; }.lab-causal-flow button:hover,.lab-causal-flow button.active { transform: translateY(-1px); border-color: #a8d1eb; background: rgba(255,255,255,.9); }.lab-causal-flow button > span { width: 26px; height: 26px; grid-row: 1/-1; display: grid; place-items: center; border-radius: 50%; color: #0877d1; background: #e0f2ff; }.lab-causal-flow button b { align-self: end; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }.lab-causal-flow button small { align-self: start; color: #768a9a; font-size: 9px; }
+.lab-mode-tabs { margin-top: 9px; padding: 4px; display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; border: 1px solid #cedce6; border-radius: 7px; background: #eef3f7; }.lab-mode-tabs button { min-height: 48px; padding: 5px 12px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 5px; color: #526a7e; background: transparent; cursor: pointer; }.lab-mode-tabs button > span { display: grid; gap: 2px; text-align: left; }.lab-mode-tabs button b { font-size: 12px; }.lab-mode-tabs button small { color: #7c8d9b; font-size: 9px; font-weight: 500; }.lab-mode-tabs button.active { color: #fff; background: #0877d1; box-shadow: 0 2px 7px rgba(8,119,209,.22); }.lab-mode-tabs button.active small { color: #dcefff; }
+.lab-simulator-grid { margin-top: 9px; display: grid; grid-template-columns: minmax(260px,26fr) minmax(470px,48fr) minmax(260px,26fr); align-items: start; gap: 9px; }
+.lab-controls-panel,.lab-live-mosfet,.lab-results-panel,.lab-switch-controls,.lab-wave-workspace,.lab-thermal-controls,.lab-thermal-viewer,.lab-thermal-results,.lab-soa-controls,.lab-soa-workspace { border: 1px solid #d7e2ea; border-radius: 8px; background: #fff; box-shadow: var(--shadow); }
+.engineering-lab section > header { min-height: 61px; padding: 12px 15px; border-bottom: 1px solid #e2e9ee; }.engineering-lab section > header h2 { margin: 5px 0 0; font-size: 16px; font-weight: 600; }
+.lab-controls-panel { padding-bottom: 12px; }.lab-control { padding: 11px 14px 8px; display: block; }.lab-control > span { display: flex; justify-content: space-between; align-items: baseline; }.lab-control > span b { font-size: 13px; font-weight: 600; }.lab-control > span small { color: #7a8e9e; font-size: 10px; }.lab-control > div { margin-top: 7px; display: grid; grid-template-columns: 1fr 92px; align-items: center; gap: 10px; }.lab-control > div > input { width: 100%; accent-color: #0877d1; }.lab-control > div > span { height: 32px; display: grid; grid-template-columns: 1fr 30px; border: 1px solid #ccd9e3; border-radius: 5px; overflow: hidden; }.lab-control > div > span input { min-width: 0; width: 100%; padding: 0 7px; border: 0; outline: 0; color: #172f43; font-size: 13px; font-weight: 600; }.lab-control > div > span b { display: grid; place-items: center; color: #62788a; background: #eef3f6; font-size: 10px; font-weight: 500; }
+.lab-live-mosfet { overflow: hidden; }.lab-mosfet-stage { min-height: 435px; position: relative; display: grid; place-items: center; background: radial-gradient(circle at 50% 46%,rgba(22,163,199,.08),transparent 31%),linear-gradient(#fbfdfe,#f1f6f9); }.lab-mosfet-stage svg { width: min(330px,55%); height: 350px; }.lab-mosfet-stage svg text { fill: #496174; font-size: 12px; font-weight: 600; text-anchor: middle; }.lab-mosfet-stage svg path:not(marker path) { fill: none; stroke: #17212b; stroke-width: 5; }.lab-mosfet-stage svg .gate { stroke: #0877d1; }.lab-mosfet-stage svg .current { stroke: #16a3c7; stroke-width: 3; opacity: .25; }.lab-mosfet-stage.conducting svg .channel { stroke: #16b348; filter: drop-shadow(0 0 5px rgba(22,179,72,.35)); }.lab-mosfet-stage.conducting svg .current { opacity: 1; stroke-dasharray: 9 6; animation: conventional-current .8s linear infinite; }.lab-mosfet-stage svg marker path { fill: #16a3c7; }.lab-gate-node { position: absolute; left: 6%; top: 45%; padding: 12px 16px; display: grid; gap: 4px; border: 1px solid #82bfe8; border-radius: 6px; color: #075f9e; background: #edf8ff; }.lab-gate-node small { font-size: 10px; }.lab-gate-node b { font-size: 18px; }.lab-device-state { position: absolute; right: 5%; top: 42%; display: grid; gap: 5px; color: #536a7d; }.lab-device-state span { font-size: 10px; }.lab-device-state b { color: #16b348; font-size: 17px; }.lab-device-state small { font-size: 10px; }.lab-live-values { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid #e1e8ed; }.lab-live-values span { padding: 11px 13px; display: grid; gap: 3px; border-right: 1px solid #e1e8ed; }.lab-live-values span:last-child { border: 0; }.lab-live-values small { color: #728697; font-size: 10px; }.lab-live-values b { font-size: 16px; }
+.lab-results-panel { padding-bottom: 13px; }.lab-results-panel.loading { min-height: 200px; padding: 20px; color: #718596; }.lab-results-panel > header { padding: 14px 15px; display: grid; gap: 5px; border-bottom: 1px solid #e0e8ee; }.lab-results-panel > header strong { color: #128b58; font-size: 20px; }.lab-result-kpis { padding: 4px 15px 10px; }.lab-result-kpis article { min-height: 55px; padding: 8px 0; display: flex; flex-direction: column; justify-content: center; gap: 3px; border-bottom: 1px solid #e5ebf0; }.lab-result-kpis small { order: 2; color: #687d8e; font-size: 11px; }.lab-result-kpis b { order: 1; font-size: 20px; font-weight: 600; }.lab-loss-mini { padding: 10px 15px 0; }.lab-loss-mini > span { color: #0877d1; font-size: 10px; font-weight: 600; }.lab-loss-mini > div { margin-top: 9px; display: grid; grid-template-columns: 70px 1fr 68px; align-items: center; gap: 6px; }.lab-loss-mini small { font-size: 10px; }.lab-loss-mini i { height: 6px; overflow: hidden; border-radius: 4px; background: #e4ebf0; }.lab-loss-mini i b { height: 100%; display: block; background: #16a3c7; }.lab-loss-mini strong { text-align: right; font-size: 10px; }
+.lab-switching-grid { margin-top: 9px; display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 9px; align-items: start; }.lab-switch-controls { padding-bottom: 12px; }.lab-wave-workspace > header { display: flex; align-items: center; justify-content: space-between; }.lab-wave-workspace > header > small { color: #718496; font-size: 10px; }.lab-waveforms { padding: 12px 18px 5px; }.lab-waveforms > div { display: grid; grid-template-columns: 65px 1fr; align-items: center; gap: 8px; }.lab-waveforms > div > b { font-size: 12px; }.lab-waveforms svg { width: 100%; height: 88px; background-image: linear-gradient(#e8edf1 1px,transparent 1px),linear-gradient(90deg,#e8edf1 1px,transparent 1px); background-size: 25% 50%; }.lab-waveforms path { fill: none; stroke: #0877d1; stroke-width: 3; vector-effect: non-scaling-stroke; }.lab-waveforms .wave-0 { stroke: #16b348; }.lab-waveforms .wave-2 { stroke: #16a3c7; }.lab-waveforms .wave-3 { stroke: #c33b32; }.lab-waveforms line { stroke: #17212b; stroke-width: 1.5; }.lab-waveforms rect.turn-on-loss,.lab-waveforms rect.turn-off-loss { fill: rgba(201,137,18,.13); stroke: #c98912; stroke-dasharray: 3 2; }.lab-wave-legend { padding: 8px 20px 12px; display: flex; align-items: center; gap: 16px; color: #5b7183; font-size: 11px; }.lab-wave-legend span { display: flex; align-items: center; gap: 5px; }.lab-wave-legend i { width: 10px; height: 17px; border: 1px dashed #c98912; background: rgba(201,137,18,.13); }.lab-wave-legend b { margin-left: auto; color: #344f64; font-weight: 600; }.lab-timeline { padding: 10px 18px 14px; display: grid; grid-template-columns: 34px 34px 1fr 55px; align-items: center; gap: 6px; border-top: 1px solid #e0e8ed; }.lab-timeline button { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #fff; background: #0877d1; cursor: pointer; }.lab-timeline input { width: 100%; accent-color: #0877d1; }.lab-timeline b { font-size: 11px; }
+.lab-thermal-grid { margin-top: 9px; display: grid; grid-template-columns: 240px minmax(0,1fr) 260px; gap: 9px; align-items: start; }.lab-thermal-controls { padding-bottom: 14px; }.lab-fixed-parameter { margin: 8px 14px; padding: 10px 0; display: grid; grid-template-columns: 1fr auto; gap: 3px; border-bottom: 1px solid #e2e9ee; }.lab-fixed-parameter span { color: #617687; font-size: 11px; }.lab-fixed-parameter b { font-size: 15px; }.lab-fixed-parameter small { grid-column: 1/-1; color: #8999a6; font-size: 9px; }.lab-heat-scale { margin: 14px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 7px; }.lab-heat-scale > span { color: #718596; font-size: 8px; font-weight: 700; }.lab-heat-scale > i { height: 9px; overflow: hidden; border-radius: 8px; background: linear-gradient(90deg,#f5c451,#e77235,#a5161b); }.lab-heat-scale > i > b { width: var(--heat-level); height: 100%; display: block; border-right: 3px solid #17212b; background: rgba(255,255,255,.54); transition: width .35s ease; }.lab-heat-scale > small { grid-column: 1/-1; color: #7e909e; font-size: 9px; line-height: 1.35; }.lab-thermal-viewer { min-width: 0; overflow: hidden; }.lab-thermal-viewer .package-inspector { border: 0; border-radius: 0; box-shadow: none; }.lab-thermal-viewer .package-canvas { height: 430px; }.lab-thermal-results { padding: 15px; }.lab-thermal-equation { margin-top: 18px; display: grid; grid-template-columns: 1fr auto 1fr auto 1.15fr; align-items: center; gap: 7px; }.lab-thermal-equation b,.lab-thermal-equation strong { min-height: 70px; display: grid; place-items: center; align-content: center; gap: 5px; border-radius: 6px; background: #eef5f9; font-size: 17px; }.lab-thermal-equation strong { color: var(--heat-color); background: color-mix(in srgb,var(--heat-color) 12%,white); font-size: 20px; transition: color .35s ease,background .35s ease; }.lab-thermal-equation small { color: #6c8091; font-size: 10px; }.lab-thermal-equation i { color: #728798; font-size: 18px; font-style: normal; }.lab-temperature-beacon { margin-top: 14px; padding: 10px 12px; display: flex; align-items: center; gap: 9px; border: 1px solid color-mix(in srgb,var(--heat-color) 36%,#dbe5eb); border-radius: 7px; color: var(--heat-color); background: color-mix(in srgb,var(--heat-color) 8%,white); transition: color .35s ease,background .35s ease; }.lab-temperature-beacon span { display: grid; gap: 2px; }.lab-temperature-beacon small { color: #728596; font-size: 8px; }.lab-temperature-beacon b { font-size: 18px; }.lab-thermal-results dl { margin: 14px 0 0; }.lab-thermal-results dl div { min-height: 44px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #e1e8ed; }.lab-thermal-results dt { color: #667b8c; font-size: 11px; }.lab-thermal-results dd { margin: 0; font-size: 16px; font-weight: 600; }
+.lab-soa-grid { margin-top: 9px; display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 9px; align-items: start; }.lab-soa-controls > .lab-results-panel { margin: 10px; box-shadow: none; }.lab-soa-workspace > header { display: flex; align-items: center; justify-content: space-between; }.lab-soa-workspace > header b { font-size: 17px; }.lab-soa-workspace > svg { width: 100%; height: 650px; touch-action: none; }.soa-lab-plot { fill: #fbfdfe; stroke: #b9cad6; }.lab-soa-workspace polyline { vector-effect: non-scaling-stroke; }.lab-drag-point { cursor: grab; }.lab-drag-point > circle:first-child { fill: rgba(8,119,209,.14); stroke: #0877d1; stroke-width: 3; }.lab-drag-point > circle:nth-child(2) { fill: #0877d1; }.lab-drag-point.critical > circle:first-child { stroke: #c98912; }.lab-drag-point.critical > circle:nth-child(2) { fill: #c98912; }.lab-drag-point.unsafe > circle:first-child { stroke: #c33b32; }.lab-drag-point.unsafe > circle:nth-child(2) { fill: #c33b32; }.lab-drag-point g rect { fill: #172d3e; }.lab-drag-point g text { fill: #fff; font-size: 11px; }.lab-soa-workspace > svg > text { fill: #526b7d; font-size: 12px; font-weight: 600; }.lab-soa-workspace > footer { padding: 11px 16px; display: flex; justify-content: space-between; border-top: 1px solid #e0e8ed; color: #64798a; font-size: 11px; }.lab-soa-workspace > footer strong { color: #0877d1; }
+.lab-engine-note { margin-top: 9px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; color: #64798a; border-radius: 6px; background: #eef4f7; font-size: 11px; }
+@keyframes lab-flow-pulse { 0%,100%{transform:translateX(0);opacity:.45}50%{transform:translateX(3px);opacity:1} }
+@media (max-width: 1250px) { .workflow-grid { grid-template-columns: 1fr; }.workflow-action-row { grid-column: auto; }.workflow-action-row > .action-card { display: flex; }.workflow-column > .component-card { min-height: 500px; }.result-evidence-layout { grid-template-columns: 1fr; }.lab-tool-header { grid-template-columns: 1fr; }.lab-experiment-toolbar { flex-wrap: wrap; }.lab-simulator-grid,.lab-thermal-grid { grid-template-columns: 1fr; }.lab-switching-grid,.lab-soa-grid { grid-template-columns: 1fr; }.lab-thermal-viewer .package-canvas { height: 440px; } }
+@media (max-width: 760px) {
+  .engineering-lab { width: calc(100% - 16px); }
+  .lab-mode-tabs { grid-template-columns: 1fr 1fr; }
+  .lab-experiment-toolbar { align-items: stretch; flex-direction: column; }
+  .lab-experiment-toolbar select { width: 100%; }
+  .lab-control > div { grid-template-columns: 1fr 86px; }
+  .lab-live-values { grid-template-columns: 1fr 1fr; }
+  .lab-mosfet-stage { min-height: 360px; }
+  .lab-device-state { right: 2%; }
+  .lab-wave-legend { flex-wrap: wrap; }
+  .lab-wave-legend b { margin-left: 0; }
+  .lab-soa-workspace > svg { height: 430px; }
+  .result-evidence-layout > .soa-chart .soa-body svg { height: 430px; }
+  .result-evidence-power .mosfet-operation { min-height: 0; grid-template-columns: 1fr; }
+  .result-evidence-power .operation-stage { min-height: 0; }
+  .result-evidence-power .operation-signals { min-height: 690px; }
+  .operation-signals-heading { align-items: flex-start; flex-direction: column; padding-bottom: 8px; }
+}
+
+/* Analyze workstation hierarchy: inputs → decision → evidence → explanation. */
+.analyze-workspace { max-width: none; padding: 12px 24px 32px; }
+.workflow-grid {
+  display: grid;
+  grid-template-columns: minmax(420px,40fr) minmax(620px,60fr);
+  grid-template-rows: auto;
+  align-items: start;
+  gap: 16px;
+}
+.workflow-stack { min-width: 0; display: grid; align-content: start; gap: 16px; }
+.analyze-workspace .component-card { width: 100%; height: 420px; min-height: 0; padding: 16px; }
+.analyze-workspace .component-inspector-layout { min-height: 287px; grid-template-columns: minmax(0,70fr) minmax(150px,30fr); gap: 12px; }
+.analyze-workspace .component-package-inspector .package-canvas { height: 235px; }
+.analyze-workspace .package-view-presets button { height: 30px; }
+.workflow-grid .operating-card { width: 100%; height: 420px; min-height: 0; padding: 16px 20px 24px; }
+.workflow-grid .operating-card .operating-primary { padding-top: 16px; }
+.workflow-grid .operating-card .operating-input-grid { grid-template-columns: repeat(4,minmax(110px,1fr)); gap: 16px 12px; }
+.workflow-grid .action-card,
+.workflow-grid .thermal-settings { width: 100%; height: 216px; min-height: 0; padding: 12px 16px; }
+.workflow-grid .action-card {
+  display: grid;
+  grid-template-columns: minmax(220px,1fr) minmax(180px,.8fr);
+  grid-template-areas: "heading heading" "mode run" "whatif report";
+  align-content: start;
+  gap: 8px 12px;
+}
+.workflow-grid .action-card .workflow-heading { grid-area: heading; }
+.workflow-grid .action-card .analysis-mode { grid-area: mode; margin: 0; }
+.workflow-grid .action-card .run-analysis { grid-area: run; min-height: 54px; margin: 15px 0 0; }
+.workflow-grid .action-card .secondary-action { min-height: 38px; }
+.workflow-grid .action-card .secondary-action:not(.report-action) { grid-area: whatif; }
+.workflow-grid .action-card .report-action { grid-area: report; }
+.workflow-grid .thermal-settings .reference-control { margin-top: 8px; }
+.workflow-grid .thermal-settings .thermal-settings-fields { grid-template-columns: 1fr 1fr; column-gap: 24px; }
+
+.result-status-strip { min-height: 96px; margin: 20px 0 16px; grid-template-columns: minmax(300px,30fr) repeat(3,minmax(135px,15fr)) minmax(170px,20fr) minmax(72px,5fr); }
+.status-assessment strong { font-size: 20px; font-weight: 600; }
+.status-metric strong { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.result-evidence-layout {
+  margin-top: 0;
+  display: grid;
+  grid-template-columns: minmax(420px,40fr) minmax(340px,32fr) minmax(320px,28fr);
+  align-items: start;
+  gap: 16px;
+}
+.result-evidence-layout > .result-card { width: 100%; height: fit-content; min-height: 0; align-self: start; }
+.result-evidence-layout > .soa-chart .soa-body { padding: 4px 12px 0; }
+.result-evidence-layout > .soa-chart .soa-body svg { height: 490px; }
+.result-evidence-layout > .loss-breakdown .loss-visual { min-height: 350px; padding: 20px 16px; grid-template-columns: minmax(110px,38fr) minmax(160px,62fr); align-items: center; }
+.result-evidence-layout > .loss-breakdown .loss-donut { width: min(150px,100%); }
+.result-evidence-layout .thermal-stack-body { grid-template-columns: minmax(0,72fr) minmax(110px,28fr); gap: 8px; }
+.result-evidence-layout .thermal-package-inspector .package-canvas { height: 340px; }
+.result-evidence-layout .thermal-layer-legend { gap: 4px; }
+.result-evidence-layout .thermal-layer-legend button { padding: 6px; }
+
+.operation-deep-dive { margin-top: 16px; scroll-margin-top: 84px; }
+.operation-deep-dive > header { min-height: 56px; }
+.operation-deep-dive > header > strong { display: grid; justify-items: end; color: #0877d1; font-size: 13px; }
+.operation-deep-dive .mosfet-operation { min-height: 0; padding: 12px 16px 10px; grid-template-columns: minmax(210px,20fr) minmax(680px,80fr); align-content: start; gap: 12px; }
+.operation-deep-dive .operation-stage { min-height: 520px; padding: 12px; grid-template-rows: auto 1fr auto auto; align-content: center; }
+.operation-deep-dive .operation-device { min-height: 255px; grid-template-columns: 62px minmax(120px,1fr); grid-template-rows: 1fr auto; align-items: center; }
+.operation-deep-dive .operation-mosfet-symbol { width: 142px; height: 220px; justify-self: center; }
+.operation-deep-dive .operation-heat { width: 100%; grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 6px 8px; border-top: 1px solid #dce6ed; }
+.operation-deep-dive .operation-heat > span,
+.operation-deep-dive .operation-heat > small { font-size: 8px; white-space: nowrap; }
+.operation-deep-dive .operation-heat > strong { margin-left: auto; white-space: nowrap; }
+.operation-symbol-legend { margin: 4px 0 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px 8px; color: #607689; font-size: 7px; }
+.operation-symbol-legend span { display: flex; align-items: center; gap: 5px; }
+.operation-symbol-legend i { width: 13px; height: 3px; border-radius: 2px; background: #17212b; }
+.operation-symbol-legend .gate i { background: #0877d1; }
+.operation-symbol-legend .channel i { background: #16b348; }
+.operation-symbol-legend .diode i { height: 8px; border: 1px solid #17212b; background: transparent; }
+.operation-symbol-legend .current i { background: #16a3c7; }
+.operation-deep-dive .operation-readouts { grid-template-columns: repeat(4,1fr); }
+.operation-deep-dive .operation-signals { min-height: 520px; padding: 12px 16px; align-content: start; gap: 6px; }
+.operation-deep-dive .operation-phase-track { grid-template-columns: .55fr .8fr 2fr .8fr .55fr; }
+.operation-deep-dive .operation-phase-track span { min-height: 23px; font-size: 7px; }
+.operation-deep-dive .operation-wave { grid-template-columns: 42px 1fr; gap: 8px; }
+.operation-deep-dive .operation-wave > span { font-size: 10px; }
+.operation-deep-dive .operation-wave svg { height: 60px; }
+.operation-deep-dive .operation-power-wave { grid-template-columns: 105px 1fr; }
+.operation-deep-dive .operation-power-wave svg { height: 118px; }
+.operation-deep-dive .operation-overlap-key { min-height: 42px; }
+.operation-deep-dive .operation-loss-focus span { min-height: 34px; font-size: 7px; }
+.operation-deep-dive .operation-controls { grid-template-columns: 32px 1fr 48px; }
+.operation-deep-dive .operation-controls button { width: 32px; height: 32px; }
+.operation-deep-dive .operation-disclaimer { margin-top: 0; font-size: 8px; }
+
+@media (max-width: 1379px) {
+  .analyze-workspace { padding-right: 16px; padding-left: 16px; }
+  .workflow-grid { grid-template-columns: 1fr; }
+  .workflow-stack { display: contents; }
+  .workflow-grid .component-card { grid-row: 1; }
+  .workflow-grid .operating-card { grid-row: 2; }
+  .workflow-grid .action-card { grid-row: 3; }
+  .workflow-grid .thermal-settings { grid-row: 4; }
+  .analyze-workspace .component-card { height: auto; min-height: 500px; }
+  .workflow-grid > .operating-card,
+  .workflow-grid > .action-card,
+  .workflow-grid > .thermal-settings { height: auto; min-height: 0; }
+  .result-evidence-layout { grid-template-columns: 1fr; }
+  .result-evidence-layout > .soa-chart .soa-body svg { height: 520px; }
+  .operation-deep-dive .mosfet-operation { grid-template-columns: minmax(210px,25fr) minmax(540px,75fr); }
+}
+
+@media (max-width: 900px) {
+  .workflow-grid .operating-card .operating-input-grid { grid-template-columns: 1fr 1fr; }
+  .workflow-grid .action-card { display: grid; grid-template-columns: 1fr; grid-template-areas: "heading" "mode" "run" "whatif" "report"; }
+  .workflow-grid .action-card .run-analysis { margin-top: 0; }
+  .workflow-grid .thermal-settings .thermal-settings-fields { grid-template-columns: 1fr; }
+  .operation-deep-dive .mosfet-operation { grid-template-columns: 1fr; }
+  .operation-deep-dive .operation-stage,
+  .operation-deep-dive .operation-signals { min-height: 0; }
+}
+
+/* Compact evidence flow and strict semantic color pass. */
+.analyze-workspace .component-card { height: auto; min-height: 420px; padding-bottom: 20px; }
+.workflow-grid .operating-card { height: auto; min-height: 276px; }
+.result-status-strip { min-height: 76px; height: 76px; margin: 16px 0 12px; }
+.result-status-strip .status-icon { width: 40px; height: 40px; }
+.result-status-strip .status-assessment strong { font-size: 17px; }
+.result-status-strip .status-assessment p { margin-top: 2px; font-size: 9px; }
+.result-status-strip .status-metric { padding: 8px 12px; }
+.result-status-strip .status-metric strong { font-size: 16px; }
+.result-status-strip .status-metric small { font-size: 8px; }
+
+.result-evidence-layout > .soa-chart { grid-column: 1; grid-row: 1; }
+.result-evidence-layout > .loss-breakdown { grid-column: 2; grid-row: 1; }
+.result-evidence-layout > .thermal-path-compact { grid-column: 3; grid-row: 1 / span 2; }
+.result-evidence-layout > .operation-deep-dive { grid-column: 1 / 3; grid-row: 2; }
+.operation-deep-dive { margin-top: 0; }
+.operation-deep-dive .mosfet-operation { padding: 10px 12px 8px; grid-template-columns: minmax(190px,22fr) minmax(560px,78fr); gap: 10px; }
+.operation-deep-dive .operation-stage { min-height: 430px; padding: 10px; }
+.operation-deep-dive .operation-device { min-height: 190px; grid-template-columns: 54px minmax(105px,1fr); }
+.operation-deep-dive .operation-mosfet-symbol { width: 116px; height: 180px; }
+.operation-deep-dive .operation-heat { padding: 5px 4px; gap: 5px; }
+.operation-deep-dive .operation-heat { display: grid; grid-template-columns: 1fr 1fr; }
+.operation-deep-dive .operation-heat > div { min-width: 0; display: grid; gap: 2px; text-align: center; }
+.operation-deep-dive .operation-heat span { color: #087c9b; font-size: 7px; font-weight: 700; white-space: nowrap; }
+.operation-deep-dive .operation-heat small { color: #6c8192; font-size: 6px; }
+.operation-symbol-legend { margin: 3px 0 6px; grid-template-columns: 1fr; gap: 4px; }
+.operation-symbol-legend span { display: grid; grid-template-columns: 13px 1fr; column-gap: 5px; }
+.operation-symbol-legend i { grid-row: 1 / 3; align-self: center; }
+.operation-symbol-legend b { color: #29475e; font-size: 7px; }
+.operation-symbol-legend small { color: #6b8091; font-size: 6px; line-height: 1.25; }
+.operation-deep-dive .operation-readouts span { padding: 5px; }
+.operation-deep-dive .operation-signals { min-height: 430px; padding: 10px 12px; gap: 5px; }
+.operation-deep-dive .operation-transition-note { display: none; }
+.operation-deep-dive .operation-wave svg { height: 46px; }
+.operation-deep-dive .operation-power-wave { padding: 6px 8px 4px; grid-template-columns: 88px 1fr; }
+.operation-deep-dive .operation-power-wave svg { height: 92px; }
+.operation-deep-dive .operation-power-label > span { font-size: 11px; }
+.operation-deep-dive .operation-power-label small { font-size: 7px; }
+.operation-deep-dive .operation-overlap-key { min-height: 36px; }
+.operation-deep-dive .operation-loss-focus span { min-height: 30px; }
+.operation-deep-dive .operation-controls button { width: 28px; height: 28px; }
+.operation-deep-dive .operation-controls { grid-template-columns: 28px 1fr 44px; }
+
+.thermal-layer-legend .junction i,
+.thermal-layer-readout.junction i { background: #dc273c; }
+.thermal-layer-legend .attach i,
+.thermal-layer-readout.attach i { background: #f0a01a; }
+.thermal-layer-legend .leadframe i,
+.thermal-layer-readout.leadframe i { background: #168bff; }
+.thermal-layer-legend .case i,
+.thermal-layer-readout.case i { background: #173d61; }
+
+@media (max-width: 1379px) {
+  .result-evidence-layout > .soa-chart,
+  .result-evidence-layout > .loss-breakdown,
+  .result-evidence-layout > .thermal-path-compact,
+  .result-evidence-layout > .operation-deep-dive { grid-column: 1; grid-row: auto; }
+  .operation-deep-dive .mosfet-operation { grid-template-columns: minmax(190px,25fr) minmax(500px,75fr); }
+}
+
+@media (max-width: 900px) {
+  .result-status-strip { height: auto; }
+  .operation-deep-dive .mosfet-operation { grid-template-columns: 1fr; }
+}
+
+/* Final density pass: every panel follows its content, with no letterboxed charts. */
+@media (min-width: 1380px) {
+  .result-evidence-layout { grid-template-columns: minmax(470px,44fr) minmax(330px,29fr) minmax(310px,27fr); }
+}
+
+.workflow-grid { grid-template-columns: minmax(460px,40fr) minmax(700px,60fr); align-items: start; }
+.workflow-grid > .component-card { min-height: 0; height: 100%; }
+.workflow-operating-column { min-width: 0; display: grid; align-content: start; gap: 16px; }
+.workflow-controls-row { min-width: 0; display: grid; grid-template-columns: minmax(390px,52fr) minmax(330px,48fr); align-items: start; gap: 16px; }
+.workflow-operating-column > .operating-card,
+.workflow-controls-row > .action-card,
+.workflow-controls-row > .thermal-settings { width: 100%; height: auto; min-height: 0; }
+.workflow-controls-row > .action-card { min-height: 226px; }
+.workflow-controls-row > .thermal-settings { min-height: 226px; }
+.workflow-controls-row .action-card > * { min-width: 0; }
+.workflow-controls-row .run-analysis {
+  width: calc(100% - 6px);
+  max-width: calc(100% - 6px);
+  justify-self: start;
+  box-sizing: border-box;
+}
+.workflow-grid > .component-card .component-inspector-layout { min-height: 312px; }
+.workflow-grid > .component-card .component-package-inspector .package-canvas { height: 260px; }
+
+.analysis-empty { min-height: 156px; padding: 18px 20px; }
+.analysis-empty .empty-schematic { width: 52px; height: 52px; }
+.analysis-empty > div:last-child { margin-top: 12px; }
+
+.result-evidence-layout > .soa-chart .soa-body { padding: 2px 10px 0; }
+.result-evidence-layout > .soa-chart .soa-body svg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 700 / 390;
+}
+.result-evidence-layout > .soa-chart .soa-legend { min-height: 38px; padding-top: 3px; padding-bottom: 7px; }
+.result-evidence-layout > .soa-chart .chart-note { min-height: 34px; }
+.result-evidence-layout > .soa-chart,
+.result-evidence-layout > .loss-breakdown { height: 100%; align-self: stretch; }
+.result-evidence-layout > .loss-breakdown .loss-visual { flex: 1; align-content: center; }
+.result-evidence-layout .thermal-package-inspector .package-canvas { height: 410px; }
+.soa-hit { transition: r .16s ease, opacity .16s ease; }
+.soa-hit:hover { r: 12px; opacity: .14; fill: #0877d1; }
+.soa-sample { transition: r .16s ease, filter .16s ease; }
+.soa-sample:has(+ .soa-hit:hover) { r: 4px; filter: drop-shadow(0 0 4px rgba(8,119,209,.55)); }
+
+.operation-deep-dive .mosfet-operation { grid-template-columns: minmax(220px,26fr) minmax(560px,74fr); }
+.operation-deep-dive .operation-stage,
+.operation-deep-dive .operation-signals { min-height: 360px; }
+.operation-deep-dive .operation-stage { grid-template-rows: auto auto auto auto; align-content: start; }
+.operation-deep-dive .operation-device { min-height: 162px; }
+.operation-deep-dive .operation-mosfet-symbol { width: 108px; height: 164px; }
+.operation-deep-dive .operation-heat { grid-template-columns: 1fr; gap: 3px; }
+.operation-deep-dive .operation-heat > div { grid-template-columns: auto 1fr; align-items: baseline; gap: 5px; text-align: left; }
+.operation-deep-dive .operation-heat span { white-space: normal; }
+.operation-symbol-legend { grid-template-columns: 1fr 1fr; gap: 5px 8px; }
+.operation-symbol-legend span { min-width: 0; }
+.operation-symbol-legend small { overflow-wrap: anywhere; }
+.operation-deep-dive .operation-signals { gap: 4px; }
+.operation-deep-dive .operation-wave svg { height: 40px; }
+.operation-deep-dive .operation-power-wave svg { height: 78px; }
+.operation-deep-dive .operation-power-wave { grid-template-columns: 76px 1fr; }
+.operation-deep-dive .operation-overlap-key { min-height: 32px; }
+.operation-deep-dive .operation-loss-focus span { min-height: 27px; }
+.operation-phase-track span,
+.operation-phase strong,
+.operation-loss-focus span { transition: color .55s ease, background-color .55s ease, border-color .55s ease, box-shadow .55s ease, opacity .55s ease; }
+
+.operation-equation {
+  display: block !important;
+  width: 270px;
+  justify-self: center;
+  padding: 5px 11px 6px;
+  border: 1px solid #b9d8ee;
+  border-radius: 5px;
+  color: #123b5a;
+  background: #f4faff;
+  font: 600 15px/1.15 Cambria, "STIX Two Math", "Times New Roman", serif;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  text-align: center;
+}
+.operation-signals-heading { display: grid; grid-template-columns: minmax(0,1fr) 270px minmax(0,1fr); }
+.operation-equation i { font-family: Cambria, "STIX Two Math", "Times New Roman", serif; font-style: italic; font-weight: 600; }
+.operation-equation sub { position: relative; bottom: -.12em; margin-left: 1px; font-size: .63em; line-height: 0; }
+
+.result-status-strip { grid-template-columns: minmax(310px,30fr) repeat(3,minmax(150px,16fr)) minmax(210px,22fr); }
+.result-status-strip > :last-child { border-right: 0; }
+
+/* Keep the export choices visible above the bottom action row. */
+.result-actions-row .export-menu > div { top: auto; bottom: 40px; }
+
+.analysis-loading-overlay {
+  position: fixed;
+  z-index: 60;
+  inset: 0 0 0 72px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(237,244,249,.72);
+  backdrop-filter: blur(5px);
+  animation: analysis-overlay-in .18s ease both;
+}
+.analysis-loading-dialog {
+  width: min(430px,calc(100vw - 48px));
+  min-height: 230px;
+  padding: 28px 34px 24px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 9px;
+  border: 1px solid #b9d1e3;
+  border-radius: 10px;
+  color: #17212b;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 24px 70px rgba(15,48,78,.22);
+  text-align: center;
+}
+.analysis-loading-spinner { width: 44px; height: 44px; border: 3px solid #d7e6f1; border-top-color: #0877d1; border-right-color: #16a3c7; border-radius: 50%; animation: spin .8s linear infinite; }
+.analysis-loading-dialog small { margin-top: 4px; color: #0877d1; font: 700 8px/1 "IBM Plex Mono",monospace; letter-spacing: .14em; }
+.analysis-loading-dialog strong { font-size: 18px; }
+.analysis-loading-dialog p { max-width: 330px; margin: 0; color: #617789; font-size: 10px; line-height: 1.55; }
+.analysis-loading-dialog > div { width: 190px; height: 3px; margin-top: 8px; display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; }
+.analysis-loading-dialog > div i { border-radius: 99px; background: #dce8f1; animation: analysis-step 1.15s ease-in-out infinite; }
+.analysis-loading-dialog > div i:nth-child(2) { animation-delay: .12s; }.analysis-loading-dialog > div i:nth-child(3) { animation-delay: .24s; }.analysis-loading-dialog > div i:nth-child(4) { animation-delay: .36s; }
+@keyframes analysis-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes analysis-step { 0%,100% { background: #dce8f1; transform: scaleX(.72); } 50% { background: #0877d1; transform: scaleX(1); } }
+
+@media (max-width: 1379px) {
+  .workflow-grid { grid-template-columns: 1fr; }
+  .workflow-grid > .component-card { height: auto; }
+  .workflow-operating-column { gap: 16px; }
+  .workflow-controls-row { grid-template-columns: 1fr 1fr; }
+  .workflow-grid > .component-card .component-inspector-layout { min-height: 330px; }
+  .workflow-grid > .component-card .component-package-inspector .package-canvas { height: 280px; }
+  .result-evidence-layout > .soa-chart .soa-body svg { height: auto; }
+  .operation-deep-dive .mosfet-operation { grid-template-columns: minmax(220px,28fr) minmax(500px,72fr); }
+}
+
+@media (max-width: 900px) {
+  .workflow-controls-row { grid-template-columns: 1fr; }
+  .operation-deep-dive .mosfet-operation { grid-template-columns: 1fr; }
+  .operation-symbol-legend { grid-template-columns: 1fr 1fr; }
+  .operation-signals-heading { grid-template-columns: 1fr; gap: 8px; }
+  .operation-equation { width: min(270px,100%); justify-self: start; }
+}
+
+/* Fluid desktop proportions: preserve the same visual hierarchy across common displays. */
+.analyze-workspace {
+  padding-inline: clamp(12px,1.25vw,24px);
+}
+.workflow-grid,
+.workflow-operating-column,
+.workflow-controls-row,
+.result-evidence-layout { gap: clamp(10px,.85vw,16px); }
+.workflow-grid {
+  grid-template-columns: minmax(380px,40fr) minmax(580px,60fr);
+}
+.workflow-controls-row {
+  grid-template-columns: minmax(0,52fr) minmax(0,48fr);
+}
+.workflow-grid .action-card {
+  grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr);
+}
+.workflow-grid > .component-card .component-package-inspector .package-canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+.result-evidence-layout {
+  grid-template-columns: minmax(390px,44fr) minmax(280px,29fr) minmax(270px,27fr);
+}
+
+@media (min-width: 1160px) and (max-width: 1379px) {
+  .workflow-grid { grid-template-columns: minmax(380px,40fr) minmax(580px,60fr); }
+  .workflow-stack { display: grid; }
+  .workflow-grid .component-card { grid-row: auto; height: auto; min-height: 0; }
+  .workflow-grid > .component-card .component-inspector-layout { min-height: 0; grid-template-columns: 1fr; gap: 10px; }
+  .workflow-grid > .component-card .component-specification { display: grid; grid-template-columns: minmax(140px,.85fr) minmax(180px,1.15fr); align-items: start; gap: 12px; }
+  .workflow-grid > .component-card .component-limits { margin-top: 0; }
+  .workflow-grid .operating-card,
+  .workflow-grid .action-card,
+  .workflow-grid .thermal-settings { grid-row: auto; }
+  .workflow-controls-row { grid-template-columns: minmax(0,52fr) minmax(0,48fr); }
+  .result-evidence-layout { grid-template-columns: minmax(390px,44fr) minmax(280px,29fr) minmax(270px,27fr); }
+  .result-evidence-layout > .soa-chart { grid-column: 1; grid-row: 1; }
+  .result-evidence-layout > .loss-breakdown { grid-column: 2; grid-row: 1; }
+  .result-evidence-layout > .thermal-path-compact { grid-column: 3; grid-row: 1 / span 2; }
+  .result-evidence-layout > .operation-deep-dive { grid-column: 1 / 3; grid-row: 2; }
+}
+
+@media (max-width: 1159px) {
+  .workflow-grid { grid-template-columns: 1fr; }
+  .workflow-stack { display: contents; }
+  .workflow-grid .component-card { grid-row: 1; height: auto; }
+  .workflow-grid .operating-card { grid-row: 2; }
+  .workflow-grid .action-card { grid-row: 3; }
+  .workflow-grid .thermal-settings { grid-row: 4; }
+  .result-evidence-layout { grid-template-columns: 1fr; }
+  .result-evidence-layout > .soa-chart,
+  .result-evidence-layout > .loss-breakdown,
+  .result-evidence-layout > .thermal-path-compact,
+  .result-evidence-layout > .operation-deep-dive { grid-column: 1; grid-row: auto; }
+}
+
+@media (max-width: 900px) {
+  .workflow-controls-row { grid-template-columns: 1fr; }
+  .workflow-grid .action-card { grid-template-columns: 1fr; }
 }
